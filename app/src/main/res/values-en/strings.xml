@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MarvelMania</string>
+    <string name="biblioteca">Library</string>
+    <string name="personajes">Characters</string>
+    <string name="comics">Comics</string>
+    <string name="historias">Stories</string>
+    <string name="series">Series</string>
+    <string name="inicio_sesion">Log in</string>
+    <string name="perfil">Profile</string>
+    <string name="abierto">Open</string>
+    <string name="cerrado">Close</string>
+</resources>

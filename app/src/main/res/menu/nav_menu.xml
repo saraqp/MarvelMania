@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/library_icon"
+        android:title="@string/biblioteca"/>
+    <item
+        android:id="@+id/nav_characters"
+        android:icon="@drawable/characters_icon"
+        android:title="@string/personajes"/>
+    <item
+        android:id="@+id/nav_comics"
+        android:icon="@drawable/comics_icon"
+        android:title="@string/comics"/>
+    <item
+        android:id="@+id/nav_series"
+        android:icon="@drawable/series_icon"
+        android:title="@string/series"/>
+    <item
+        android:id="@+id/nav_stories"
+        android:icon="@drawable/stories_icon"
+        android:title="@string/historias"/>
+    <item
+        android:title="@string/perfil">
+        <menu>
+            <item
+                android:id="@+id/nav_login"
+                android:icon="@drawable/login_icon"
+                android:title="@string/inicio_sesion"/>
+        </menu>
+    </item>
+</menu>

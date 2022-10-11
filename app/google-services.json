@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "420575457514",
+    "project_id": "marvelmania-c414c",
+    "storage_bucket": "marvelmania-c414c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:420575457514:android:2792db89c20b5134692793",
+        "android_client_info": {
+          "package_name": "quesadoprado.saramaria.marvelmania"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "420575457514-ut5kkmt15qlh4nen1j2p3iffjkf7v4k2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDot-tUTynJMTU0_m410vCo7i_cG1X6yr8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "420575457514-ut5kkmt15qlh4nen1j2p3iffjkf7v4k2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
