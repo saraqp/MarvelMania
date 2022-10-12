@@ -1,6 +1,6 @@
 package quesadoprado.saramaria.marvelmania.data.characters
 
-data class ChatactersDTO(
+data class CharactersDTO(
     val code:Int?=null,
     val status:String?=null,
     val copyright:String?=null,

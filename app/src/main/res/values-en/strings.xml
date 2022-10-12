@@ -10,4 +10,5 @@
     <string name="perfil">Profile</string>
     <string name="abierto">Open</string>
     <string name="cerrado">Close</string>
+    <string name="error">An error ocurred, please try again later</string>
 </resources>

@@ -1,4 +1,6 @@
-package quesadoprado.saramaria.marvelmania.data.characters
+package quesadoprado.saramaria.marvelmania.data.items
+
+import quesadoprado.saramaria.marvelmania.data.items.ItemC
 
 data class Comics(
     val available:Int?=null,

@@ -1,5 +1,6 @@
 package quesadoprado.saramaria.marvelmania.data.characters
 
+import quesadoprado.saramaria.marvelmania.data.items.*
 import java.util.*
 
 data class Character(
@@ -9,10 +10,10 @@ data class Character(
     val modified: Date?=null,
     val resourceURI:String?=null,
     val urls:Array<Url>?=null,
-    val thumbnail:Thumbnail?=null,
-    val comics:Comics?=null,
-    val events:Events?=null,
-    val series:Series?=null,
-    val stories:Story?=null
+    val thumbnail: Thumbnail?=null,
+    val comics: Comics?=null,
+    val events: Events?=null,
+    val series: Series?=null,
+    val stories: Story?=null
 
     )

@@ -1,4 +1,4 @@
-package quesadoprado.saramaria.marvelmania.data.characters
+package quesadoprado.saramaria.marvelmania.data.items
 
 data class ItemSt(
     val name:String?=null,
