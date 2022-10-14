@@ -32,7 +32,7 @@ class ComicsFragment : Fragment() {
                 var gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
                 var response:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
 
-                texto.text=response.data?.results?.get(3)?.modified.toString()
+                texto.text=response.toString()
             }, onFailure = {
                 texto.text=getString(R.string.error)
             })

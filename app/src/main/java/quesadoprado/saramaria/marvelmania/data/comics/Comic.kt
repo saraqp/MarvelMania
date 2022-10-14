@@ -1,7 +1,5 @@
 package quesadoprado.saramaria.marvelmania.data.comics
 
-import com.fasterxml.jackson.annotation.JsonFormat
-import com.google.type.Date
 import quesadoprado.saramaria.marvelmania.data.items.*
 
 data class Comic(
@@ -22,15 +20,15 @@ data class Comic(
     val textObjects:Array<TextObject>?=null,
     val resourceURI:String?=null,
     val urls:Array<Url>?=null,
-    val series:Series?=null,
-    val variants:Array<ItemC>?=null,
-    val collections:Array<ItemC>?=null,
-    val collectedIssues:Array<ItemC>?=null,
+    val series: Series?=null,
+    val variants:Array<Item>?=null,
+    val collections:Array<Item>?=null,
+    val collectedIssues:Array<Item>?=null,
     val dates:Array<ItemCDate>?=null,
     val prices:Array<ItemCPrice>?=null,
     val images:Array<Thumbnail>?=null,
     val creator: Creator?=null,
-    val characters:Characters?=null,
-    val stories:Story?=null,
-    val events:Events?=null
+    val characters: Characters?=null,
+    val stories: Story?=null,
+    val events: Events?=null
     )

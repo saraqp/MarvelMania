@@ -2,6 +2,7 @@ package quesadoprado.saramaria.marvelmania.network
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import quesadoprado.saramaria.marvelmania.data.characters.CharactersDTO
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
