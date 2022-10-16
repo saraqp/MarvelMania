@@ -24,6 +24,7 @@ data class Comic(
     val variants:Array<Item>?=null,
     val collections:Array<Item>?=null,
     val collectedIssues:Array<Item>?=null,
+    val thumbnail:Thumbnail?=null,
     val dates:Array<ItemCDate>?=null,
     val prices:Array<ItemCPrice>?=null,
     val images:Array<Thumbnail>?=null,

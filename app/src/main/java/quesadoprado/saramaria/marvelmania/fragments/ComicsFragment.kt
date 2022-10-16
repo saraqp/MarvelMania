@@ -6,9 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import quesadoprado.saramaria.marvelmania.R
+import quesadoprado.saramaria.marvelmania.adapter.ComicAdapter
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.data.comics.ComicsDTO
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
@@ -26,15 +30,25 @@ class ComicsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var texto:TextView=view.findViewById(R.id.textoComics)
+        val recyclerView:RecyclerView=view.findViewById(R.id.recyclerViewComics)
+        recyclerView.layoutManager=GridLayoutManager(context,2)
         RetrofitBroker.getRequestAllComics(
             onResponse = {
-                var gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
-                var response:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
+                val gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
+                val respuesta:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
+                val comics=respuesta?.data?.results
+                val adapter=ComicAdapter(comics)
+                recyclerView.adapter=adapter
+                adapter.setOnItemClickListener(object :ComicAdapter.onIntemClickListener{
+                    override fun onItemClick(position: Int) {
+                        Toast.makeText(context,comics?.get(position).toString(),Toast.LENGTH_SHORT).show()
+                    }
 
-                texto.text=response.toString()
+                })
+
             }, onFailure = {
-                texto.text=getString(R.string.error)
+                Toast.makeText(context,getString(R.string.error), Toast.LENGTH_SHORT).show()
+
             })
     }
 }
