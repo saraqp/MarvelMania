@@ -37,12 +37,6 @@ interface RetrofitApiService{
         @Query("hash")hash:String=Constants.hash()
     ):Call<String>
 
-    @GET("stories")
-    fun getAllStories(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
-    ):Call<String>
 }
 object RetrofitApi {
     val retrofitService : RetrofitApiService by lazy {

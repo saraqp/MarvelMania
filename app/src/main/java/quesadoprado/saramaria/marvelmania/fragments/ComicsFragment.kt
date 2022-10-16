@@ -30,13 +30,16 @@ class ComicsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val recyclerView:RecyclerView=view.findViewById(R.id.recyclerViewComics)
         recyclerView.layoutManager=GridLayoutManager(context,2)
+
         RetrofitBroker.getRequestAllComics(
             onResponse = {
                 val gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
                 val respuesta:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
-                val comics=respuesta?.data?.results
+
+                val comics=respuesta.data?.results
                 val adapter=ComicAdapter(comics)
                 recyclerView.adapter=adapter
                 adapter.setOnItemClickListener(object :ComicAdapter.onIntemClickListener{

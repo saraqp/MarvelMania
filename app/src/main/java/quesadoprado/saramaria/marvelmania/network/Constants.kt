@@ -16,10 +16,6 @@ class Constants {
             val md5=MessageDigest.getInstance("MD5")
             return BigInteger(1,md5.digest(input.toByteArray())).toString(16).padStart(32,'0')
         }
-
-        fun urlrequestall(name:String):String{
-            return BASE_URL +name+"?ts="+ Constants.timeStamp +"&apikey="+ Constants.API_KEY +"&hash="+ Constants.hash()
-        }
     }
 
 }

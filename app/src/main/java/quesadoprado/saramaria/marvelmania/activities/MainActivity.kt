@@ -70,10 +70,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 setToolBarTitle(getString(R.string.series))
                 changeFragment(SeriesFragment())
             }
-            R.id.nav_stories->{
-                setToolBarTitle(getString(R.string.historias))
-                changeFragment(StoriesFragment())
-            }
             R.id.nav_login->{
                 setToolBarTitle(getString(R.string.inicio_sesion))
                 changeFragment(LoginFragment())

@@ -48,20 +48,5 @@ class RetrofitBroker {
                 }
             )
         }
-        fun getRequestAllStories(onResponse:(resp:String)->Unit, onFailure:(resp:String)->Unit){
-            var r=RetrofitApi.retrofitService.getAllStories()
-            var p= r.enqueue(
-                object : Callback<String>{
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        onFailure(t.message!!)
-                    }
-
-                    override fun onResponse(call: Call<String>,response: Response<String>) {
-
-                        onResponse(response.body()!!)
-                    }
-                }
-            )
-        }
     }
 }

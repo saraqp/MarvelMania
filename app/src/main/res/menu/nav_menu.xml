@@ -19,10 +19,6 @@
         android:icon="@drawable/series_icon"
         android:title="@string/series"/>
     <item
-        android:id="@+id/nav_stories"
-        android:icon="@drawable/stories_icon"
-        android:title="@string/historias"/>
-    <item
         android:title="@string/perfil">
         <menu>
             <item
