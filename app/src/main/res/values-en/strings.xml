@@ -10,4 +10,12 @@
     <string name="abierto">Open</string>
     <string name="cerrado">Close</string>
     <string name="error">An error ocurred, please try again later</string>
+    <string name="descripcion">Description</string>
+    <string name="noHayDescripcion">No description found for this character</string>
+    <string name="num_pag">Nº Page:</string>
+    <string name="format">Format:</string>
+    <string name="variantImage">Cover Variations</string>
+    <string name="fecha">Date:</string>
+    <string name="anterior">Previous:</string>
+    <string name="siguiente">Next:</string>
 </resources>

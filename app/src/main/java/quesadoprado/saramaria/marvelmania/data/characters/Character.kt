@@ -1,15 +1,16 @@
 package quesadoprado.saramaria.marvelmania.data.characters
 
-import quesadoprado.saramaria.marvelmania.data.items.*
-import java.util.*
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import quesadoprado.saramaria.marvelmania.data.items.Comics
+import quesadoprado.saramaria.marvelmania.data.items.Series
+import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
 
+@Parcelize
 data class Character(
     val id:Int?=null,
     val name:String?=null,
+    val description:String?=null,
     val thumbnail: Thumbnail?=null,
-    val comics: Comics?=null,
-    val events: Events?=null,
     val series: Series?=null,
-    val stories: Story?=null
-
-    )
+    ): Parcelable

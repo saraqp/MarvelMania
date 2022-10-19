@@ -3,6 +3,7 @@ package quesadoprado.saramaria.marvelmania.network
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import quesadoprado.saramaria.marvelmania.data.characters.CharactersDTO
+import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,15 +24,56 @@ interface RetrofitApiService{
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash()
     ):Call<String>
+    @GET("characters/{id}/comics")
+    fun getComicsForCharacterId(
+        @Path("id")id:Int,
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
+    @GET("characters/{id}/series")
+    fun getSeriesForCharacterId(
+        @Path("id")id:Int,
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
     @GET("comics")
     fun getAllComics(
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash()
     ):Call<String>
-
+    @GET("comics/{id}/characters")
+    fun getCharactersForComicId(
+        @Path("id")id:Int,
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
     @GET("series")
     fun getAllSeries(
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
+    @GET("series/{id}")
+    fun getSerieForId(
+        @Path("id")id:Int,
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
+    @GET("series/{id}/characters")
+    fun getCharactersForSerieId(
+        @Path("id")id:Int,
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash()
+    ):Call<String>
+    @GET("series/{id}/comics")
+    fun getComicsForSerieId(
+        @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash()
