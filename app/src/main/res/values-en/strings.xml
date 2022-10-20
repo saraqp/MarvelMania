@@ -4,11 +4,18 @@
     <string name="biblioteca">Library</string>
     <string name="personajes">Characters</string>
     <string name="comics">Comics</string>
-    <string name="historias">Stories</string>
     <string name="series">Series</string>
     <string name="inicio_sesion">Log in</string>
     <string name="perfil">Profile</string>
     <string name="abierto">Open</string>
     <string name="cerrado">Close</string>
     <string name="error">An error ocurred, please try again later</string>
+    <string name="descripcion">Description</string>
+    <string name="noHayDescripcion">No description found for this character</string>
+    <string name="num_pag">Nº Page:</string>
+    <string name="format">Format:</string>
+    <string name="variantImage">Cover Variations</string>
+    <string name="fecha">Date:</string>
+    <string name="anterior">Previous:</string>
+    <string name="siguiente">Next:</string>
 </resources>

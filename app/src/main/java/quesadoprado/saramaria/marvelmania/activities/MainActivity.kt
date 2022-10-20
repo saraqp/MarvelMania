@@ -13,28 +13,25 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.*
+import quesadoprado.saramaria.marvelmania.databinding.ActivityMainBinding
 import quesadoprado.saramaria.marvelmania.fragments.*
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener{
 
-    lateinit var drawerLayout:DrawerLayout
-    lateinit var navView:NavigationView
     lateinit var toggle:ActionBarDrawerToggle
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-
-        //NAVIGATION DRAWER
-        drawerLayout=findViewById(R.id.drawerLayout)
-        navView=findViewById(R.id.nav_view)
-        toggle=ActionBarDrawerToggle(this,drawerLayout,R.string.abierto,R.string.cerrado)
-        drawerLayout.addDrawerListener(toggle)
+        toggle=ActionBarDrawerToggle(this,binding.drawerLayout,R.string.abierto,R.string.cerrado)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        navView.setNavigationItemSelectedListener (this)
+        binding.navView.setNavigationItemSelectedListener (this)
 
         //para que salga este fragment por default
         setToolBarTitle(getString(R.string.biblioteca))
@@ -55,7 +52,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        drawerLayout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         when(item.itemId){
             R.id.nav_characters->{
                 setToolBarTitle(getString(R.string.personajes))
@@ -69,10 +66,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.id.nav_series->{
                 setToolBarTitle(getString(R.string.series))
                 changeFragment(SeriesFragment())
-            }
-            R.id.nav_stories->{
-                setToolBarTitle(getString(R.string.historias))
-                changeFragment(StoriesFragment())
             }
             R.id.nav_login->{
                 setToolBarTitle(getString(R.string.inicio_sesion))

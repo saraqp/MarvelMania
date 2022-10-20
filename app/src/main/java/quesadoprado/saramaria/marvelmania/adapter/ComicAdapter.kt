@@ -13,7 +13,7 @@ import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 
 
-class ComicAdapter(val list_comics: Array<Comic>?): RecyclerView.Adapter<ComicAdapter.ViewHolder>() {
+class ComicAdapter(private val list_comics: Array<Comic>?): RecyclerView.Adapter<ComicAdapter.ViewHolder>() {
 
     private var context: Context? =null
     private lateinit var mListener: onIntemClickListener

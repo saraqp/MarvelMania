@@ -5,9 +5,16 @@
     <string name="biblioteca">Biblioteca</string>
     <string name="personajes">Personajes</string>
     <string name="series">Series</string>
-    <string name="historias">Historias</string>
     <string name="comics">Comics</string>
     <string name="inicio_sesion">Iniciar Sesion</string>
     <string name="perfil">Perfil</string>
-    <string name="error">Ha ocurrido un error, intentelo más tarde</string>
+    <string name="error">Ha ocurrido un error, inténtelo más tarde</string>
+    <string name="descripcion">Descripción</string>
+    <string name="noHayDescripcion">No se ha encontrado ninguna descripción</string>
+    <string name="num_pag">Nº Pág:</string>
+    <string name="format">Formato:</string>
+    <string name="variantImage">Variaciones de Portada</string>
+    <string name="fecha">Fecha:</string>
+    <string name="anterior">Anterior:</string>
+    <string name="siguiente">Próximo:</string>
 </resources>

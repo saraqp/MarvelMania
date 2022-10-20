@@ -8,10 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="underLine">#BDB8B8</color>
-    <color name="fragmentBackground">#C7C7C7</color>
-    <color name="fragmentComic">#FF00FB</color>
-    <color name="fragmentStories">#0800FF</color>
+    <color name="fragmentBackgroundlight">#C2C2C2</color>
+    <color name="fragmentBackgroundDark">#8E8E8E</color>
     <color name="fragmentLibrary">#00CCFF</color>
-    <color name="fragmentSeries">#26FF00</color>
     <color name="fragmentLogin">#FFFB00</color>
 </resources>

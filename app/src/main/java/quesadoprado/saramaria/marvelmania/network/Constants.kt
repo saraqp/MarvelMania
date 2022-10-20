@@ -7,6 +7,9 @@ import java.sql.Timestamp
 class Constants {
 
     companion object{
+        const val CHARACT="charact"
+
+        //informacion para la llamada a la api
         const val BASE_URL="https://gateway.marvel.com:443/v1/public/"
         val timeStamp = Timestamp(System.currentTimeMillis()).time.toString()
         const val API_KEY="96c2b7ce42a1a02fa020da8508dd8de3"
@@ -15,10 +18,6 @@ class Constants {
             val input="$timeStamp$PRIVATE_KEY$API_KEY"
             val md5=MessageDigest.getInstance("MD5")
             return BigInteger(1,md5.digest(input.toByteArray())).toString(16).padStart(32,'0')
-        }
-
-        fun urlrequestall(name:String):String{
-            return BASE_URL +name+"?ts="+ Constants.timeStamp +"&apikey="+ Constants.API_KEY +"&hash="+ Constants.hash()
         }
     }
 
