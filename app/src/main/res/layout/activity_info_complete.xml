@@ -15,12 +15,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-
+            <LinearLayout
+                android:id="@+id/contenedor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/imageIV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_weight="1"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
 
@@ -29,23 +32,23 @@
 
             <TextView
                 android:id="@+id/nombreTV"
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:layout_alignEnd="@id/imageIV"
-                android:layout_alignParentEnd="true"
+                android:layout_weight="1"
                 android:layout_marginTop="60dp"
                 android:layout_marginEnd="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="6dp" />
+                android:paddingStart="5dp"
+                android:paddingEnd="6dp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/descripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/imageIV"
+                android:layout_below="@id/contenedor"
                 android:text="@string/descripcion"
                 android:textSize="18sp"
                 android:textStyle="bold"

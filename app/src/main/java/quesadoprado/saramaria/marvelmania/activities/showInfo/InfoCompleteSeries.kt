@@ -105,7 +105,8 @@ class InfoCompleteSeries:AppCompatActivity() {
                 onResponse = {
                     val respuesta=Gson().fromJson(it,SeriesDTO::class.java)
                     val serie=respuesta.data?.results?.get(0)
-                    Glide.with(this).load(imageUrl).apply(RequestOptions().override(300,450)).into(binding.anteriorImagen)
+                    val imagePrevious="${serie?.thumbnail?.path}/portrait_uncanny.${serie?.thumbnail?.extension}"
+                    Glide.with(this).load(imagePrevious).apply(RequestOptions().override(300,450)).into(binding.anteriorImagen)
                     binding.anteriorImagen.setOnClickListener{
                         val intent=Intent(contexto,InfoCompleteSeries::class.java)
                         intent.putExtra("serie",serie)
@@ -126,7 +127,8 @@ class InfoCompleteSeries:AppCompatActivity() {
                 onResponse = {
                     val respuesta=Gson().fromJson(it,SeriesDTO::class.java)
                     val serie=respuesta.data?.results?.get(0)
-                    Glide.with(this).load(imageUrl).apply(RequestOptions().override(300,450)).into(binding.siguienteImagen)
+                    val imageNext="${serie?.thumbnail?.path}/portrait_uncanny.${serie?.thumbnail?.extension}"
+                    Glide.with(this).load(imageNext).apply(RequestOptions().override(300,450)).into(binding.siguienteImagen)
                     binding.siguienteImagen.setOnClickListener{
                         val intent=Intent(contexto,InfoCompleteSeries::class.java)
                         intent.putExtra("serie",serie)
