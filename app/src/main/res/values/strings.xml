@@ -17,4 +17,8 @@
     <string name="fecha">Fecha:</string>
     <string name="anterior">Anterior:</string>
     <string name="siguiente">Próximo:</string>
+    <string name="email">Correo electrónico</string>
+    <string name="pass">Contraseña</string>
+    <string name="iniciar">Iniciar sesion</string>
+    <string name="button">Button</string>
 </resources>

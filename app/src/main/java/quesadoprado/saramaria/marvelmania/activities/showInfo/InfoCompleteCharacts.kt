@@ -28,13 +28,18 @@ class InfoCompleteCharacts : AppCompatActivity() {
         binding= ActivityInfoCompleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         contexto=this
+        //obtenemos los datos del personaje
         val charact=intent?.getParcelableExtra<Character>("charact")
 
+        //sacamos del personaje la url para su imagen
         val imageUrl="${charact?.thumbnail?.path}/portrait_uncanny.${charact?.thumbnail?.extension}"
+
+        //MOSTRAMOS LOS DATOS
 
         Glide.with(this).load(imageUrl).apply(RequestOptions().override(500,650)).into(binding.imageIV)
 
         binding.nombreTV.text=charact?.name
+
 
         if(charact?.description.equals("")){
             binding.descripcionText.text=getString(R.string.noHayDescripcion)
@@ -42,8 +47,9 @@ class InfoCompleteCharacts : AppCompatActivity() {
             binding.descripcionText.text=charact?.description
         }
 
-        binding.recyclerViewListComics.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
 
+        binding.recyclerViewListComics.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
+        //obtenemos los comics en los que sale el personaje
         RetrofitBroker.getRequestComicsForCharacterId(
             charact?.id!!,
             onResponse = {
@@ -65,6 +71,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
             })
 
         binding.recyclerViewListSeries.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
+        //obtenemos las series en las que aparece el personaje
         RetrofitBroker.getRequestSeriesForCharacterId(
             charact?.id!!,
             onResponse = {

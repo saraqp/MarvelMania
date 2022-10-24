@@ -18,4 +18,7 @@
     <string name="fecha">Date:</string>
     <string name="anterior">Previous:</string>
     <string name="siguiente">Next:</string>
+    <string name="pass">Password</string>
+    <string name="email">Email</string>
+    <string name="iniciar">Log in</string>
 </resources>

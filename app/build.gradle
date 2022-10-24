@@ -44,9 +44,14 @@ android {
 }
 
 dependencies {
-    // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:30.4.1')
+    //FIREBASE
+
+    // Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:30.5.0')
+    // Firebase Analytics
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    // Firebase Authentication
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     //PARA LA API
     //retrofit
@@ -57,6 +62,7 @@ dependencies {
     //conversor a gson
     implementation 'com.google.code.gson:gson:2.8.9'
 
+    //APARTADO VISUAL
     //CardView
     implementation 'androidx.cardview:cardview:1.0.0'
     //RecyclerView
@@ -68,7 +74,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
     testImplementation 'junit:junit:4.13.2'
