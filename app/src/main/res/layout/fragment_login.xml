@@ -15,6 +15,7 @@
         android:textStyle="bold"
         android:textAlignment="center"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
         />
     <TextView
         android:id="@+id/email"
@@ -23,7 +24,8 @@
         android:textAlignment="center"
         android:text="@string/email"
         android:textSize="20sp"
-        android:layout_below="@id/titulo"/>
+        android:layout_below="@id/titulo"
+        android:layout_marginTop="50dp"/>
 
     <EditText
         android:id="@+id/ETemail"
@@ -33,10 +35,11 @@
         android:layout_centerHorizontal="true"
         android:autofillHints=""
         android:ems="15"
-        android:hint="@string/email"
+        android:hint="@string/emailExample"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         android:textColorHint="#37474F"
+        android:layout_marginTop="16dp"
         tools:ignore="DuplicateSpeakableTextCheck" />
     <TextView
         android:id="@+id/password"
@@ -45,8 +48,8 @@
         android:textAlignment="center"
         android:text="@string/pass"
         android:textSize="20sp"
-
         android:layout_below="@id/ETemail"
+        android:layout_marginTop="25dp"
         android:layout_centerHorizontal="true"/>
 
     <EditText
@@ -61,14 +64,27 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#37474F"
+        android:layout_marginTop="16dp"
         tools:ignore="DuplicateSpeakableTextCheck" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button"
-        android:textColor="#D7CCC8" />
+        android:text="@string/iniciar"
+        android:layout_below="@id/ETPpassword"
+        android:layout_marginEnd="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="50dp"/>
 
+    <TextView
+        android:id="@+id/registrar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="@string/registrar"
+        android:textAlignment="center"
+        android:layout_below="@id/btnLogin"
+        android:layout_marginTop="25dp"
+        />
 
 </RelativeLayout>

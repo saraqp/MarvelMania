@@ -18,7 +18,8 @@
     <string name="anterior">Anterior:</string>
     <string name="siguiente">Próximo:</string>
     <string name="email">Correo electrónico</string>
+    <string name="emailExample" translatable="false">example@gmail.com</string>
     <string name="pass">Contraseña</string>
     <string name="iniciar">Iniciar sesion</string>
-    <string name="button">Button</string>
+    <string name="registrar">¿No tienes cuenta? Registrate</string>
 </resources>
