@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteComics
@@ -18,7 +18,7 @@ import quesadoprado.saramaria.marvelmania.databinding.FragmentComicsBinding
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 
 
-class ComicsFragment : Fragment() {
+class ComicsFragment(auth: FirebaseAuth) : Fragment() {
 
     private var _binding: FragmentComicsBinding?=null
     private val binding get() = _binding!!
