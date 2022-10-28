@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private lateinit var auth: FirebaseAuth
     lateinit var toggle:ActionBarDrawerToggle
     lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
@@ -32,10 +31,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.navView.setNavigationItemSelectedListener (this)
 
-        //para que salga este fragment por default
-        setToolBarTitle(getString(R.string.biblioteca))
-        changeFragment(LibraryFragment(auth))
-
         //Firebase
         val analytics= FirebaseAnalytics.getInstance(this)
         val bundle=Bundle()
@@ -45,6 +40,9 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         auth= Firebase.auth
 
 
+        //para que salga este fragment por default
+        setToolBarTitle(getString(R.string.biblioteca))
+        changeFragment(LibraryFragment(auth))
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 

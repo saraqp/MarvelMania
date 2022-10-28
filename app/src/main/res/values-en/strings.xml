@@ -22,4 +22,10 @@
     <string name="email">Email</string>
     <string name="iniciar">Log in</string>
     <string name="registrar">You don\'t have an account? Sign in</string>
+    <string name="cambiarpass">Change password</string>
+    <string name="antiguapass">Old password</string>
+    <string name="nuevapass">New password</string>
+    <string name="repetirpass">Repeat password</string>
+    <string name="actualizar">Update profile</string>
+    <string name="registrarse">Sign in</string>
 </resources>
