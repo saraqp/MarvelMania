@@ -49,23 +49,57 @@
                 android:background="@color/white"
                 android:minHeight="48dp"
                 android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:text="@string/emailExample"
+                android:hint="@string/emailExample"
                 android:textIsSelectable="false"
                 android:autofillHints="emailAddress"
-                android:inputType="none" />
-
+                android:inputType="textEmailAddress"
+                android:focusable="false"/>
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/emailtext"
+                android:text="@string/username"
+                android:textColor="#424242"
+                android:textSize="18sp"
+                android:layout_marginTop="20dp"/>
+            <View
+                android:id="@+id/separador2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_below="@id/user_name"
+                android:layout_marginTop="5dp"
+                android:background="@color/black" />
+            <EditText
+                android:id="@+id/user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/separador2"
+                android:layout_marginTop="5dp"
+                android:background="@color/white"
+                android:ems="10"
+                android:hint="@string/username"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:minHeight="48dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:textColorHint="#757575"
+                android:focusable="false"/>
             <TextView
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/emailtext"
+                android:layout_below="@id/user"
                 android:layout_marginTop="20dp"
                 android:text="@string/cambiarpass"
                 android:textColor="#424242"
                 android:textSize="18sp" />
 
             <View
-                android:id="@+id/separador2"
+                android:id="@+id/separador3"
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_below="@id/password"
@@ -76,14 +110,16 @@
                 android:id="@+id/passtext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/separador2"
+                android:layout_below="@id/separador3"
                 android:background="@color/white"
                 android:ems="10"
+                android:autofillHints="password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:layout_marginTop="5dp"
                 android:hint="@string/antiguapass"
                 android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:textColorHint="#757575" />
 
             <EditText
@@ -96,8 +132,10 @@
                 android:ems="10"
                 android:hint="@string/nuevapass"
                 android:inputType="textPassword"
+                android:autofillHints="password"
                 android:minHeight="48dp"
                 android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:textColorHint="#757575" />
 
             <EditText
@@ -107,11 +145,13 @@
                 android:layout_below="@id/passtextnueva"
                 android:background="@color/white"
                 android:ems="10"
+                android:autofillHints="password"
                 android:inputType="textPassword"
                 android:minHeight="48dp"
                 android:layout_marginTop="5dp"
                 android:hint="@string/repetirpass"
                 android:paddingStart="5dp"
+                android:paddingEnd="5dp"
                 android:textColorHint="#757575" />
 
             <Button

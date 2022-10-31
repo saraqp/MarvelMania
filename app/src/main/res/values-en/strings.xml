@@ -28,4 +28,7 @@
     <string name="repetirpass">Repeat password</string>
     <string name="actualizar">Update profile</string>
     <string name="registrarse">Sign in</string>
+    <string name="username">User name</string>
+    <string name="camposRellenos">No field can be empty</string>
+    <string name="user_register">Registered user...</string>
 </resources>

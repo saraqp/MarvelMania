@@ -28,5 +28,7 @@
     <string name="repetirpass">Repetir contraseña</string>
     <string name="actualizar">Actualizar perfil</string>
     <string name="registrarse">Registrarse</string>
-
+    <string name="username">Nombre de usuario</string>
+    <string name="camposRellenos">Ningún campo puede estar vacío</string>
+    <string name="user_register">Usuario registrado...</string>
 </resources>
