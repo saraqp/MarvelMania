@@ -1,53 +1,103 @@
 package quesadoprado.saramaria.marvelmania.activities
 
-import android.app.ProgressDialog
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import quesadoprado.saramaria.marvelmania.R
+import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityRegisterBinding
+import quesadoprado.saramaria.marvelmania.utils.Extensions.toast
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseUser
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 class Register : AppCompatActivity() {
+    private lateinit var userEmail:String
+    private lateinit var userPassword:String
+    private var firebaseUserID:String=""
     lateinit var bindind:ActivityRegisterBinding
-    lateinit var auth:FirebaseAuth
+
+    private lateinit var createAccountInputsArray:Array<EditText>
+
+    private lateinit var auth:FirebaseAuth
+
+    private val database= firebaseDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        auth= firebaseAuth
         super.onCreate(savedInstanceState)
         bindind=ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(bindind.root)
-        auth=Firebase.auth
-        inicializar()
-    }
-    fun inicializar(){
-        val user=bindind.user.text.toString()
-        val email=bindind.email.text.toString()
-        val pass=bindind.password.text.toString()
-        val repeatpass=bindind.repeatpassword.text.toString()
-        val progressBar=ProgressDialog(this)
+        createAccountInputsArray= arrayOf(bindind.user,bindind.email,bindind.password,bindind.repeatpassword)
+
         bindind.btnRegistrar.setOnClickListener {
-            if (bindind.user.text==null||bindind.email.text==null||bindind.password.text==null||bindind.repeatpassword.text==null){
-                Toast.makeText(this,getString(R.string.camposRellenos),Toast.LENGTH_SHORT).show()
-            }else{
-                if(comprobarcontraseña(pass,repeatpass)){
-                    progressBar.setMessage(getString(R.string.user_register))
-                    progressBar.show()
-                    auth.createUserWithEmailAndPassword(email, pass)
-                        .addOnCompleteListener(this){ task->
-                            if(task.isSuccessful) {
-                                val user: FirebaseUser = auth.currentUser!!
-                                Toast.makeText(this, user.toString(), Toast.LENGTH_SHORT).show()
-                            }else{
-                                Toast.makeText(this, "NO FURULA", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                }
-            }
+            signIn()
         }
     }
-    fun comprobarcontraseña(pass: String, repeatpass: String):Boolean{
-        return pass == repeatpass
+
+    //comprobar si es un usuario logueado
+    override fun onStart() {
+        super.onStart()
+        val user:FirebaseUser?= firebaseAuth.currentUser
+        user?.let {
+            startActivity(Intent(this,MainActivity::class.java))
+            toast(getString(R.string.bienvenido))
+        }
+    }
+
+    private fun notEmpty():Boolean=bindind.user.text.trim().toString().isNotEmpty()
+            && bindind.email.text.trim().toString().isNotEmpty()
+            && bindind.password.text.trim().toString().isNotEmpty()
+            && bindind.repeatpassword.text.trim().toString().isNotEmpty()
+
+
+    fun signIn(){
+        if (comprobarcontraseña()){
+            val username=bindind.user.text.toString()
+            userEmail=bindind.email.text.toString().trim()
+            userPassword=bindind.password.text.toString().trim()
+
+            auth.createUserWithEmailAndPassword(userEmail,userPassword)
+                .addOnCompleteListener { task ->
+                    if(task.isSuccessful){
+                        firebaseUserID=auth.currentUser!!.uid
+
+                        //Guardar en la base de datos
+                        database.collection("users").document(userEmail).set(
+                            hashMapOf("uid" to firebaseUserID,
+                            "username" to username,
+                            "status" to "offline")
+                        )
+
+                        val intent =Intent(this,MainActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+
+                    }else{
+                        toast(getString(R.string.error_autentificar)+" error: "+task.exception?.message.toString())
+                    }
+                }
+        }
+    }
+    fun comprobarcontraseña():Boolean{
+        var identicas=false
+
+        if (notEmpty()&& bindind.password.text.trim().toString()==bindind.repeatpassword.text.trim().toString()){
+            identicas=true
+        }else if (!notEmpty()){
+            createAccountInputsArray.forEach { input->
+                if (input.text.toString().trim().isEmpty()){
+                    input.error="${input.hint} "+getString(R.string.requerido)
+                }
+            }
+        }else{
+            toast(getString(R.string.passNoCoincide))
+        }
+        return identicas
     }
 }

@@ -31,4 +31,12 @@
     <string name="username">Nombre de usuario</string>
     <string name="camposRellenos">Ningún campo puede estar vacío</string>
     <string name="user_register">Usuario registrado...</string>
+    <string name="bienvenido">Bienvenido de nuevo</string>
+    <string name="requerido">es requerido</string>
+    <string name="passNoCoincide">Las contraseñas no coinciden</string>
+    <string name="error_autentificar">Error al autentificar</string>
+    <string name="email_enviado">Email enviando a </string>
+    <string name="charact_name">Nombre Personaje</string>
+    <string name="buscar">Buscar</string>
+    <string name="titulo">Titulo</string>
 </resources>

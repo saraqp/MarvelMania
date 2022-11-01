@@ -7,13 +7,45 @@
     tools:context=".fragments.CharactersFragment"
     android:background="@color/fragmentBackgroundDark">
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:id="@+id/recyclerViewCharacters"
+   <LinearLayout
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       app:layout_constraintBottom_toBottomOf="parent"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toTopOf="parent" />
+       android:layout_margin="7dp"
+       android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="10dp"
+          android:orientation="horizontal">
+
+         <EditText
+             android:id="@+id/ETBuscadorChar"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             android:layout_weight="1.5"
+             android:autofillHints=""
+             android:ems="10"
+             android:hint="@string/charact_name"
+             android:inputType="textPersonName"
+             android:minHeight="48dp"
+             android:textColorHint="#212121" />
+
+         <Button
+             android:id="@+id/BbuscarCharact"
+             android:layout_width="0dp"
+             android:layout_height="48dp"
+             android:layout_weight="0.5"
+             android:text="@string/buscar"
+             tools:ignore="TouchTargetSizeCheck" />
+
+      </LinearLayout>
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/recyclerViewCharacters"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+
+   </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

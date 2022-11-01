@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteSeries
 import quesadoprado.saramaria.marvelmania.adapter.SeriesAdapter
+import quesadoprado.saramaria.marvelmania.data.series.Serie
 import quesadoprado.saramaria.marvelmania.data.series.SeriesDTO
 import quesadoprado.saramaria.marvelmania.databinding.FragmentSeriesBinding
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
@@ -21,7 +22,7 @@ class SeriesFragment(auth: FirebaseAuth) : Fragment() {
 
     private var _binding: FragmentSeriesBinding?=null
     private val binding get() = _binding!!
-
+    private lateinit var series:Array<Serie>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,12 +34,43 @@ class SeriesFragment(auth: FirebaseAuth) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerViewSeries.layoutManager=GridLayoutManager(context,2)
+        buscarTodasLasSeries()
+        binding.BbuscarSerie.setOnClickListener {
+            if(binding.ETBuscadorSerie.text.trim().toString().isNotEmpty()){
+                var tituloSerie=binding.ETBuscadorSerie.text.toString()
+                RetrofitBroker.getRequestSerieByName(tituloSerie,
+                    onResponse = {
+                        var respuesta: SeriesDTO =Gson().fromJson(it, SeriesDTO::class.java)
 
+                        series=respuesta.data?.results!!
+                        val adapter= SeriesAdapter(series)
+                        binding.recyclerViewSeries.adapter=adapter
+
+                        adapter.setOnItemClickListener(object : SeriesAdapter.onIntemClickListener{
+                            override fun onItemClick(position: Int) {
+                                val serie=series?.get(position)
+                                val intent= Intent(context, InfoCompleteSeries::class.java)
+                                intent.putExtra("serie",serie)
+                                startActivity(intent)
+                            }
+                        })
+                    }, onFailure = {
+                        Toast.makeText(context,getString(R.string.error), Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }else{
+                buscarTodasLasSeries()
+            }
+        }
+
+    }
+
+    private fun buscarTodasLasSeries(){
         RetrofitBroker.getRequestAllSeries(
             onResponse = {
                 var respuesta: SeriesDTO =Gson().fromJson(it, SeriesDTO::class.java)
 
-                val series=respuesta.data?.results
+                series=respuesta.data?.results!!
                 val adapter= SeriesAdapter(series)
                 binding.recyclerViewSeries.adapter=adapter
 
@@ -52,7 +84,8 @@ class SeriesFragment(auth: FirebaseAuth) : Fragment() {
                 })
             }, onFailure = {
                 Toast.makeText(context,getString(R.string.error), Toast.LENGTH_SHORT).show()
-            })
+            }
+        )
     }
 
 }

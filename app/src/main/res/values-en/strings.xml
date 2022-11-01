@@ -31,4 +31,12 @@
     <string name="username">User name</string>
     <string name="camposRellenos">No field can be empty</string>
     <string name="user_register">Registered user...</string>
+    <string name="bienvenido">Welcome back</string>
+    <string name="requerido">is required</string>
+    <string name="passNoCoincide">Passwords are not matching</string>
+    <string name="error_autentificar">Failed to authenticate</string>
+    <string name="email_enviado">"Email sent to "</string>
+    <string name="charact_name">Charact Name</string>
+    <string name="buscar">Search</string>
+    <string name="titulo">Tittle</string>
 </resources>

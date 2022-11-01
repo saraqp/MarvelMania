@@ -21,7 +21,21 @@ class RetrofitBroker {
                 }
             )
         }
+        fun getRequestCharactersByName(name:String,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
+            val r=RetrofitApi.retrofitService.getCharacterByName(name = name)
+            val p= r.enqueue(
+                object : Callback<String>{
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        onResponse(response.body()!!)
+                    }
 
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        onFailure(t.message!!)
+                    }
+
+                }
+            )
+        }
         fun getRequestComicsForCharacterId(id:Int,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
             val r=RetrofitApi.retrofitService.getComicsForCharacterId(id)
             var p=r.enqueue(
@@ -36,7 +50,6 @@ class RetrofitBroker {
                 }
             )
         }
-
         fun getRequestSeriesForCharacterId(id:Int,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
             val r=RetrofitApi.retrofitService.getSeriesForCharacterId(id)
             var p=r.enqueue(
@@ -65,6 +78,21 @@ class RetrofitBroker {
                 }
             )
         }
+        fun getRequestComicByName(title:String,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
+            val r=RetrofitApi.retrofitService.getComicsByTittle(title = title)
+            var p= r.enqueue(
+                object : Callback<String>{
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        onResponse(response.body()!!)
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        onFailure(t.message!!)
+                    }
+
+                }
+            )
+        }
         fun getRequestCharactersForComicId(id:Int,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
             val r=RetrofitApi.retrofitService.getCharactersForComicId(id)
             var p=r.enqueue(
@@ -79,7 +107,6 @@ class RetrofitBroker {
                 }
             )
         }
-
         fun getRequestAllSeries(onResponse:(resp:String)->Unit, onFailure:(resp:String)->Unit){
             val r=RetrofitApi.retrofitService.getAllSeries()
             var p= r.enqueue(
@@ -91,6 +118,21 @@ class RetrofitBroker {
                     override fun onResponse(call: Call<String>,response: Response<String>) {
                         onResponse(response.body()!!)
                     }
+                }
+            )
+        }
+        fun getRequestSerieByName(title:String,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
+            val r=RetrofitApi.retrofitService.getSerieByName(title = title)
+            var p= r.enqueue(
+                object : Callback<String>{
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        onResponse(response.body()!!)
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        onFailure(t.message!!)
+                    }
+
                 }
             )
         }

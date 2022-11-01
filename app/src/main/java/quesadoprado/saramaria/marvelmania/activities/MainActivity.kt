@@ -8,16 +8,15 @@ import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.databinding.ActivityMainBinding
 import quesadoprado.saramaria.marvelmania.fragments.*
-
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseUser
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener{
-    private lateinit var auth: FirebaseAuth
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     lateinit var toggle:ActionBarDrawerToggle
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,17 +31,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         binding.navView.setNavigationItemSelectedListener (this)
 
         //Firebase
-        val analytics= FirebaseAnalytics.getInstance(this)
-        val bundle=Bundle()
-        bundle.putString("message","Integración de Firebase Completa")
-        analytics.logEvent("InitScreen",bundle)
-        //autentificador
-        auth= Firebase.auth
+        firebaseAnalytics=FirebaseAnalytics.getInstance(this)
+
 
 
         //para que salga este fragment por default
         setToolBarTitle(getString(R.string.biblioteca))
-        changeFragment(LibraryFragment(auth))
+        changeFragment(LibraryFragment(firebaseAuth))
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -57,23 +52,23 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.id.nav_characters->{
                 setToolBarTitle(getString(R.string.personajes))
 
-                changeFragment(CharactersFragment(auth))
+                changeFragment(CharactersFragment(firebaseAuth))
             }
             R.id.nav_comics->{
                 setToolBarTitle(getString(R.string.comics))
-                changeFragment(ComicsFragment(auth))
+                changeFragment(ComicsFragment(firebaseAuth))
             }
             R.id.nav_series->{
                 setToolBarTitle(getString(R.string.series))
-                changeFragment(SeriesFragment(auth))
+                changeFragment(SeriesFragment(firebaseAuth))
             }
             R.id.nav_login->{
                 setToolBarTitle(getString(R.string.inicio_sesion))
-                changeFragment(LoginFragment(auth))
+                changeFragment(LoginFragment(firebaseAuth))
             }
             R.id.nav_home->{
                 setToolBarTitle(getString(R.string.biblioteca))
-                changeFragment(LibraryFragment(auth))
+                changeFragment(LibraryFragment(firebaseAuth))
             }
         }
         return true
@@ -85,7 +80,6 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val fragment=supportFragmentManager.beginTransaction()
         fragment.replace(R.id.fragmentcontainer,frag).commit()
     }
-
 }
 
 

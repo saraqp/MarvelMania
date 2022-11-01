@@ -22,61 +22,99 @@ interface RetrofitApiService{
     fun getAllCharacters(
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderCharact
+    ):Call<String>
+    @GET("characters")
+    fun getCharacterByName(
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("name")name:String
     ):Call<String>
     @GET("characters/{id}/comics")
     fun getComicsForCharacterId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderComics_Series
     ):Call<String>
     @GET("characters/{id}/series")
     fun getSeriesForCharacterId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderComics_Series
     ):Call<String>
     @GET("comics")
     fun getAllComics(
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderComics_Series
+    ):Call<String>
+    @GET("comics")
+    fun getComicsByTittle(
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("title")title:String
     ):Call<String>
     @GET("comics/{id}/characters")
     fun getCharactersForComicId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderCharact
     ):Call<String>
     @GET("series")
     fun getAllSeries(
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderComics_Series
+    ):Call<String>
+    @GET("series")
+    fun getSerieByName(
+        @Query("apikey")apikey:String=Constants.API_KEY,
+        @Query("ts")ts:String=Constants.timeStamp,
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("title")title:String
     ):Call<String>
     @GET("series/{id}")
     fun getSerieForId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit
     ):Call<String>
     @GET("series/{id}/characters")
     fun getCharactersForSerieId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderCharact
     ):Call<String>
     @GET("series/{id}/comics")
     fun getComicsForSerieId(
         @Path("id")id:Int,
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash()
+        @Query("hash")hash:String=Constants.hash(),
+        @Query("limit")limit:Int=Constants.limit,
+        @Query("orderBy")orderby:String=Constants.orderComics_Series
     ):Call<String>
 
 }

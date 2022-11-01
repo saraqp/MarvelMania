@@ -16,12 +16,13 @@ import quesadoprado.saramaria.marvelmania.adapter.CharacterAdapter
 import quesadoprado.saramaria.marvelmania.data.characters.CharactersDTO
 import quesadoprado.saramaria.marvelmania.databinding.FragmentCharactersBinding
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
+import quesadoprado.saramaria.marvelmania.data.characters.Character
 
 class CharactersFragment(auth: FirebaseAuth) : Fragment() {
 
     private var _binding:FragmentCharactersBinding?=null
     private val binding get() = _binding!!
-
+    private lateinit var characters:Array<Character>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,10 +34,42 @@ class CharactersFragment(auth: FirebaseAuth) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewCharacters.layoutManager=GridLayoutManager(context,2)
+
+        //Mostrar todos los personajes
+        buscarTodoslosPersonajes()
+        binding.BbuscarCharact.setOnClickListener {
+            if(binding.ETBuscadorChar.text.trim().toString().isNotEmpty()){
+                val nombrePersonaje=binding.ETBuscadorChar.text.toString()
+                RetrofitBroker.getRequestCharactersByName(nombrePersonaje,
+                    onResponse = {
+                        val respuesta=Gson().fromJson(it, CharactersDTO::class.java)
+                        characters= respuesta?.data?.results!!
+
+                        val adapter=CharacterAdapter(characters)
+                        binding.recyclerViewCharacters.adapter=adapter
+
+                        adapter.setOnItemClickListener(object : CharacterAdapter.onIntemClickListener {
+                            override fun onItemClick(position: Int) {
+                                val character = characters?.get(position)
+                                val intent = Intent(context, InfoCompleteCharacts::class.java)
+                                intent.putExtra("charact", character)
+                                startActivity(intent)
+                            }
+                        })
+                    }, onFailure = {
+                        Toast.makeText(context,getString(R.string.error),Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }else{
+                buscarTodoslosPersonajes()
+            }
+        }
+    }
+    private fun buscarTodoslosPersonajes() {
         RetrofitBroker.getRequestAllCharacters(
             onResponse = {
                 val respuesta=Gson().fromJson(it, CharactersDTO::class.java)
-                val characters=respuesta?.data?.results
+                characters= respuesta?.data?.results!!
 
                 val adapter=CharacterAdapter(characters)
                 binding.recyclerViewCharacters.adapter=adapter
@@ -54,7 +87,8 @@ class CharactersFragment(auth: FirebaseAuth) : Fragment() {
             }, onFailure = {
                 Toast.makeText(context,getString(R.string.error),Toast.LENGTH_SHORT).show()
 
-            })
+            }
+        )
     }
 
 }
