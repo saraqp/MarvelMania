@@ -45,4 +45,8 @@
     <string name="oldpassNocoincide">The old password is not correct</string>
     <string name="cambioPassCorrecto">Updated password</string>
     <string name="cambioPassError">" Failed to update password"</string>
+    <string name="addFav">Add Favourite</string>
+    <string name="delFav">Delete Favourite</string>
+    <string name="necesitasLogin">You need to be connected to perform this action</string>
+    <string name="loginLibrary">Sign in to view your library</string>
 </resources>

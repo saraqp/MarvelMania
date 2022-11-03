@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.MainActivity
 import quesadoprado.saramaria.marvelmania.activities.Register
+import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 @Suppress("DEPRECATION")
@@ -62,10 +63,19 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
                         /*recuperamos de la cuenta que se loguea su nombre de usuario y en el
                           navigation drawer cambiamos "anonymous" por el nombre de usuario conectado
                         */
+                        var user:User?=null
                         database.collection("users").document(email).get().addOnSuccessListener {
                             val username=it.get("displayName") as? String
-                            nombreUsuarioND.text=username
+                            val status=it.get("status") as? String
+                            val uid=it.get("uid") as? String
+
+                            user=User(username,status,uid,pass)
+                            Log.e(":::TAG", pass)
+                            pasarUsuarioAOnline(user!!,email)
+                            nombreUsuarioND.text=user!!.username
                         }
+
+
                         val handler= Handler()
                         handler.postDelayed({
 
@@ -88,6 +98,16 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
         }
     }
 
+    private fun pasarUsuarioAOnline(user: User, email: String) {
+        database.collection("users").document(email).set(
+            hashMapOf("displayName" to user.username!!,
+                "status" to "online",
+                "uid" to user.uid,
+                "password" to user.pass
+            )
+        )
+
+    }
 
 
     private fun notEmpty():Boolean=emailET?.text?.trim().toString().isNotEmpty()

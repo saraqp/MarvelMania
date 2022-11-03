@@ -54,28 +54,39 @@ class ShowUserData(
                 Toast.makeText(context,getString(R.string.error),Toast.LENGTH_SHORT).show()
             }
         }
+
+
         binding.emailtext.text=email
         binding.logout.setOnClickListener {
             FirebaseUtils.firebaseAuth.signOut()
             nombreUsuarioND.text=getString(R.string.sinUsuario)
             submenuLogin!!.title = getString(R.string.inicio_sesion)
             submenuLogin!!.setIcon(R.drawable.login_icon)
+            //cambiamos en la base de datos su estado a offline
+            database.collection("users").document(email).set(
+                hashMapOf("displayName" to user?.username!!,
+                    "status" to "offline",
+                    "uid" to user?.uid,
+                    "password" to user?.pass
+                )
+            )
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
         binding.botonActualizarPerfil.setOnClickListener {
-            if (comprobarAntiguaContraseña(user)==true){
+            if (comprobarAntiguaContraseña(user)){
                 val userCredential:AuthCredential=EmailAuthProvider.getCredential(email,user!!.pass!!)
                 auth.currentUser!!.reauthenticate(userCredential).addOnCompleteListener {
                     if (it.isSuccessful){
                         auth.currentUser!!.updatePassword(binding.passtextrepetirnueva.text.toString()).addOnCompleteListener {
-                            if (it.isSuccessful){
+                            task->
+                            if (task.isSuccessful){
                                 database.collection("users").document(email).set(
                                     hashMapOf("displayName" to user?.username!!,
                                         "status" to user?.status,
                                         "uid" to user?.uid,
-                                        "password" to binding.passtextnueva.text.toString(),
+                                        "password" to binding.passtextnueva.text.toString()
                                     )
                                 )
                                 Toast.makeText(context,getString(R.string.cambioPassCorrecto),Toast.LENGTH_SHORT).show()

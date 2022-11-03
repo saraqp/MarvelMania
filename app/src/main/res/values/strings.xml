@@ -45,4 +45,8 @@
     <string name="oldpassNocoincide">La antigua contraseña no es correcta</string>
     <string name="cambioPassCorrecto">Contraseña actualizada</string>
     <string name="cambioPassError">Error al actualizar la contraseña</string>
+    <string name="addFav">Añadir Favorito</string>
+    <string name="delFav">Borrar Favorito</string>
+    <string name="necesitasLogin">Necesitas estar conectado para realizar esta acción</string>
+    <string name="loginLibrary">Inicia sesión para ver tu biblioteca</string>
 </resources>

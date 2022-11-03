@@ -1,7 +1,6 @@
 package quesadoprado.saramaria.marvelmania.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ class CharacterAdapter(private val list_characters: Array<Character>?): Recycler
 
     private var context: Context? =null
     private lateinit var mListener:onIntemClickListener
-
+    private lateinit var mlongListener:onIntemLongClickListener
 
     interface onIntemClickListener {
         fun onItemClick(position: Int)
@@ -25,10 +24,16 @@ class CharacterAdapter(private val list_characters: Array<Character>?): Recycler
     fun setOnItemClickListener(listener:onIntemClickListener){
         mListener=listener
     }
+    interface onIntemLongClickListener {
+        fun onItemLongClick(position: Int,view:View):Boolean
+    }
+    fun setOnItemLongClickListener(listener:onIntemLongClickListener){
+        mlongListener=listener
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view=LayoutInflater.from(parent.context).inflate(R.layout.item_list,parent,false)
         context=parent.context
-        return ViewHolder(view,mListener)
+        return ViewHolder(view,mListener,mlongListener)
 
     }
 
@@ -42,13 +47,20 @@ class CharacterAdapter(private val list_characters: Array<Character>?): Recycler
     override fun getItemCount(): Int {
         return list_characters?.size!!
     }
-    class ViewHolder(itemView:View,listener:onIntemClickListener):RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(
+        itemView: View,
+        listener: onIntemClickListener,
+        longlistener: onIntemLongClickListener
+    ):RecyclerView.ViewHolder(itemView) {
         val image:ImageView=itemView.findViewById(R.id.IV_imagen)
         val nombre:TextView=itemView.findViewById(R.id.nombre)
 
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(adapterPosition)
+            }
+            itemView.setOnLongClickListener {
+                longlistener.onItemLongClick(adapterPosition,itemView)
             }
         }
     }

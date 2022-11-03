@@ -39,16 +39,6 @@ class Register : AppCompatActivity() {
         }
     }
 
-    //comprobar si es un usuario logueado
-    override fun onStart() {
-        super.onStart()
-        val user:FirebaseUser?= firebaseAuth.currentUser
-        user?.let {
-            startActivity(Intent(this,MainActivity::class.java))
-            toast(getString(R.string.bienvenido))
-        }
-    }
-
     private fun notEmpty():Boolean=bindind.user.text.trim().toString().isNotEmpty()
             && bindind.email.text.trim().toString().isNotEmpty()
             && bindind.password.text.trim().toString().isNotEmpty()
