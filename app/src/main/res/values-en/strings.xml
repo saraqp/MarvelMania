@@ -39,4 +39,10 @@
     <string name="charact_name">Charact Name</string>
     <string name="buscar">Search</string>
     <string name="titulo">Tittle</string>
+    <string name="sinUsuario">Anonymous</string>
+    <string name="logout">Log out</string>
+    <string name="datosUsuario">User Information</string>
+    <string name="oldpassNocoincide">The old password is not correct</string>
+    <string name="cambioPassCorrecto">Updated password</string>
+    <string name="cambioPassError">" Failed to update password"</string>
 </resources>

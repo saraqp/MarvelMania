@@ -39,4 +39,10 @@
     <string name="charact_name">Nombre Personaje</string>
     <string name="buscar">Buscar</string>
     <string name="titulo">Titulo</string>
+    <string name="sinUsuario">Anonimo</string>
+    <string name="logout">Desconectarse</string>
+    <string name="datosUsuario">Información de Usuario</string>
+    <string name="oldpassNocoincide">La antigua contraseña no es correcta</string>
+    <string name="cambioPassCorrecto">Contraseña actualizada</string>
+    <string name="cambioPassError">Error al actualizar la contraseña</string>
 </resources>

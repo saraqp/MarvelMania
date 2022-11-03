@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import quesadoprado.saramaria.marvelmania.databinding.FragmentLibraryBinding
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 
 
-class LibraryFragment(private var auth: FirebaseAuth) : Fragment() {
+class LibraryFragment(private var auth: FirebaseAuth, private var nombreUsuarioND: TextView) : Fragment() {
     private var _binding: FragmentLibraryBinding?=null
     private val binding get() = _binding!!
 
@@ -26,10 +27,10 @@ class LibraryFragment(private var auth: FirebaseAuth) : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         if(currentUser != null){
             binding.textView.text="usuario logueado"
-            binding.logout.setOnClickListener {
-                firebaseAuth.signOut()
-                binding.textView.text="debe iniciar sesión para ver su biblioteca"
+            if(!currentUser.isEmailVerified){
+
             }
+
         }else{
             binding.textView.text="debe iniciar sesión para ver su biblioteca"
         }

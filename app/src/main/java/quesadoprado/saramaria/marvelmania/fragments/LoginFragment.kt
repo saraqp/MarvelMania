@@ -2,6 +2,8 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,38 +16,27 @@ import com.google.firebase.auth.FirebaseAuth
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.MainActivity
 import quesadoprado.saramaria.marvelmania.activities.Register
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseUser
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
-class LoginFragment(private var auth: FirebaseAuth) : Fragment() {
-    private var conectado=false
-    private val currentUser = firebaseUser
-
+@Suppress("DEPRECATION")
+class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND: TextView) : Fragment() {
+    private val database = firebaseDatabase
     private lateinit var loginAccountInputsArray:Array<EditText>
 
     private var emailET: EditText? = null
     private var passwordET:EditText? = null
 
-    override fun onStart() {
-        super.onStart()
-        if(currentUser?.uid!=null){
-            conectado=true
-        }
-    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if (!conectado){
-            return inflater.inflate(R.layout.fragment_login,container,false)
-        }else{
-            return inflater.inflate(R.layout.login_conect,container,false)
-        }
+        return inflater.inflate(R.layout.fragment_login,container,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!conectado) {
-
             emailET=view.findViewById(R.id.ETemail)
             passwordET=view.findViewById(R.id.ETPpassword)
             loginAccountInputsArray= arrayOf(emailET!!,passwordET!!)
@@ -59,12 +50,8 @@ class LoginFragment(private var auth: FirebaseAuth) : Fragment() {
                 val intentRegistro= Intent(context,Register::class.java)
                 startActivity(intentRegistro)
             }
-
-        }else{
-            //si el usuario esta logueado
-
-        }
     }
+
     private fun login() {
         if (notEmpty()){
             val email=emailET!!.text.toString()
@@ -72,14 +59,26 @@ class LoginFragment(private var auth: FirebaseAuth) : Fragment() {
             auth.signInWithEmailAndPassword(email,pass)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful){
+                        /*recuperamos de la cuenta que se loguea su nombre de usuario y en el
+                          navigation drawer cambiamos "anonymous" por el nombre de usuario conectado
+                        */
+                        database.collection("users").document(email).get().addOnSuccessListener {
+                            val username=it.get("displayName") as? String
+                            nombreUsuarioND.text=username
+                        }
+                        val handler= Handler()
+                        handler.postDelayed({
 
-                        val intent =Intent(context,MainActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
+                            val intent =Intent(context,MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        },500)
+
+
                     }else{
                         Toast.makeText(context,getString(R.string.error_autentificar),Toast.LENGTH_SHORT).show()
                     }
-                }
+            }
         }else if (!notEmpty()){
             loginAccountInputsArray.forEach { input->
                 if (input.text.toString().trim().isEmpty()){
@@ -87,9 +86,10 @@ class LoginFragment(private var auth: FirebaseAuth) : Fragment() {
                 }
             }
         }
-
-
     }
+
+
+
     private fun notEmpty():Boolean=emailET?.text?.trim().toString().isNotEmpty()
             && passwordET?.text?.trim().toString().isNotEmpty()
 

@@ -6,6 +6,5 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 object FirebaseUtils {
     val firebaseAuth:FirebaseAuth=FirebaseAuth.getInstance()
-    val firebaseUser= firebaseAuth.currentUser
     val firebaseDatabase=FirebaseFirestore.getInstance()
 }

@@ -14,11 +14,11 @@
         android:layout_height="60dp"
         android:layout_width="60dp"/>
     <TextView
+        android:id="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/user_name"
         android:paddingTop="8dp"
-        android:text="Anonimous"
+        android:text="Anonymous"
         android:textColor="@color/black"
         android:textStyle="bold"/>
     <View
