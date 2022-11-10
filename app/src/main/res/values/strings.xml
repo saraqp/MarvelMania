@@ -30,7 +30,7 @@
     <string name="registrarse">Registrarse</string>
     <string name="username">Nombre de usuario</string>
     <string name="camposRellenos">Ningún campo puede estar vacío</string>
-    <string name="user_register">Usuario registrado...</string>
+    <string name="user_register">Usuario registrado…</string>
     <string name="bienvenido">Bienvenido de nuevo</string>
     <string name="requerido">es requerido</string>
     <string name="passNoCoincide">Las contraseñas no coinciden</string>
@@ -49,4 +49,14 @@
     <string name="delFav">Borrar Favorito</string>
     <string name="necesitasLogin">Necesitas estar conectado para realizar esta acción</string>
     <string name="loginLibrary">Inicia sesión para ver tu biblioteca</string>
+    <string name="fav" translatable="false">favorito</string>
+    <string name="nofav" translatable="false">noFavorito</string>
+    <string name="delUser">Borrar usuario</string>
+    <string name="asegurarBorradoUser">¿Seguro que quieres eliminar tu cuenta?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="removingFav">Eliminando de favoritos</string>
+    <string name="addingFav">Añadiendo a favoritos</string>
+    <string name="cantRemFav">No se encuentra en favoritos</string>
+    <string name="cantAddFav">Ya se encuentra en favoritos</string>
 </resources>

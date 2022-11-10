@@ -31,13 +31,6 @@
             android:textStyle="bold"
             android:layout_below="@id/IV_imagen"
             android:padding="5dp"/>
-        <ImageView
-            android:id="@+id/iconFav"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/ic_fav_added"
-            android:layout_alignParentEnd="true"/>
-
     </RelativeLayout>
 
 

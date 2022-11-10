@@ -1,5 +1,8 @@
 package quesadoprado.saramaria.marvelmania.network
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import retrofit2.Call
 import retrofit2.Callback
@@ -8,18 +11,17 @@ import retrofit2.Response
 class RetrofitBroker {
     companion object{
         fun getRequestAllCharacters(onResponse:(resp:String)->Unit, onFailure:(resp:String)->Unit){
-            val r=RetrofitApi.retrofitService.getAllCharacters()
-            var p= r.enqueue(
-                object : Callback<String>{
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        onFailure(t.message!!)
+                val r=RetrofitApi.retrofitService.getAllCharacters()
+                var p= r.enqueue(
+                    object : Callback<String>{
+                        override fun onResponse(call: Call<String>,response: Response<String>) {
+                            onResponse(response.body()!!)
+                        }
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            onFailure(t.message!!)
+                        }
                     }
-
-                    override fun onResponse(call: Call<String>,response: Response<String>) {
-                        onResponse(response.body()!!)
-                    }
-                }
-            )
+                )
         }
         fun getRequestCharactersByName(name:String,onResponse: (resp: String) -> Unit,onFailure: (resp: String) -> Unit){
             val r=RetrofitApi.retrofitService.getCharacterByName(name = name)

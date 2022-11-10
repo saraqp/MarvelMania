@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         //obtenemos la cabecera
         val headerView=binding.navView.getHeaderView(0)
         nombreUsuarioND= headerView.findViewById(R.id.user_name)
-        submenuLogin=binding.navView.menu.get(4).subMenu!!.get(0)
+        submenuLogin= binding.navView.menu[4].subMenu!![0]
         if (firebaseAuth.currentUser!=null){
             submenuLogin!!.title = "Account"
             submenuLogin!!.setIcon(R.drawable.ic_account_settings)
         }
 
-        cambiarNombreUser(firebaseAuth.currentUser?.email)
+        cambiarNombreUser(firebaseAuth.currentUser?.uid)
 
         //Firebase analytics
         firebaseAnalytics=FirebaseAnalytics.getInstance(this)
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         //para que salga la biblioteca por default
         setToolBarTitle(getString(R.string.biblioteca))
-        changeFragment(LibraryFragment(firebaseAuth, nombreUsuarioND))
+        changeFragment(LibraryFragment(firebaseAuth))
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
             R.id.nav_home->{
                 setToolBarTitle(getString(R.string.biblioteca))
-                changeFragment(LibraryFragment(firebaseAuth,nombreUsuarioND))
+                changeFragment(LibraryFragment(firebaseAuth))
             }
         }
         return true
@@ -103,23 +103,25 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val fragment=supportFragmentManager.beginTransaction()
         fragment.replace(R.id.fragmentcontainer,frag).commit()
     }
-    private fun cambiarNombreUser(email: String?){
-        if (email.isNullOrEmpty()){
+    private fun cambiarNombreUser(uid: String?){
+        if (uid.isNullOrEmpty()){
             nombreUsuarioND.text=getString(R.string.sinUsuario)
         }else{
-            obteneruser(firebaseAuth.currentUser!!.email.toString())
+            obteneruser(firebaseAuth.currentUser!!.uid)
         }
     }
-    private fun obteneruser(email:String){
-        var user:User?=null
-        database.collection("users").document(email).get().addOnSuccessListener { document->
+    private fun obteneruser(uid:String){
+        var user:User?
+        database.collection("users").document(uid).get().addOnSuccessListener { document->
             if (document != null) {
                 user= User(document.data?.get("displayName") as String?,
-                    document.data?.get("status") as String?, document.data?.get("uid") as String?
+                    document.data?.get("status") as String?,
+                    document.data?.get("uid") as String?,
+                    document.data?.get("email") as String?
                 )
                 nombreUsuarioND.text=user?.username
             } else {
-                Log.d(":::TAG", "No such document")
+                Log.e("ERROR", "No such document")
             }
         }
     }

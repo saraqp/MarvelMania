@@ -31,7 +31,7 @@ interface RetrofitApiService{
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash(),
-        @Query("name")name:String
+        @Query("nameStartsWith")name:String
     ):Call<String>
     @GET("characters/{id}/comics")
     fun getComicsForCharacterId(
@@ -64,7 +64,7 @@ interface RetrofitApiService{
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash(),
-        @Query("title")title:String
+        @Query("titleStartsWith")title:String
     ):Call<String>
     @GET("comics/{id}/characters")
     fun getCharactersForComicId(
@@ -88,7 +88,7 @@ interface RetrofitApiService{
         @Query("apikey")apikey:String=Constants.API_KEY,
         @Query("ts")ts:String=Constants.timeStamp,
         @Query("hash")hash:String=Constants.hash(),
-        @Query("title")title:String
+        @Query("titleStartsWith")title:String
     ):Call<String>
     @GET("series/{id}")
     fun getSerieForId(

@@ -49,4 +49,12 @@
     <string name="delFav">Delete Favourite</string>
     <string name="necesitasLogin">You need to be connected to perform this action</string>
     <string name="loginLibrary">Sign in to view your library</string>
+    <string name="delUser">Delete user</string>
+    <string name="si">Yes</string>
+    <string name="no">No</string>
+    <string name="asegurarBorradoUser">Are you sure you want to delete your account?</string>
+    <string name="addingFav">Adding to favorites</string>
+    <string name="removingFav">Removing from favorites</string>
+    <string name="cantRemFav">Not listed in favorites</string>
+    <string name="cantAddFav">Already in your favorites</string>
 </resources>
