@@ -1,7 +1,6 @@
 package quesadoprado.saramaria.marvelmania.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.bumptech.glide.request.RequestOptions
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 
 class ComicFavouritesAdapter(private val list_comics: Array<Comic>?): RecyclerView.Adapter<ComicFavouritesAdapter.ViewHolder>() {
     private var context: Context? =null

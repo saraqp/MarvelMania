@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import quesadoprado.saramaria.marvelmania.R
-import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener

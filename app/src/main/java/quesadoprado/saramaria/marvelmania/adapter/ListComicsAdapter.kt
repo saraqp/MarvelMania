@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import quesadoprado.saramaria.marvelmania.R
-import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 
 class ListComicsAdapter(private val list_comics: Array<Comic>?): RecyclerView.Adapter<ListComicsAdapter.ViewHolder>() {

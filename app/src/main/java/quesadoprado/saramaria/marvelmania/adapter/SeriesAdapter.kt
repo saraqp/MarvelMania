@@ -10,11 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import quesadoprado.saramaria.marvelmania.R
-import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.series.Serie
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 

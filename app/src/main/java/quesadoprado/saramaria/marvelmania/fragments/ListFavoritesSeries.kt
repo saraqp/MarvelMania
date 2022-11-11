@@ -2,7 +2,6 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteSeries
 import quesadoprado.saramaria.marvelmania.adapter.SeriesFavouritesAdapter
-import quesadoprado.saramaria.marvelmania.data.items.*
+import quesadoprado.saramaria.marvelmania.data.items.Item
+import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
 import quesadoprado.saramaria.marvelmania.data.series.Serie
 import quesadoprado.saramaria.marvelmania.databinding.FragmentListFavoritesSeriesBinding
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
@@ -82,43 +82,7 @@ class ListFavoritesSeries : Fragment() {
                         }else{
                             null
                         }
-                        //personajes de las series
-                        var listaCharacters= arrayOf<ItemCSum>()
-                        database.collection("$ruta/$id/characters").get()
-                            .addOnCompleteListener { document->
-                            if (document.isSuccessful){
-                                for (a in 0 until document.result.size()){
-                                    val items= document.result.documents[a]
-                                    if (items.exists()) {
-                                        val itemCharacter = ItemCSum(
-                                            items.getString("resourceUri"),
-                                            items.getString("name"),
-                                            items.getString("rol")
-                                        )
-                                        listaCharacters = listaCharacters.plus(itemCharacter)
-                                    }
-                                }
-                            }
-                        }
-                        //comics de las series
-                        var listaComics= arrayOf<Item>()
-                        database.collection("$ruta/$id/comics").get()
-                            .addOnCompleteListener { document->
-                                if (document.isSuccessful){
-                                    for (e in 0 until document.result.size()){
-                                        val items=document.result.documents[e]
-                                        if (items.exists()){
-                                            val itemComic=Item(
-                                                items.getString("name"),
-                                                items.getString("resourceUri")
-                                            )
-                                            listaComics=listaComics.plus(itemComic)
-                                        }
-                                    }
-                                }
-                            }
-                        val serie=Serie(id!!.toInt(),title,description,startYear?.toInt(), endYear?.toInt(), rating, thumbnail,
-                            Comics(listaComics), Characters(listaCharacters),next,previous)
+                        val serie=Serie(id!!.toInt(),title,description,startYear?.toInt(), endYear?.toInt(), rating, thumbnail,next,previous)
                         series=series.plus(serie)
 
                     }

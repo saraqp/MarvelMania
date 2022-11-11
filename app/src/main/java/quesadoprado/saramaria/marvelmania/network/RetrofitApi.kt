@@ -1,15 +1,9 @@
 package quesadoprado.saramaria.marvelmania.network
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import quesadoprado.saramaria.marvelmania.data.characters.CharactersDTO
-import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import retrofit2.Call
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
-
 
 
 private val retrofit = Retrofit.Builder()

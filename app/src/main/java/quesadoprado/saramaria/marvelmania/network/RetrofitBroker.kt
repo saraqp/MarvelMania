@@ -1,9 +1,5 @@
 package quesadoprado.saramaria.marvelmania.network
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

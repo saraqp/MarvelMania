@@ -32,6 +32,7 @@ class InfoCompleteComics:AppCompatActivity() {
         binding = ActivityInfocompletecomicsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         context=this
+
         //obtenemos los datos del comic
         val comic=intent?.getParcelableExtra<Comic>("comic")
         //obtenemos la url de la imagen del personaje
@@ -76,10 +77,12 @@ class InfoCompleteComics:AppCompatActivity() {
         binding.numpagText.text= comic?.pageCount.toString()
         binding.formatText.text=comic?.format
 
+        //Mostramos sus imagenes variantes
         binding.recyclerViewListVariantImages.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
         val adapterimages=ListVariantImagesComicsAdapter(comic?.images)
         binding.recyclerViewListVariantImages.adapter=adapterimages
 
+        //Mostramos sus personajes
         binding.recyclerViewListCharacters.layoutManager=LinearLayoutManager(this, RecyclerView.HORIZONTAL,false)
         obtenerPersonajesPorComicId(comic?.id!!)
     }

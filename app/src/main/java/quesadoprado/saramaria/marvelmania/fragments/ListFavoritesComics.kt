@@ -2,20 +2,15 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteComics
 import quesadoprado.saramaria.marvelmania.adapter.ComicFavouritesAdapter
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
-import quesadoprado.saramaria.marvelmania.data.items.Characters
-import quesadoprado.saramaria.marvelmania.data.items.ItemCSum
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
-import quesadoprado.saramaria.marvelmania.databinding.FragmentListFavoritesCharactersBinding
 import quesadoprado.saramaria.marvelmania.databinding.FragmentListFavoritesComicsBinding
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
@@ -80,26 +75,7 @@ class ListFavoritesComics : Fragment() {
                         val thumbnail=Thumbnail(
                             thumbnailMap["path"] as String,
                             thumbnailMap["extension"] as String)
-                        //obtenemos los personajes
-                        var listaCharacters= arrayOf<ItemCSum>()
-                        database.collection("$ruta/$id/characters").get().addOnCompleteListener { document->
-                            if (document.isSuccessful){
-                                for (a in 0 until document.result.size()){
-                                    val items= document.result.documents[a]
-                                    if (items.exists()) {
-                                        val itemCharacter = ItemCSum(
-                                            items.getString("resourceUri"),
-                                            items.getString("name"),
-                                            items.getString("rol")
-                                        )
-                                        listaCharacters = listaCharacters.plus(itemCharacter)
-                                    }
-                                }
-                            }
-                        }
-                        val comic=Comic(id!!.toInt(),title,variantDescription,description,format,pageCount!!.toInt(),thumbnail,images,
-                            Characters(listaCharacters)
-                        )
+                        val comic=Comic(id!!.toInt(),title,variantDescription,description,format,pageCount!!.toInt(),thumbnail,images)
                         comics=comics.plus(comic)
                     }
                     //mostramos los comics

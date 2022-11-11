@@ -2,7 +2,6 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteCharacts
 import quesadoprado.saramaria.marvelmania.adapter.CharacterFavouritesAdapter
 import quesadoprado.saramaria.marvelmania.data.characters.Character
-import quesadoprado.saramaria.marvelmania.data.items.Item
-import quesadoprado.saramaria.marvelmania.data.items.Series
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
 import quesadoprado.saramaria.marvelmania.databinding.FragmentListFavoritesCharactersBinding
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
@@ -64,20 +61,7 @@ class ListFavoritesCharacters : Fragment() {
                             thumbnailhashMap["path"] as String,
                             thumbnailhashMap["extension"] as String
                         )
-                        var listaseries= arrayOf<Item>()
-                        //obtenemos las series que pertenecen a los personajes(si tienen)
-                        database.collection("$ruta/$id/series").get().addOnCompleteListener { document->
-                            if (document.isSuccessful){
-                                for (i in 0 until document.result.size()){
-                                    val items= document.result.documents[i]
-                                    val itemSerie= Item(items.getString("name"),items.getString("resourceUri"))
-                                    listaseries=listaseries.plus(itemSerie)
-
-                                }
-                            }
-                        }
-                        val character=Character(id?.toInt(),name,description,thumbnail, Series(listaseries)
-                        )
+                        val character=Character(id?.toInt(),name,description,thumbnail)
                         personajes=personajes.plus(character)
                     }
                     //Mostramos los personajes favoritos del usuario

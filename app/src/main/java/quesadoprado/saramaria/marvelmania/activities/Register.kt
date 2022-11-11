@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -12,9 +11,7 @@ import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityRegisterBinding
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
-import quesadoprado.saramaria.marvelmania.utils.Extensions.toast
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 class Register : AppCompatActivity() {
     private lateinit var userEmail:String

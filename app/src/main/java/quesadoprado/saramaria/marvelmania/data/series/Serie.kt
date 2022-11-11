@@ -13,8 +13,6 @@ data class Serie (
     val endYear:Int?=null,
     val rating:String?=null,
     val thumbnail: Thumbnail?=null,
-    val comics: Comics?=null,
-    val characters: Characters?=null,
     val next: Item?=null,
     val previous: Item?=null
 ): Parcelable
