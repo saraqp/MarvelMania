@@ -98,11 +98,32 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewListComics"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
+                        <androidx.core.widget.ContentLoadingProgressBar
+                            android:id="@+id/progressbarComics"
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="visible"/>
+                        <TextView
+                            android:id="@+id/comicsNoEncontrados"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textAlignment="center"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="gone"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewListComics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+
                 </ScrollView>
 
                 <TextView
@@ -119,11 +140,32 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewListSeries"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
+                        <androidx.core.widget.ContentLoadingProgressBar
+                            android:id="@+id/progressbarSeries"
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="visible"/>
+                        <TextView
+                            android:id="@+id/seriesNoEncontrados"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textAlignment="center"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="gone"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewListSeries"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+
                 </ScrollView>
                 <LinearLayout
                     android:id="@+id/contentComentarios"

@@ -14,12 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MarvelMania"
+        android:screenOrientation="nosensor"
         android:usesCleartextTraffic="true"
         android:configChanges="uiMode"
         tools:targetApi="31">
         <activity
             android:name=".activities.Register"
             android:configChanges="uiMode"
+            android:screenOrientation="nosensor"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -28,6 +30,7 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteCharacts"
             android:configChanges="uiMode"
+            android:screenOrientation="nosensor"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -36,6 +39,7 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteComics"
             android:configChanges="uiMode"
+            android:screenOrientation="nosensor"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -44,6 +48,7 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteSeries"
             android:configChanges="uiMode"
+            android:screenOrientation="nosensor"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -52,6 +57,7 @@
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"
+            android:screenOrientation="nosensor"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,6 +68,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="uiMode"
+            android:screenOrientation="nosensor"
             android:exported="false" />
     </application>
 

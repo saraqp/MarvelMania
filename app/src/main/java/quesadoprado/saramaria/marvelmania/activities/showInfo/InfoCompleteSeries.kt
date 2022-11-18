@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -34,6 +36,9 @@ class InfoCompleteSeries:AppCompatActivity() {
 
     private var database= FirebaseUtils.firebaseDatabase
     private var auth= FirebaseUtils.firebaseAuth
+
+    private val handler=Handler(Looper.getMainLooper())
+    private lateinit var runnable:Runnable
 
     private var coment:Coment?=null
     private var idComentResp:String?=null
@@ -95,21 +100,34 @@ class InfoCompleteSeries:AppCompatActivity() {
 
         //si la serie tiene next obtenemos su información y mostramos la imagen al usuario
         if (serie.previous!=null){
+            binding.prevNotDataFound.visibility=View.GONE
+
             val url=serie.previous.resourceURI?.split("/")
             val id:Int= url?.last()!!.toInt()
             obtenerSeriePorId(id,"p")
+        }else{
+            binding.anteriorImagen.visibility=View.GONE
+            binding.prevNotDataFound.visibility=View.VISIBLE
+            binding.prevNotDataFound.text=getString(R.string.informacionNoEncontrada)
         }
         //si la serie tiene next obtenemos su información y mostramos la imagen al usuario
         if (serie.next!=null){
+            binding.nextNotDataFound.visibility=View.GONE
+
             val url=serie.next.resourceURI?.split("/")
             val id:Int= url?.last()!!.toInt()
             obtenerSeriePorId(id,"n")
+        }else{
+            binding.siguienteImagen.visibility=View.GONE
+            binding.nextNotDataFound.visibility=View.VISIBLE
+            binding.nextNotDataFound.text=getString(R.string.informacionNoEncontrada)
         }
+
         if (auth.currentUser!=null){
             binding.contentComentarios.visibility=View.VISIBLE
 
             binding.listaComentarios.layoutManager=LinearLayoutManager(contexto)
-            obtenerComentarios(serie.id)
+            updateComentsUI(serie.id)
 
             binding.btnComent.setOnClickListener {
                 obtenerNombreUsuario(serie.id)
@@ -122,6 +140,26 @@ class InfoCompleteSeries:AppCompatActivity() {
         }
     }
 
+    private fun ocultarProgressBar() {
+        val handler= Handler()
+        val runnable=Runnable{
+            binding.progressbarCharacters.visibility=View.GONE
+            binding.progressbarComics.visibility=View.GONE
+        }
+        handler.postDelayed(runnable,200)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runnable)
+    }
+    private fun updateComentsUI(id: Int) {
+        runnable= Runnable {
+            obtenerComentarios(id)
+            handler.postDelayed(runnable,10000)
+        }
+        handler.post(runnable)
+    }
     private fun obtenerNombreUsuario(id: Int) {
         val comentario_user=binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get().addOnCompleteListener {task->
@@ -139,7 +177,6 @@ class InfoCompleteSeries:AppCompatActivity() {
         }
 
     }
-
     private fun obtenerComentarios(id_serie: Int) {
         database.collection("coments").get().addOnCompleteListener { documents->
             if (documents.isSuccessful){
@@ -333,29 +370,45 @@ class InfoCompleteSeries:AppCompatActivity() {
             onResponse = {
                 val respuesta = Gson().fromJson(it, SeriesDTO::class.java)
                 val serie = respuesta.data?.results?.get(0)
-                val imagePrevious =
-                    "${serie?.thumbnail?.path}/portrait_uncanny.${serie?.thumbnail?.extension}"
-                when (prevOrNext) {
-                    "p" -> {
-                        Glide.with(this).load(imagePrevious)
-                            .apply(RequestOptions().override(300, 450))
-                            .into(binding.anteriorImagen)
-                        binding.anteriorImagen.setOnClickListener {
-                            val intent = Intent(contexto, InfoCompleteSeries::class.java)
-                            intent.putExtra("serie", serie)
-                            startActivity(intent)
+                if (serie!=null){
+                    val imagePrevious =
+                        "${serie.thumbnail?.path}/portrait_uncanny.${serie.thumbnail?.extension}"
+                    when (prevOrNext) {
+                        "p" -> {
+                            Glide.with(this).load(imagePrevious)
+                                .apply(RequestOptions().override(300, 450))
+                                .into(binding.anteriorImagen)
+                            binding.anteriorImagen.setOnClickListener {
+                                val intent = Intent(contexto, InfoCompleteSeries::class.java)
+                                intent.putExtra("serie", serie)
+                                startActivity(intent)
+                            }
+                        }
+                        "n" -> {
+                            Glide.with(this).load(imagePrevious)
+                                .apply(RequestOptions().override(300, 450))
+                                .into(binding.siguienteImagen)
+                            binding.siguienteImagen.setOnClickListener {
+                                val intent = Intent(contexto, InfoCompleteSeries::class.java)
+                                intent.putExtra("serie", serie)
+                                startActivity(intent)
+                            }
                         }
                     }
-                    "n" -> {
-                        Glide.with(this).load(imagePrevious)
-                            .apply(RequestOptions().override(300, 450))
-                            .into(binding.siguienteImagen)
-                        binding.siguienteImagen.setOnClickListener {
-                            val intent = Intent(contexto, InfoCompleteSeries::class.java)
-                            intent.putExtra("serie", serie)
-                            startActivity(intent)
+                }else{
+                    when(prevOrNext){
+                        "p"->{
+                            binding.anteriorImagen.visibility=View.GONE
+                            binding.prevNotDataFound.visibility=View.VISIBLE
+                            binding.prevNotDataFound.text=getString(R.string.informacionNoEncontrada)
+                        }
+                        "n"->{
+                            binding.siguienteImagen.visibility=View.GONE
+                            binding.nextNotDataFound.visibility=View.VISIBLE
+                            binding.nextNotDataFound.text=getString(R.string.informacionNoEncontrada)
                         }
                     }
+
                 }
             }, onFailure = {
                 Log.e("ERROR_API", it)
@@ -369,18 +422,29 @@ class InfoCompleteSeries:AppCompatActivity() {
             onResponse = {
                 val respuesta=Gson().fromJson(it,ComicsDTO::class.java)
                 val comics=respuesta?.data?.results
-                val adapter=ListComicsAdapter(comics)
-                binding.recyclerViewListComics.adapter=adapter
 
-                adapter.setOnItemClickListener(object :ListComicsAdapter.onIntemClickListener{
-                    override fun onItemClick(position: Int) {
-                        val comic=comics?.get(position)
-                        val intent= Intent(contexto,InfoCompleteComics::class.java)
-                        intent.putExtra("comic",comic)
-                        startActivity(intent)
-                    }
+                ocultarProgressBar()
 
-                })
+                if (comics!!.isNotEmpty()){
+                    binding.recyclerViewListComics.visibility=View.VISIBLE
+                    binding.comicsNoEncontrados.visibility=View.GONE
+
+                    val adapter=ListComicsAdapter(comics)
+                    binding.recyclerViewListComics.adapter=adapter
+                    adapter.setOnItemClickListener(object :ListComicsAdapter.onIntemClickListener{
+                        override fun onItemClick(position: Int) {
+                            val comic=comics?.get(position)
+                            val intent= Intent(contexto,InfoCompleteComics::class.java)
+                            intent.putExtra("comic",comic)
+                            startActivity(intent)
+                        }
+
+                    })
+                } else{
+                    binding.recyclerViewListComics.visibility=View.GONE
+                    binding.comicsNoEncontrados.visibility=View.VISIBLE
+                    binding.comicsNoEncontrados.text=getString(R.string.informacionNoEncontrada)
+                }
             }, onFailure = {
                 Log.e("ERROR_API",it)
             }
@@ -394,18 +458,31 @@ class InfoCompleteSeries:AppCompatActivity() {
             onResponse = {
                 val respuesta=Gson().fromJson(it, CharactersDTO::class.java)
                 val characters=respuesta?.data?.results
-                val adapter= ListCharactersAdapter(characters)
-                binding.recyclerViewListCharacters.adapter=adapter
 
-                adapter.setOnItemClickListener(object : ListCharactersAdapter.onIntemClickListener{
-                    override fun onItemClick(position: Int) {
-                        val character=characters?.get(position)
-                        val intent= Intent(contexto,InfoCompleteCharacts::class.java)
-                        intent.putExtra("charact",character)
-                        startActivity(intent)
-                    }
+                ocultarProgressBar()
 
-                })
+                if (characters!!.isNotEmpty()){
+                    binding.recyclerViewListCharacters.visibility=View.VISIBLE
+                    binding.CharactersNoEncontrados.visibility=View.GONE
+
+                    val adapter= ListCharactersAdapter(characters)
+                    binding.recyclerViewListCharacters.adapter=adapter
+                    adapter.setOnItemClickListener(object : ListCharactersAdapter.onIntemClickListener{
+                        override fun onItemClick(position: Int) {
+                            val character=characters?.get(position)
+                            val intent= Intent(contexto,InfoCompleteCharacts::class.java)
+                            intent.putExtra("charact",character)
+                            startActivity(intent)
+                        }
+
+                    })
+
+                }else{
+                    binding.recyclerViewListCharacters.visibility=View.GONE
+                    binding.CharactersNoEncontrados.visibility=View.VISIBLE
+                    binding.CharactersNoEncontrados.text=getString(R.string.informacionNoEncontrada)
+                }
+
             }, onFailure = {
                 Log.e("ERROR_API",it)
             }

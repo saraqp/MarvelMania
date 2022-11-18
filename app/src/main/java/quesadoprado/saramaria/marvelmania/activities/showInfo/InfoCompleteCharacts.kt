@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -34,6 +36,9 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
     private var database=firebaseDatabase
     private var auth= firebaseAuth
+
+    private val handler=Handler(Looper.getMainLooper())
+    private lateinit var runnable:Runnable
 
     private var coment: Coment?=null
     private var idComentResp:String?=null
@@ -88,6 +93,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
         binding.recyclerViewListComics.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
         //obtenemos los comics en los que sale el personaje
         obtenerComicsPorPersonajeId(charact?.id!!)
+
         binding.recyclerViewListSeries.layoutManager=LinearLayoutManager(this,RecyclerView.HORIZONTAL,false)
         //obtenemos las series en las que aparece el personaje
         obtenerSeriesPorPersonajeId(charact.id)
@@ -96,7 +102,8 @@ class InfoCompleteCharacts : AppCompatActivity() {
             binding.contentComentarios.visibility=View.VISIBLE
 
             binding.listaComentarios.layoutManager=LinearLayoutManager(contexto)
-            obtenerComentarios(charact.id)
+
+            updateComentsUI(charact.id)
 
             binding.btnComent.setOnClickListener {
                 obtenerNombreUsuario(charact.id)
@@ -108,7 +115,25 @@ class InfoCompleteCharacts : AppCompatActivity() {
             binding.contentComentarios.visibility=View.GONE
         }
     }
-
+    private fun ocultarProgressBar() {
+        val handler= Handler()
+        val runnable=Runnable{
+            binding.progressbarSeries.visibility=View.GONE
+            binding.progressbarComics.visibility=View.GONE
+        }
+        handler.postDelayed(runnable,200)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runnable)
+    }
+    private fun updateComentsUI(id: Int) {
+        runnable= Runnable {
+            obtenerComentarios(id)
+            handler.postDelayed(runnable,10000)
+        }
+        handler.post(runnable)
+    }
     private fun obtenerNombreUsuario(id: Int) {
         val comentario_user=binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get().addOnCompleteListener {task->
@@ -321,18 +346,29 @@ class InfoCompleteCharacts : AppCompatActivity() {
             onResponse = {
                 val respuesta=Gson().fromJson(it,SeriesDTO::class.java)
                 val series=respuesta?.data?.results
-                val adapter=ListSeriesAdapter(series)
 
-                binding.recyclerViewListSeries.adapter=adapter
-                adapter.setOnItemClickListener(object : ListSeriesAdapter.onIntemClickListener{
-                    override fun onItemClick(position: Int) {
-                        val serie=series?.get(position)
-                        val intent=Intent(contexto,InfoCompleteSeries::class.java)
-                        intent.putExtra("serie",serie)
-                        startActivity(intent)
-                    }
+                ocultarProgressBar()
 
-                })
+                if (series!!.isNotEmpty()){
+                    binding.recyclerViewListSeries.visibility=View.VISIBLE
+                    binding.seriesNoEncontrados.visibility=View.GONE
+
+                    val adapter=ListSeriesAdapter(series)
+                    binding.recyclerViewListSeries.adapter=adapter
+                    adapter.setOnItemClickListener(object : ListSeriesAdapter.onIntemClickListener{
+                        override fun onItemClick(position: Int) {
+                            val serie=series?.get(position)
+                            val intent=Intent(contexto,InfoCompleteSeries::class.java)
+                            intent.putExtra("serie",serie)
+                            startActivity(intent)
+                        }
+
+                    })
+                }else{
+                    binding.recyclerViewListSeries.visibility=View.GONE
+                    binding.seriesNoEncontrados.visibility=View.VISIBLE
+                    binding.seriesNoEncontrados.text=getString(R.string.informacionNoEncontrada)
+                }
             }, onFailure = {
                 Log.e("ERROR_API",it)
             }
@@ -345,17 +381,29 @@ class InfoCompleteCharacts : AppCompatActivity() {
             onResponse = {
                 val respuesta=Gson().fromJson(it,ComicsDTO::class.java)
                 val comics=respuesta?.data?.results
-                val adapter=ListComicsAdapter(comics)
-                binding.recyclerViewListComics.adapter=adapter
-                adapter.setOnItemClickListener(object :ListComicsAdapter.onIntemClickListener{
-                    override fun onItemClick(position: Int) {
-                        val comic=comics?.get(position)
-                        val intent= Intent(contexto,InfoCompleteComics::class.java)
-                        intent.putExtra("comic",comic)
-                        startActivity(intent)
-                    }
 
-                })
+                ocultarProgressBar()
+
+                if (comics!!.isNotEmpty()){
+                    binding.recyclerViewListComics.visibility=View.VISIBLE
+                    binding.comicsNoEncontrados.visibility=View.GONE
+
+                    val adapter=ListComicsAdapter(comics)
+                    binding.recyclerViewListComics.adapter=adapter
+                    adapter.setOnItemClickListener(object :ListComicsAdapter.onIntemClickListener{
+                        override fun onItemClick(position: Int) {
+                            val comic=comics?.get(position)
+                            val intent= Intent(contexto,InfoCompleteComics::class.java)
+                            intent.putExtra("comic",comic)
+                            startActivity(intent)
+                        }
+
+                    })
+                }else{
+                    binding.recyclerViewListComics.visibility=View.GONE
+                    binding.comicsNoEncontrados.visibility=View.VISIBLE
+                    binding.comicsNoEncontrados.text=getString(R.string.informacionNoEncontrada)
+                }
             }, onFailure = {
                 Log.e("ERROR_API",it)
             })

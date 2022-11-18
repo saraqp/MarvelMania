@@ -63,4 +63,5 @@
     <string name="comentar">Comentar</string>
     <string name="votado" translatable="false">votado</string>
     <string name="novotado" translatable="false">novotado</string>
+    <string name="informacionNoEncontrada">No se ha encontrado información</string>
 </resources>

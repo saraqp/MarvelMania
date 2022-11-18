@@ -136,11 +136,33 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewListComics"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
+                        <androidx.core.widget.ContentLoadingProgressBar
+                            android:id="@+id/progressbarComics"
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="visible"/>
+                        <TextView
+                            android:id="@+id/comicsNoEncontrados"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textAlignment="center"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="gone"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewListComics"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+
                 </ScrollView>
                 <TextView
                     android:id="@+id/characters"
@@ -155,11 +177,32 @@
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewListCharacters"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content">
+                        <androidx.core.widget.ContentLoadingProgressBar
+                            android:id="@+id/progressbarCharacters"
+                            style="?android:attr/progressBarStyleLarge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="visible"/>
+                        <TextView
+                            android:id="@+id/CharactersNoEncontrados"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textAlignment="center"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:visibility="gone"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewListCharacters"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
+
                 </ScrollView>
 
 
@@ -167,10 +210,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_weight="1">
                         <TextView
                             android:id="@+id/anterior"
@@ -180,17 +222,26 @@
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/white"/>
+                        <TextView
+                            android:id="@+id/prevNotDataFound"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:visibility="gone"
+                            android:layout_below="@id/anterior"/>
                         <ImageView
                             android:id="@+id/anteriorImagen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"/>
+                            android:layout_marginTop="6dp"
+                            android:layout_below="@id/anterior"/>
 
-                    </LinearLayout>
-                    <LinearLayout
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_weight="1">
                         <TextView
                             android:id="@+id/siguiente"
@@ -200,64 +251,74 @@
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/white"/>
+                        <TextView
+                            android:id="@+id/nextNotDataFound"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:visibility="gone"
+                            android:layout_below="@id/siguiente"/>
                         <ImageView
                             android:id="@+id/siguienteImagen"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/contentComentarios"
+                            android:layout_marginTop="6dp"
+                            android:layout_below="@id/siguiente"/>
+                    </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/contentComentarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/comentariosTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="7dp"
-                        android:layout_marginBottom="10dp">
+                        android:text="@string/comentarios"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"/>
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/contenedor_comentar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
                         <TextView
-                            android:id="@+id/comentariosTitle"
+                            android:id="@+id/respuestaComent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/comentarios"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/white"/>
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/contenedor_comentar"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp">
-                            <TextView
-                                android:id="@+id/respuestaComent"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:visibility="gone"
-                                android:background="@color/fragmentBackgroundlight"/>
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            android:background="@color/fragmentBackgroundlight"/>
 
-                            <EditText
-                                android:id="@+id/escribirComentario"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginEnd="5dp"
-                                android:hint="@string/comentarios"
-                                android:inputType="textMultiLine"
-                                android:minHeight="100dp" />
-                        </androidx.cardview.widget.CardView>
-                        <Button
-                            android:id="@+id/btnComent"
-                            android:layout_width="wrap_content"
+                        <EditText
+                            android:id="@+id/escribirComentario"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/comentar"
+                            android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:layout_gravity="end"/>
+                            android:hint="@string/comentarios"
+                            android:inputType="textMultiLine"
+                            android:minHeight="100dp" />
+                    </androidx.cardview.widget.CardView>
+                    <Button
+                        android:id="@+id/btnComent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comentar"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="end"/>
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/listaComentarios"
-                            android:layout_marginTop="20dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listaComentarios"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>

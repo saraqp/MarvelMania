@@ -17,7 +17,7 @@ class DataBaseUtils {
         private val database=firebaseDatabase
         private val auth= firebaseAuth
 
-        @Synchronized fun eliminarUsuario(uid:String){
+        fun eliminarUsuario(uid:String){
             //ELIMINAMOS FAVORITOS
             //personajes
             borrarPersonajesFavUser(uid)
@@ -29,7 +29,7 @@ class DataBaseUtils {
             database.collection("users").document(uid).delete()
 
         }
-        @Synchronized private fun borrarPersonajesFavUser(uid: String) {
+        private fun borrarPersonajesFavUser(uid: String) {
             database.collection("users/$uid/characters")
                 .get().addOnCompleteListener{personajes->
                     if (personajes.isSuccessful){
@@ -39,7 +39,7 @@ class DataBaseUtils {
                     }
             }
         }
-        @Synchronized private fun borrarComicsFavUser(uid: String){
+        private fun borrarComicsFavUser(uid: String){
             database.collection("users/$uid/comics")
                 .get().addOnCompleteListener { comics->
                     if (comics.isSuccessful){
@@ -49,7 +49,7 @@ class DataBaseUtils {
                     }
                 }
         }
-        @Synchronized private fun borrarSeriesFavUser(uid: String){
+        private fun borrarSeriesFavUser(uid: String){
             database.collection("users/$uid/series")
                 .get().addOnCompleteListener { series->
                     if (series.isSuccessful){
@@ -59,7 +59,7 @@ class DataBaseUtils {
                     }
                 }
         }
-        @Synchronized fun guardarUsuarioEnBbdd(user:User){
+        fun guardarUsuarioEnBbdd(user:User){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf("email" to user.email,
                     "displayName" to user.username,
@@ -67,7 +67,7 @@ class DataBaseUtils {
                     "status" to user.status)
             )
         }
-        @Synchronized fun cambiarPassUser(user: User,password:String){
+        fun cambiarPassUser(user: User,password:String){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf(
                     "displayName" to user.username!!,
@@ -77,7 +77,7 @@ class DataBaseUtils {
                 )
             )
         }
-        @Synchronized fun cambiarStatusUser(user: User, status:String){
+        fun cambiarStatusUser(user: User, status:String){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf("displayName" to user.username!!,
                     "status" to status,
@@ -86,7 +86,7 @@ class DataBaseUtils {
                 )
             )
         }
-        @Synchronized fun guardarPersonaje(uid:String,personaje:Character){
+        fun guardarPersonaje(uid:String,personaje:Character){
             //guardamos en una coleccion "characters" la información de los personajes
             database.collection("users").document(uid)
                 .collection("characters").document(personaje.id.toString()).set(
@@ -98,12 +98,12 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized fun eliminarPersonaje(uid: String, character: Character) {
+        fun eliminarPersonaje(uid: String, character: Character) {
              database.collection("users").document(uid)
                  .collection("characters")
                  .document(character.id.toString()).delete()
         }
-        @Synchronized fun guardarComic(uid: String, comic: Comic) {
+        fun guardarComic(uid: String, comic: Comic) {
             //variaciones de portada
             val imagenes= mutableListOf<Thumbnail>()
             for (i in 0 until comic.images!!.size){
@@ -125,12 +125,12 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized fun eliminarComic(uid: String, comic: Comic){
+        fun eliminarComic(uid: String, comic: Comic){
             database.collection("users").document(uid)
                 .collection("comics")
                 .document(comic.id.toString()).delete()
         }
-        @Synchronized fun guardarSerie(uid: String, serie: Serie) {
+        fun guardarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series").document(serie.id.toString()).set(
                     hashMapOf(
@@ -146,12 +146,12 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized fun eliminarSerie(uid: String, serie: Serie) {
+        fun eliminarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series")
                 .document(serie.id.toString()).delete()
         }
-        @Synchronized fun guardarComentario(coment: Coment) {
+        fun guardarComentario(coment: Coment) {
             database.collection("coments").document().set(
                 hashMapOf(
                     "type" to coment.type,
@@ -163,7 +163,7 @@ class DataBaseUtils {
                 )
             )
         }
-        @Synchronized fun addVotoUser(upVoteOrDownVote : String, idComent: String?) {
+        fun addVotoUser(upVoteOrDownVote : String, idComent: String?) {
             when(upVoteOrDownVote){
                 "upvote"->{
                     database.collection("users").document(auth.currentUser!!.uid)
@@ -183,10 +183,10 @@ class DataBaseUtils {
                 }
             }
         }
-        @Synchronized fun delVotoUser(idComent: String?) {
+        fun delVotoUser(idComent: String?) {
             database.collection("users/${auth.currentUser!!.uid}/comentsVotes").document(idComent.toString()).delete()
         }
-        @Synchronized fun cambiarPuntuacionComentario(puntNew: Int, coment: Coment) {
+        fun cambiarPuntuacionComentario(puntNew: Int, coment: Coment) {
             database.collection("coments").document(coment.idComent!!).get().addOnCompleteListener {
                 if (it.isSuccessful){
                     val puntuacion=(it.result.data!!["score"] as Long).toInt()

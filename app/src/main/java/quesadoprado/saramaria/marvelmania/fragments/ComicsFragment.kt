@@ -2,6 +2,7 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,6 +63,7 @@ class ComicsFragment(private val auth: FirebaseAuth) : Fragment() {
                 comics= respuesta.data?.results!!
                 val adapter=ComicAdapter(comics)
                 binding.recyclerViewComics.adapter=adapter
+                ocultarProgressBar()
                 adapter.setOnItemClickListener(object :OnItemClickListener{
                     override fun onItemClick(position: Int) {
                         val comic= comics[position]
@@ -139,6 +141,15 @@ class ComicsFragment(private val auth: FirebaseAuth) : Fragment() {
             }
         )
     }
+
+    private fun ocultarProgressBar() {
+        val handler= Handler()
+        val runnable=Runnable{
+            binding.progressbar.visibility=View.GONE
+        }
+        handler.postDelayed(runnable,200)
+    }
+
     private fun buscarComicsPorTitulo(){
             val tituloComic=binding.ETBuscadorComic.text.toString()
             RetrofitBroker.getRequestComicByName(tituloComic,

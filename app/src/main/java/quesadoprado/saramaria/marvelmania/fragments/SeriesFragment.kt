@@ -2,6 +2,7 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -56,6 +57,13 @@ class SeriesFragment(private val auth: FirebaseAuth, private val username: Strin
 
     }
 
+    private fun ocultarProgressBar() {
+        val handler= Handler()
+        val runnable=Runnable{
+            binding.progressbar.visibility=View.GONE
+        }
+        handler.postDelayed(runnable,200)
+    }
     private fun buscarTodasLasSeries(){
         RetrofitBroker.getRequestAllSeries(
             onResponse = {
@@ -64,6 +72,8 @@ class SeriesFragment(private val auth: FirebaseAuth, private val username: Strin
                 series=respuesta.data?.results!!
                 val adapter= SeriesAdapter(series)
                 binding.recyclerViewSeries.adapter=adapter
+
+                ocultarProgressBar()
 
                 adapter.setOnItemClickListener(object : OnItemClickListener{
                     override fun onItemClick(position: Int) {

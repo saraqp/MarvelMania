@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -32,6 +34,9 @@ class InfoCompleteComics:AppCompatActivity() {
     private lateinit var context : Context
     private var database=firebaseDatabase
     private var auth=firebaseAuth
+
+    private val handler=Handler(Looper.getMainLooper())
+    private lateinit var runnable:Runnable
 
     private var coment:Coment?=null
     private var idComentResp:String?=null
@@ -93,17 +98,30 @@ class InfoCompleteComics:AppCompatActivity() {
         //Mostramos sus personajes
         binding.recyclerViewListCharacters.layoutManager=LinearLayoutManager(this, RecyclerView.HORIZONTAL,false)
         obtenerPersonajesPorComicId(comic?.id!!)
+
         if(auth.currentUser!=null){
             binding.contentComentarios.visibility=View.VISIBLE
 
             binding.listaComentarios.layoutManager=LinearLayoutManager(context)
-            obtenerComentarios(comic.id)
+            updateComentsUI(comic.id)
             binding.btnComent.setOnClickListener {
                 obtenerNombreUsuario(comic.id)
             }
         }else{
             binding.contentComentarios.visibility=View.GONE
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runnable)
+    }
+    private fun updateComentsUI(id: Int) {
+        runnable= Runnable {
+            obtenerComentarios(id)
+            handler.postDelayed(runnable,10000)
+        }
+        handler.post(runnable)
     }
 
     private fun obtenerNombreUsuario(id: Int) {
@@ -121,6 +139,14 @@ class InfoCompleteComics:AppCompatActivity() {
             }
 
         }
+    }
+
+    private fun ocultarProgressBar() {
+        val handler= Handler()
+        val runnable=Runnable{
+            binding.progressbarCharacters.visibility=View.GONE
+        }
+        handler.postDelayed(runnable,200)
     }
 
     private fun obtenerComentarios(id: Int) {
@@ -298,18 +324,31 @@ class InfoCompleteComics:AppCompatActivity() {
             onResponse = {
                 val respuesta=Gson().fromJson(it,CharactersDTO::class.java)
                 val characters=respuesta?.data?.results
-                val adapter=ListCharactersAdapter(characters)
-                binding.recyclerViewListCharacters.adapter=adapter
 
-                adapter.setOnItemClickListener(object : ListCharactersAdapter.onIntemClickListener{
-                    override fun onItemClick(position: Int) {
-                        val character=characters?.get(position)
-                        val intent= Intent(context,InfoCompleteCharacts::class.java)
-                        intent.putExtra("charact",character)
-                        startActivity(intent)
-                    }
+                ocultarProgressBar()
 
-                })
+                if (characters!!.isNotEmpty()){
+                    binding.recyclerViewListCharacters.visibility=View.VISIBLE
+                    binding.charactersNoEncontrados.visibility=View.GONE
+
+                    val adapter=ListCharactersAdapter(characters)
+                    binding.recyclerViewListCharacters.adapter=adapter
+                    adapter.setOnItemClickListener(object : ListCharactersAdapter.onIntemClickListener{
+                        override fun onItemClick(position: Int) {
+                            val character=characters?.get(position)
+                            val intent= Intent(context,InfoCompleteCharacts::class.java)
+                            intent.putExtra("charact",character)
+                            startActivity(intent)
+                        }
+
+                    })
+
+                }else{
+                    binding.recyclerViewListCharacters.visibility=View.GONE
+                    binding.charactersNoEncontrados.visibility=View.VISIBLE
+                    binding.charactersNoEncontrados.text=getString(R.string.informacionNoEncontrada)
+                }
+
             }, onFailure = {
                 Log.e("ERROR_API",it)
             }
