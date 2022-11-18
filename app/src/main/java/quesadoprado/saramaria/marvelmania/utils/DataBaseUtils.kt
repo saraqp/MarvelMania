@@ -1,19 +1,23 @@
 package quesadoprado.saramaria.marvelmania.utils
 
 import android.annotation.SuppressLint
+import quesadoprado.saramaria.marvelmania.adapter.ComentAdapter
 import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
 import quesadoprado.saramaria.marvelmania.data.series.Serie
+import quesadoprado.saramaria.marvelmania.data.util.Coment
 import quesadoprado.saramaria.marvelmania.data.util.User
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 class DataBaseUtils {
     companion object{
         @SuppressLint("StaticFieldLeak")
         private val database=firebaseDatabase
-        @Synchronized
-        fun eliminarUsuario(uid:String){
+        private val auth= firebaseAuth
+
+        @Synchronized fun eliminarUsuario(uid:String){
             //ELIMINAMOS FAVORITOS
             //personajes
             borrarPersonajesFavUser(uid)
@@ -25,8 +29,7 @@ class DataBaseUtils {
             database.collection("users").document(uid).delete()
 
         }
-        @Synchronized
-        private fun borrarPersonajesFavUser(uid: String) {
+        @Synchronized private fun borrarPersonajesFavUser(uid: String) {
             database.collection("users/$uid/characters")
                 .get().addOnCompleteListener{personajes->
                     if (personajes.isSuccessful){
@@ -36,8 +39,7 @@ class DataBaseUtils {
                     }
             }
         }
-        @Synchronized
-        private fun borrarComicsFavUser(uid: String){
+        @Synchronized private fun borrarComicsFavUser(uid: String){
             database.collection("users/$uid/comics")
                 .get().addOnCompleteListener { comics->
                     if (comics.isSuccessful){
@@ -47,8 +49,7 @@ class DataBaseUtils {
                     }
                 }
         }
-        @Synchronized
-        private fun borrarSeriesFavUser(uid: String){
+        @Synchronized private fun borrarSeriesFavUser(uid: String){
             database.collection("users/$uid/series")
                 .get().addOnCompleteListener { series->
                     if (series.isSuccessful){
@@ -58,8 +59,7 @@ class DataBaseUtils {
                     }
                 }
         }
-        @Synchronized
-        fun guardarUsuarioEnBbdd(user:User){
+        @Synchronized fun guardarUsuarioEnBbdd(user:User){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf("email" to user.email,
                     "displayName" to user.username,
@@ -67,8 +67,7 @@ class DataBaseUtils {
                     "status" to user.status)
             )
         }
-        @Synchronized
-        fun cambiarPassUser(user: User,password:String){
+        @Synchronized fun cambiarPassUser(user: User,password:String){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf(
                     "displayName" to user.username!!,
@@ -78,8 +77,7 @@ class DataBaseUtils {
                 )
             )
         }
-        @Synchronized
-        fun cambiarStatusUser(user: User, status:String){
+        @Synchronized fun cambiarStatusUser(user: User, status:String){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf("displayName" to user.username!!,
                     "status" to status,
@@ -88,8 +86,7 @@ class DataBaseUtils {
                 )
             )
         }
-        @Synchronized
-        fun guardarPersonaje(uid:String,personaje:Character){
+        @Synchronized fun guardarPersonaje(uid:String,personaje:Character){
             //guardamos en una coleccion "characters" la información de los personajes
             database.collection("users").document(uid)
                 .collection("characters").document(personaje.id.toString()).set(
@@ -101,14 +98,12 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized
-        fun eliminarPersonaje(uid: String, character: Character) {
+        @Synchronized fun eliminarPersonaje(uid: String, character: Character) {
              database.collection("users").document(uid)
                  .collection("characters")
                  .document(character.id.toString()).delete()
         }
-        @Synchronized
-        fun guardarComic(uid: String, comic: Comic) {
+        @Synchronized fun guardarComic(uid: String, comic: Comic) {
             //variaciones de portada
             val imagenes= mutableListOf<Thumbnail>()
             for (i in 0 until comic.images!!.size){
@@ -130,14 +125,12 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized
-        fun eliminarComic(uid: String, comic: Comic){
+        @Synchronized fun eliminarComic(uid: String, comic: Comic){
             database.collection("users").document(uid)
                 .collection("comics")
                 .document(comic.id.toString()).delete()
         }
-        @Synchronized
-        fun guardarSerie(uid: String, serie: Serie) {
+        @Synchronized fun guardarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series").document(serie.id.toString()).set(
                     hashMapOf(
@@ -153,11 +146,64 @@ class DataBaseUtils {
                     )
                 )
         }
-        @Synchronized
-        fun eliminarSerie(uid: String, serie: Serie) {
+        @Synchronized fun eliminarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series")
                 .document(serie.id.toString()).delete()
+        }
+        @Synchronized fun guardarComentario(coment: Coment) {
+            database.collection("coments").document().set(
+                hashMapOf(
+                    "type" to coment.type,
+                    "id_type" to coment.id_type,
+                    "username" to coment.username,
+                    "score" to coment.puntuacion,
+                    "coment" to coment.comentario,
+                    "id_coment_resp" to coment.id_coment_resp.toString()
+                )
+            )
+        }
+        @Synchronized fun addVotoUser(upVoteOrDownVote : String, idComent: String?) {
+            when(upVoteOrDownVote){
+                "upvote"->{
+                    database.collection("users").document(auth.currentUser!!.uid)
+                        .collection("comentsVotes").document(idComent.toString()).set(
+                            hashMapOf(
+                                "vote" to "upvote"
+                            )
+                        )
+                }
+                "downvote"->{
+                    database.collection("users").document(auth.currentUser!!.uid)
+                        .collection("comentsVotes").document(idComent.toString()).set(
+                            hashMapOf(
+                                "vote" to "downvote"
+                            )
+                        )
+                }
+            }
+        }
+        @Synchronized fun delVotoUser(idComent: String?) {
+            database.collection("users/${auth.currentUser!!.uid}/comentsVotes").document(idComent.toString()).delete()
+        }
+        @Synchronized fun cambiarPuntuacionComentario(puntNew: Int, coment: Coment) {
+            database.collection("coments").document(coment.idComent!!).get().addOnCompleteListener {
+                if (it.isSuccessful){
+                    val puntuacion=(it.result.data!!["score"] as Long).toInt()
+                    //cambiamos la puntuacion
+                    val actuScore=puntuacion+puntNew
+                    database.collection("coments").document(coment.idComent!!).set(
+                        hashMapOf(
+                            "type" to coment.type,
+                            "score" to actuScore,
+                            "username" to coment.username,
+                            "id_type" to coment.id_type,
+                            "coment" to coment.comentario,
+                            "id_coment_resp" to coment.id_coment_resp
+                        )
+                    )
+                }
+            }
         }
     }
 }

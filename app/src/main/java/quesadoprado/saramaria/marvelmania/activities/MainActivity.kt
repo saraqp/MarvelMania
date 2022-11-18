@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
             R.id.nav_series->{
                 setToolBarTitle(getString(R.string.series))
-                changeFragment(SeriesFragment(firebaseAuth))
+                changeFragment(SeriesFragment(firebaseAuth,nombreUsuarioND.text.toString()))
             }
             R.id.nav_login->{
                 if (firebaseAuth.currentUser!=null){

@@ -59,4 +59,8 @@
     <string name="addingFav">Añadiendo a favoritos</string>
     <string name="cantRemFav">No se encuentra en favoritos</string>
     <string name="cantAddFav">Ya se encuentra en favoritos</string>
+    <string name="comentarios">Comentarios</string>
+    <string name="comentar">Comentar</string>
+    <string name="votado" translatable="false">votado</string>
+    <string name="novotado" translatable="false">novotado</string>
 </resources>

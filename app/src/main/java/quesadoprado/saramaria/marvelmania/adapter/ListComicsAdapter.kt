@@ -23,7 +23,7 @@ class ListComicsAdapter(private val list_comics: Array<Comic>?): RecyclerView.Ad
         mListener=listener
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view= LayoutInflater.from(parent.context).inflate(R.layout.item_list_show,parent,false)
+        val view= LayoutInflater.from(parent.context).inflate(R.layout.item_list_show_images,parent,false)
         context=parent.context
         return ViewHolder(view,mListener)
     }

@@ -18,8 +18,7 @@
             android:scaleType="center"
             android:layout_margin="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_alignParentTop="true"
-            android:src="@mipmap/icon"/>
+            android:layout_alignParentTop="true"/>
 
         <TextView
             android:id="@+id/nombre"

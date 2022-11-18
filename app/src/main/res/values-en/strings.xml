@@ -57,4 +57,7 @@
     <string name="removingFav">Removing from favorites</string>
     <string name="cantRemFav">Not listed in favorites</string>
     <string name="cantAddFav">Already in your favorites</string>
+    <string name="votos">Score:</string>
+    <string name="comentarios">Coments</string>
+    <string name="comentar">Comment</string>
 </resources>

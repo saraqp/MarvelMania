@@ -191,7 +191,58 @@
                         android:layout_height="wrap_content"/>
                 </ScrollView>
 
+                <LinearLayout
+                    android:id="@+id/contentComentarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="10dp">
+                    <TextView
+                        android:id="@+id/comentariosTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comentarios"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"/>
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/contenedor_comentar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp">
+                        <TextView
+                            android:id="@+id/respuestaComent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:visibility="gone"
+                            android:background="@color/fragmentBackgroundlight"/>
 
+                        <EditText
+                            android:id="@+id/escribirComentario"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:hint="@string/comentarios"
+                            android:inputType="textMultiLine"
+                            android:minHeight="100dp" />
+                    </androidx.cardview.widget.CardView>
+                    <Button
+                        android:id="@+id/btnComent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comentar"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="end"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listaComentarios"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
             </LinearLayout>
 
         </RelativeLayout>

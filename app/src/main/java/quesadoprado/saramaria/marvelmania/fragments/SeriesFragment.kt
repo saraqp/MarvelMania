@@ -2,6 +2,7 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,7 @@ import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
-class SeriesFragment(private val auth: FirebaseAuth) : Fragment() {
+class SeriesFragment(private val auth: FirebaseAuth, private val username: String) : Fragment() {
 
     private var _binding: FragmentSeriesBinding?=null
     private val binding get() = _binding!!
@@ -69,6 +70,7 @@ class SeriesFragment(private val auth: FirebaseAuth) : Fragment() {
                         val serie= series[position]
                         val intent= Intent(context, InfoCompleteSeries::class.java)
                         intent.putExtra("serie",serie)
+                        intent.putExtra("username",username)
                         startActivity(intent)
                     }
                 })

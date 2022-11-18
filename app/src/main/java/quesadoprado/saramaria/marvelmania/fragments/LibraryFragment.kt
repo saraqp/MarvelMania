@@ -28,9 +28,9 @@ class LibraryFragment(private val auth: FirebaseAuth) : Fragment() {
             binding.tabLayout.visibility=View.VISIBLE
             binding.viewPager.visibility=View.VISIBLE
             val adapter=ViewPagerAdapter(childFragmentManager)
-            adapter.addFragment(ListFavoritesCharacters(),getString(R.string.personajes))
-            adapter.addFragment(ListFavoritesComics(),getString(R.string.comics))
-            adapter.addFragment(ListFavoritesSeries(),getString(R.string.series))
+            adapter.addFragment(ListFavoritesCharactersFragment(),getString(R.string.personajes))
+            adapter.addFragment(ListFavoritesComicsFragment(),getString(R.string.comics))
+            adapter.addFragment(ListFavoritesSeriesFragment(),getString(R.string.series))
             binding.viewPager.adapter=adapter
             binding.tabLayout.setupWithViewPager(binding.viewPager)
             //si no esta conectado se le muestra un mensaje diciendo que tiene que conectarse

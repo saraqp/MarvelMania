@@ -16,7 +16,7 @@ import quesadoprado.saramaria.marvelmania.databinding.FragmentListFavoritesSerie
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 
-class ListFavoritesSeries : Fragment() {
+class ListFavoritesSeriesFragment : Fragment() {
     private var _binding:FragmentListFavoritesSeriesBinding?=null
     private val binding get()=_binding!!
     private var database= FirebaseUtils.firebaseDatabase
