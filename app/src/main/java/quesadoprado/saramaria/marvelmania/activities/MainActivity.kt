@@ -2,9 +2,7 @@ package quesadoprado.saramaria.marvelmania.activities
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.MenuItem
-import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -39,6 +37,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         toggle=ActionBarDrawerToggle(this,binding.drawerLayout,R.string.abierto,R.string.cerrado)
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         binding.navView.setNavigationItemSelectedListener (this)
 

@@ -31,7 +31,8 @@
             android:name=".activities.showInfo.InfoCompleteCharacts"
             android:configChanges="uiMode"
             android:screenOrientation="nosensor"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -40,7 +41,8 @@
             android:name=".activities.showInfo.InfoCompleteComics"
             android:configChanges="uiMode"
             android:screenOrientation="nosensor"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -49,7 +51,8 @@
             android:name=".activities.showInfo.InfoCompleteSeries"
             android:configChanges="uiMode"
             android:screenOrientation="nosensor"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -69,7 +72,8 @@
             android:name=".activities.MainActivity"
             android:configChanges="uiMode"
             android:screenOrientation="nosensor"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
     </application>
 
 </manifest>

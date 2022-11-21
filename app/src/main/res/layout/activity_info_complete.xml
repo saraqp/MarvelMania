@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.showInfo.InfoCompleteCharacts"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:id="@+id/drawerLayout">
 
     <ScrollView
         android:layout_width="match_parent"
