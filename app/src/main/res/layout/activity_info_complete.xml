@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.showInfo.InfoCompleteCharacts"
-    android:background="@color/fragmentBackgroundDark">
+    android:background="@color/background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -41,9 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="60dp"
                     android:layout_marginEnd="16dp"
-
                     android:textAlignment="center"
-                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
                 <ImageView
@@ -64,7 +62,6 @@
                 android:text="@string/descripcion"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/white"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:paddingTop="7dp"/>
@@ -75,7 +72,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:textSize="16sp"
-                android:textColor="@color/white"
                 android:layout_below="@id/descripcion"/>
 
             <LinearLayout
@@ -92,7 +88,6 @@
                     android:text="@string/comics"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
                     android:paddingTop="7dp"/>
 
                 <ScrollView
@@ -133,7 +128,6 @@
                     android:text="@string/series"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
                     android:paddingTop="7dp"
                     tools:ignore="NotSibling" />
 
@@ -180,8 +174,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/comentarios"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
+                        android:textStyle="bold"/>
                     <androidx.cardview.widget.CardView
                         android:id="@+id/contenedor_comentar"
                         android:layout_width="match_parent"
@@ -193,7 +186,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:visibility="gone"
-                            android:background="@color/fragmentBackgroundlight"/>
+                            android:background="@color/background"/>
 
                         <EditText
                             android:id="@+id/escribirComentario"

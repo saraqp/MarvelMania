@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/contentComics"
-    android:background="@color/fragmentBackgroundDark"
+    android:background="@color/background"
     tools:context=".fragments.ComicsFragment">
 
     <LinearLayout
@@ -28,7 +28,15 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
+            <TextView
+                android:id="@+id/noInformationFound"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"/>
             <androidx.core.widget.ContentLoadingProgressBar
                 android:id="@+id/progressbar"
                 style="?android:attr/progressBarStyleLarge"

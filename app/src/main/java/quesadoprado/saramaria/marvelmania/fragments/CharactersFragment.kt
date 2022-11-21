@@ -51,10 +51,16 @@ class CharactersFragment(private val auth: FirebaseAuth) : Fragment() {
                 buscarPersonajePorNombre()
             }else{
                 buscarTodoslosPersonajes()
+                binding.noInformationFound.visibility=View.GONE
+                binding.recyclerViewCharacters.visibility=View.VISIBLE
             }
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        buscarTodoslosPersonajes()
+    }
     private fun buscarTodoslosPersonajes() {
         RetrofitBroker.getRequestAllCharacters(
             onResponse = {
@@ -191,55 +197,65 @@ class CharactersFragment(private val auth: FirebaseAuth) : Fragment() {
                 val respuesta=Gson().fromJson(it, CharactersDTO::class.java)
                 characters= respuesta?.data?.results!!
 
-                val adapter=CharacterAdapter(characters)
-                binding.recyclerViewCharacters.adapter=adapter
+                if (characters.size!=0){
+                    binding.noInformationFound.visibility=View.GONE
+                    binding.recyclerViewCharacters.visibility=View.VISIBLE
 
-                adapter.setOnItemClickListener(object : OnItemClickListener {
-                    override fun onItemClick(position: Int) {
-                        val character = characters[position]
-                        val intent = Intent(context, InfoCompleteCharacts::class.java)
-                        intent.putExtra("charact", character)
-                        startActivity(intent)
-                    }
-                })
-                adapter.setOnItemLongClickListener(object : OnItemLongClickListener{
-                    @SuppressLint("ResourceAsColor")
-                    override fun onItemLongClick(position: Int, view: View): Boolean {
-                        val character=characters[position]
-                        val popupMenu=PopupMenu(
-                            context,
-                            view
-                        )
-                        popupMenu.inflate(R.menu.menu_add_delete_fav)
-                        popupMenu.setOnMenuItemClickListener { task ->
-                            when(task.title){
-                                getString(R.string.addFav)->{
-                                    if (auth.currentUser!=null){
-                                        //guardamos en la base de datos el id del personaje
-                                        // y que es un personaje para poder buscar su información en la api
-                                        DataBaseUtils.guardarPersonaje(auth.currentUser!!.uid,character)
-                                        buscarPersonajePorNombre()
-                                        Snackbar.make(view,"Personaje añadido a favoritos",Snackbar.LENGTH_SHORT).show()
-                                    }else{
-                                        Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()
+                    val adapter=CharacterAdapter(characters)
+                    binding.recyclerViewCharacters.adapter=adapter
+
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val character = characters[position]
+                            val intent = Intent(context, InfoCompleteCharacts::class.java)
+                            intent.putExtra("charact", character)
+                            startActivity(intent)
+                        }
+                    })
+                    adapter.setOnItemLongClickListener(object : OnItemLongClickListener{
+                        @SuppressLint("ResourceAsColor")
+                        override fun onItemLongClick(position: Int, view: View): Boolean {
+                            val character=characters[position]
+                            val popupMenu=PopupMenu(
+                                context,
+                                view
+                            )
+                            popupMenu.inflate(R.menu.menu_add_delete_fav)
+                            popupMenu.setOnMenuItemClickListener { task ->
+                                when(task.title){
+                                    getString(R.string.addFav)->{
+                                        if (auth.currentUser!=null){
+                                            //guardamos en la base de datos el id del personaje
+                                            // y que es un personaje para poder buscar su información en la api
+                                            DataBaseUtils.guardarPersonaje(auth.currentUser!!.uid,character)
+                                            buscarPersonajePorNombre()
+                                            Snackbar.make(view,"Personaje añadido a favoritos",Snackbar.LENGTH_SHORT).show()
+                                        }else{
+                                            Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()
+                                        }
+                                        true
                                     }
-                                    true
-                                }
-                                getString(R.string.delFav)->{
-                                    DataBaseUtils.eliminarPersonaje(auth.currentUser!!.uid,character)
-                                    buscarPersonajePorNombre()
-                                    true
-                                }
-                                else -> {
-                                    false
+                                    getString(R.string.delFav)->{
+                                        DataBaseUtils.eliminarPersonaje(auth.currentUser!!.uid,character)
+                                        buscarPersonajePorNombre()
+                                        true
+                                    }
+                                    else -> {
+                                        false
+                                    }
                                 }
                             }
+                            popupMenu.show()
+                            return true
                         }
-                        popupMenu.show()
-                        return true
-                    }
 
-                })
+                    })
+                }else{
+                    binding.recyclerViewCharacters.visibility=View.GONE
+                    binding.noInformationFound.visibility=View.VISIBLE
+                    binding.noInformationFound.text=getString(R.string.informacionNoEncontrada)
+                }
+
             }, onFailure = {
                 Snackbar.make(binding.contentCharacters,getString(R.string.error),Snackbar.LENGTH_SHORT).show()
             }

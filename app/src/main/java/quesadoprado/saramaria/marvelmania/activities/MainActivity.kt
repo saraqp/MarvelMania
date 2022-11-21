@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private var database= firebaseDatabase
     private lateinit var nombreUsuarioND:TextView
     private var submenuLogin:MenuItem?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)

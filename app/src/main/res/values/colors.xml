@@ -8,9 +8,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="underLine">#BDB8B8</color>
-    <color name="fragmentBackgroundlight">#C2C2C2</color>
-    <color name="fragmentBackgroundDark">#8E8E8E</color>
-    <color name="fragmentLibrary">#00CCFF</color>
-    <color name="fragmentLogin">#FFFB00</color>
+
+
+    <color name="primary">#4DB6AC</color>
+    <color name="primary_dark">#00897B</color>
+    <color name="background">#CFD8DC</color>
+
+    <color name="secondary">#A5D6A7</color>
+    <color name="secondary_dark">#43A047</color>
+
     <color name="error">#F15A4F</color>
+
 </resources>

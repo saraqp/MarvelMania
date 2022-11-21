@@ -4,17 +4,21 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="5dp"
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="10dp">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/user_coment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_margin="10dp"
-            android:textStyle="bold"/>
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="20sp"
+            android:textStyle="bold" />
         <TextView
             android:id="@+id/respComent"
             android:layout_width="match_parent"
@@ -24,7 +28,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_below="@id/user_coment"
-            android:background="@color/fragmentBackgroundDark"/>
+            android:background="@color/background"/>
         <TextView
             android:id="@+id/TVComent"
             android:layout_width="match_parent"
@@ -60,6 +64,7 @@
                 android:src="@drawable/ic_reply"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="8dp"
                 android:layout_below="@id/TVComent"/>
 
         <TextView
