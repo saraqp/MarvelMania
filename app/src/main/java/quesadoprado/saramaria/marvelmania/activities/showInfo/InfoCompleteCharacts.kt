@@ -42,6 +42,8 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
     private var coment: Coment?=null
     private var idComentResp:String?=null
+
+    private var change_reply:Boolean=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityInfoCompleteBinding.inflate(layoutInflater)
@@ -123,14 +125,10 @@ class InfoCompleteCharacts : AppCompatActivity() {
         }
         handler.postDelayed(runnable,200)
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacks(runnable)
-    }
     private fun updateComentsUI(id: Int) {
         runnable= Runnable {
             obtenerComentarios(id)
-            handler.postDelayed(runnable,10000)
+            handler.postDelayed(runnable,60000)
         }
         handler.post(runnable)
     }
@@ -180,12 +178,11 @@ class InfoCompleteCharacts : AppCompatActivity() {
                 binding.listaComentarios.adapter=adapter
                 adapter.setOnItemClickListener(object : OnComentClickListener {
                     override fun onReplyClick(position: Int) {
-                        val comentario= lista_coments[position]
-                        idComentResp=comentario.idComent
+                        idComentResp=lista_coments[position].idComent
                         binding.respuestaComent.visibility=View.VISIBLE
-                        lista_coments= arrayOf()
                         obtenerComentarioResp()
                         binding.escribirComentario.requestFocus()
+
                     }
 
                     @SuppressLint("NotifyDataSetChanged")

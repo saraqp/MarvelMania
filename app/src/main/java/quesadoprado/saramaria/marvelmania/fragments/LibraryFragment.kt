@@ -1,6 +1,7 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ class LibraryFragment(private val auth: FirebaseAuth) : Fragment() {
     private val binding get() = _binding!!
 
     private val currentUser = auth.currentUser
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
         _binding= FragmentLibraryBinding.inflate(inflater,container,false)
         return binding.root

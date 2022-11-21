@@ -3,7 +3,9 @@ package quesadoprado.saramaria.marvelmania.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.KeyEvent
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -89,5 +91,4 @@ class Register : AppCompatActivity() {
             && bindind.email.text.trim().toString().isNotEmpty()
             && bindind.password.text.trim().toString().isNotEmpty()
             && bindind.repeatpassword.text.trim().toString().isNotEmpty()
-
 }

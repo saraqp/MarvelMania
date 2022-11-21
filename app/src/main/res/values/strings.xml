@@ -5,8 +5,8 @@
     <string name="biblioteca">Biblioteca</string>
     <string name="personajes">Personajes</string>
     <string name="series">Series</string>
-    <string name="comics">Comics</string>
-    <string name="inicio_sesion">Iniciar Sesion</string>
+    <string name="comics">Cómics</string>
+    <string name="inicio_sesion">Iniciar Sesión</string>
     <string name="perfil">Perfil</string>
     <string name="error">Ha ocurrido un error, inténtelo más tarde</string>
     <string name="descripcion">Descripción</string>
@@ -20,8 +20,8 @@
     <string name="email">Correo electrónico</string>
     <string name="emailExample" translatable="false">example@gmail.com</string>
     <string name="pass">Contraseña</string>
-    <string name="iniciar">Iniciar sesion</string>
-    <string name="registrar">¿No tienes cuenta? Registrate</string>
+    <string name="iniciar">Iniciar sesión</string>
+    <string name="registrar">¿No tienes cuenta? Regístrate</string>
     <string name="cambiarpass">Cambiar contraseña</string>
     <string name="antiguapass">Antigua contraseña</string>
     <string name="nuevapass">Nueva contraseña</string>
@@ -34,13 +34,13 @@
     <string name="bienvenido">Bienvenido de nuevo</string>
     <string name="requerido">es requerido</string>
     <string name="passNoCoincide">Las contraseñas no coinciden</string>
-    <string name="error_autentificar">Error al autentificar</string>
+    <string name="error_autentificar">Usuario o contraseña incorrectos</string>
     <string name="email_enviado">Email enviando a </string>
     <string name="charact_name">Nombre Personaje</string>
     <string name="buscar">Buscar</string>
-    <string name="titulo">Titulo</string>
-    <string name="sinUsuario">Anonimo</string>
-    <string name="logout">Desconectarse</string>
+    <string name="titulo">Título</string>
+    <string name="sinUsuario">Ançonimo</string>
+    <string name="logout">Cerrar sesión</string>
     <string name="datosUsuario">Información de Usuario</string>
     <string name="oldpassNocoincide">La antigua contraseña no es correcta</string>
     <string name="cambioPassCorrecto">Contraseña actualizada</string>
@@ -64,4 +64,6 @@
     <string name="votado" translatable="false">votado</string>
     <string name="novotado" translatable="false">novotado</string>
     <string name="informacionNoEncontrada">No se ha encontrado información</string>
+    <string name="titleAlertExit">Confirmación</string>
+    <string name="msgAlertExit">¿Seguro que quieres salir?</string>
 </resources>

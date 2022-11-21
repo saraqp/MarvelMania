@@ -60,4 +60,6 @@
     <string name="comentarios">Coments</string>
     <string name="comentar">Comment</string>
     <string name="informacionNoEncontrada">No data found</string>
+    <string name="titleAlertExit">Confirmation</string>
+    <string name="msgAlertExit">Sure you want to exit?</string>
 </resources>

@@ -2,9 +2,12 @@ package quesadoprado.saramaria.marvelmania.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MenuItem
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         nombreUsuarioND= headerView.findViewById(R.id.user_name)
         submenuLogin= binding.navView.menu[4].subMenu!![0]
         if (firebaseAuth.currentUser!=null){
-            submenuLogin!!.title = "Account"
+            submenuLogin!!.title = getString(R.string.perfil)
             submenuLogin!!.setIcon(R.drawable.ic_account_settings)
         }
 
@@ -66,6 +69,21 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         return super.onOptionsItemSelected(item)
     }
 
+    //controlar cierre de aplicación
+    override fun onBackPressed() {
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+        }else {
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.titleAlertExit))
+                .setMessage(getString(R.string.msgAlertExit))
+                .setPositiveButton(getString(R.string.si)){_,_->
+                    super.onBackPressed()
+                }.setNegativeButton(getString(R.string.no)){dialog,_->
+                    dialog.dismiss()
+                }.show()
+        }
+    }
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         when(item.itemId){
