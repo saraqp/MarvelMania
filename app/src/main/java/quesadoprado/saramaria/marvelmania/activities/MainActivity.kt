@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         //para que salga la biblioteca por default
         setToolBarTitle(getString(R.string.biblioteca))
-        changeFragment(LibraryFragment(firebaseAuth))
+        changeFragment(LibraryFragment(firebaseAuth,imageUser))
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -133,15 +133,15 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         when(item.itemId){
             R.id.nav_characters->{
                 setToolBarTitle(getString(R.string.personajes))
-                changeFragment(CharactersFragment(firebaseAuth))
+                changeFragment(CharactersFragment(firebaseAuth,imageUser))
             }
             R.id.nav_comics->{
                 setToolBarTitle(getString(R.string.comics))
-                changeFragment(ComicsFragment(firebaseAuth))
+                changeFragment(ComicsFragment(firebaseAuth,imageUser))
             }
             R.id.nav_series->{
                 setToolBarTitle(getString(R.string.series))
-                changeFragment(SeriesFragment(firebaseAuth,nombreUsuarioND.text.toString()))
+                changeFragment(SeriesFragment(firebaseAuth,imageUser,nombreUsuarioND.text.toString()))
             }
             R.id.nav_login->{
                 if (firebaseAuth.currentUser!=null){
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             }
             R.id.nav_home->{
                 setToolBarTitle(getString(R.string.biblioteca))
-                changeFragment(LibraryFragment(firebaseAuth))
+                changeFragment(LibraryFragment(firebaseAuth,imageUser))
             }
         }
         return true

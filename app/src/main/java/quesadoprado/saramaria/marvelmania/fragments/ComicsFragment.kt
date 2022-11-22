@@ -6,10 +6,13 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -23,16 +26,18 @@ import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 
-class ComicsFragment(private val auth: FirebaseAuth) : Fragment() {
+class ComicsFragment(private val auth: FirebaseAuth,private val imageUser: ImageView) : Fragment() {
 
     private var _binding: FragmentComicsBinding?=null
     private val binding get() = _binding!!
     private lateinit var comics:Array<Comic>
     private val database=firebaseDatabase
 
+    private val storage= FirebaseUtils.firebaseStorage
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
         _binding=FragmentComicsBinding.inflate(inflater,container,false)
         return binding.root
@@ -40,7 +45,7 @@ class ComicsFragment(private val auth: FirebaseAuth) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        mostrarImagenUser()
         binding.recyclerViewComics.layoutManager=GridLayoutManager(context,2)
         //Mostrar todos los comics
         buscarTodosLosComics()
@@ -60,6 +65,22 @@ class ComicsFragment(private val auth: FirebaseAuth) : Fragment() {
         super.onStart()
         buscarTodosLosComics()
     }
+    private fun mostrarImagenUser() {
+        storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }.addOnFailureListener {
+            Glide.with(this)
+                .load(R.mipmap.icon)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }
+    }
+
     private fun buscarTodosLosComics(){
         RetrofitBroker.getRequestAllComics(
             onResponse = {

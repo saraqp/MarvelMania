@@ -7,11 +7,14 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -25,14 +28,16 @@ import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
-class CharactersFragment(private val auth: FirebaseAuth) : Fragment() {
+class CharactersFragment(private val auth: FirebaseAuth,private val imageUser: ImageView) : Fragment() {
 
     private var _binding:FragmentCharactersBinding?=null
     private val binding get() = _binding!!
     private lateinit var characters:Array<Character>
     private val database=firebaseDatabase
+    private val storage= FirebaseUtils.firebaseStorage
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
         _binding=FragmentCharactersBinding.inflate(inflater,container,false)
@@ -42,7 +47,7 @@ class CharactersFragment(private val auth: FirebaseAuth) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerViewCharacters.layoutManager=GridLayoutManager(context,2)
-
+        mostrarImagenUser()
         //Mostrar todos los personajes
         buscarTodoslosPersonajes()
 
@@ -61,6 +66,21 @@ class CharactersFragment(private val auth: FirebaseAuth) : Fragment() {
     override fun onStart() {
         super.onStart()
         buscarTodoslosPersonajes()
+    }
+    private fun mostrarImagenUser() {
+        storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }.addOnFailureListener {
+            Glide.with(this)
+                .load(R.mipmap.icon)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }
     }
     private fun buscarTodoslosPersonajes() {
         RetrofitBroker.getRequestAllCharacters(
