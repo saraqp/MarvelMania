@@ -32,7 +32,7 @@ import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseStorage
 class ShowUserData(
     private var auth: FirebaseAuth,
     private var nombreUsuarioND: TextView,
-    imageUser: ImageView,
+    private var imageUser: ImageView,
     private var submenuLogin: MenuItem?,
     private var database: FirebaseFirestore
 ) : Fragment() {
@@ -153,19 +153,32 @@ class ShowUserData(
     }
 
     private fun mostrarImagenUser() {
+        //La mostramos tanto en este fragment como en el NavigatorDrawer
         storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
             Glide.with(this)
                 .load(it)
                 .apply(RequestOptions().override(512, 512))
                 .circleCrop()
                 .into(binding.imageView)
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+
         }.addOnFailureListener {
             Glide.with(this)
                 .load(R.mipmap.icon)
                 .apply(RequestOptions().override(512, 512))
                 .circleCrop()
                 .into(binding.imageView)
+            Glide.with(this)
+                .load(R.mipmap.icon)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
         }
+
     }
 
     private fun fileManager() {
