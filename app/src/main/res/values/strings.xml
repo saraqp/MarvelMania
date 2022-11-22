@@ -39,7 +39,7 @@
     <string name="charact_name">Nombre Personaje</string>
     <string name="buscar">Buscar</string>
     <string name="titulo">Título</string>
-    <string name="sinUsuario">Ançonimo</string>
+    <string name="sinUsuario">Anónimo</string>
     <string name="logout">Cerrar sesión</string>
     <string name="datosUsuario">Información de Usuario</string>
     <string name="oldpassNocoincide">La antigua contraseña no es correcta</string>
