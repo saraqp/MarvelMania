@@ -60,6 +60,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
         binding = ActivityInfoCompleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         contexto = this
+        //añadir boton para volver a la biblioteca con el icono personalizado
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home)
         //obtenemos los datos del personaje
         val charact = intent?.getParcelableExtra<Character>("charact")

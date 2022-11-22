@@ -49,6 +49,9 @@ class InfoCompleteSeries:AppCompatActivity() {
         setContentView(binding.root)
         contexto=this
 
+        //añadir boton para volver a la biblioteca con el icono personalizado
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home)
+
         val serie=intent.getParcelableExtra<Serie>("serie")
 
 

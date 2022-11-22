@@ -46,6 +46,8 @@ class InfoCompleteComics:AppCompatActivity() {
         setContentView(binding.root)
         context=this
 
+        //añadir boton para volver a la biblioteca con el icono personalizado
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_home)
         //obtenemos los datos del comic
         val comic=intent?.getParcelableExtra<Comic>("comic")
         //obtenemos la url de la imagen del personaje
