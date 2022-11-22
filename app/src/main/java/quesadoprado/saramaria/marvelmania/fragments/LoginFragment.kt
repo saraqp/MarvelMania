@@ -57,37 +57,36 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
                         /*recuperamos de la cuenta que se loguea su nombre de usuario y en el
                           navigation drawer cambiamos "anonymous" por el nombre de usuario conectado
                         */
-                        var user:User?
-                        database.collection("users").document(auth.currentUser!!.uid).get().addOnSuccessListener {document->
-                            if (document.exists()) {
-                                val username = document.get("displayName") as? String
-                                val status = document.get("status") as? String
-                                val useremail = document.get("email") as? String
-                                val uid = auth.currentUser!!.uid
-                                user = User(username,status,uid,pass,useremail)
-                                DataBaseUtils.cambiarStatusUser(user!!, "online")
-                                nombreUsuarioND.text = user!!.username
-                            }
-                        }
+                        cambiarUsernameNavigationDrawer(auth.currentUser!!.uid)
+
+                        //dejamos medio segundo y cambiamos a la pantalla de home (biblioteca)
                         val handler= Handler()
                         handler.postDelayed({
-
                             val intent =Intent(context,MainActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
                         },500)
-
-
                     }else{
                         Snackbar.make(binding.contentLogin,getString(R.string.error_autentificar),Snackbar.LENGTH_SHORT).show()
                     }
             }
         }else if (!notEmpty()){
+            //mostrar un error por cada campo vacio
             loginAccountInputsArray.forEach { input->
                 if (input.text.toString().trim().isEmpty()){
                     input.error="${input.hint} "+getString(R.string.requerido)
                 }
             }
+        }
+    }
+
+    private fun cambiarUsernameNavigationDrawer(uid:String){
+        val sfDocRef=database.collection("users").document(uid)
+        database.runTransaction { transaction->
+            val snapshot=transaction.get(sfDocRef)
+            val actuUsername=snapshot.getLong("displayName")!!
+            DataBaseUtils.cambiarStatusUser(uid, getString(R.string.online))
+            nombreUsuarioND.text = actuUsername.toString()
         }
     }
     private fun notEmpty():Boolean=binding.ETemail.text?.trim().toString().isNotEmpty()

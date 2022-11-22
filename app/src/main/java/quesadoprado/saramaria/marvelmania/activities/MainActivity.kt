@@ -16,6 +16,7 @@ import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityMainBinding
 import quesadoprado.saramaria.marvelmania.fragments.*
+import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
@@ -28,6 +29,12 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private lateinit var nombreUsuarioND:TextView
     private var submenuLogin:MenuItem?=null
 
+    override fun onStart() {
+        super.onStart()
+        if (firebaseAuth.currentUser!=null){
+            DataBaseUtils.cambiarStatusUser(firebaseAuth.currentUser!!.uid,getString(R.string.online))
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
@@ -77,6 +84,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 .setTitle(getString(R.string.titleAlertExit))
                 .setMessage(getString(R.string.msgAlertExit))
                 .setPositiveButton(getString(R.string.si)){_,_->
+                    DataBaseUtils.cambiarStatusUser(firebaseAuth.currentUser!!.uid,getString(R.string.offline))
                     super.onBackPressed()
                 }.setNegativeButton(getString(R.string.no)){dialog,_->
                     dialog.dismiss()

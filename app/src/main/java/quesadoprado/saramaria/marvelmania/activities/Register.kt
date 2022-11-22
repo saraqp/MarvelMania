@@ -44,11 +44,9 @@ class Register : AppCompatActivity() {
                     if(task.isSuccessful){
                         val firebaseUserID=auth.currentUser!!.uid
                         //Guardar en la base de datos
-                        val user=User(username,"online",firebaseUserID,userPassword,userEmail)
+                        val user=User(username,getString(R.string.online),firebaseUserID,userPassword,userEmail)
                         DataBaseUtils.guardarUsuarioEnBbdd(user)
-                        /*Enviamos el mensaje de verificacion de email y nos dirigimos al main
-                        / activity al fragment biblioteca que es el principal
-                        */
+                        //Enviamos el mensaje de verificacion de email
                         enviarMensajeVerificacionEmail()
                     }else{
                         Snackbar.make(bindind.contentRegister,getString(R.string.error_autentificar)+" error: "+task.exception?.message.toString(),Snackbar.LENGTH_SHORT).show()
@@ -60,9 +58,10 @@ class Register : AppCompatActivity() {
         auth.currentUser!!.sendEmailVerification()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Snackbar.make(bindind.contentRegister,getString(R.string.email_enviado)+auth.currentUser!!.email,Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(bindind.contentRegister,getString(R.string.email_enviado)+auth.currentUser!!.email,Snackbar.LENGTH_LONG).show()
                     val handler= Handler()
                     handler.postDelayed({
+                        //nos dirigimos al main con la cuenta de usuario iniciada
                         val intent =Intent(this,MainActivity::class.java)
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)

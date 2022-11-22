@@ -66,4 +66,6 @@
     <string name="informacionNoEncontrada">No se ha encontrado información</string>
     <string name="titleAlertExit">Confirmación</string>
     <string name="msgAlertExit">¿Seguro que quieres salir?</string>
+    <string name="offline" translatable="false">offline</string>
+    <string name="online" translatable="false">online</string>
 </resources>

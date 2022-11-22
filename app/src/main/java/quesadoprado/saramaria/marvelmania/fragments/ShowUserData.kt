@@ -55,7 +55,7 @@ class ShowUserData(
             submenuLogin!!.title = getString(R.string.inicio_sesion)
             submenuLogin!!.setIcon(R.drawable.login_icon)
             //cambiamos en la base de datos su estado a offline
-            DataBaseUtils.cambiarStatusUser(user!!,"offline")
+            DataBaseUtils.cambiarStatusUser(user!!.uid!!,getString(R.string.offline))
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

@@ -1,7 +1,6 @@
 package quesadoprado.saramaria.marvelmania.utils
 
 import android.annotation.SuppressLint
-import quesadoprado.saramaria.marvelmania.adapter.ComentAdapter
 import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
@@ -16,7 +15,8 @@ class DataBaseUtils {
         @SuppressLint("StaticFieldLeak")
         private val database=firebaseDatabase
         private val auth= firebaseAuth
-
+        //FUNCIONES
+        //ELIMINACIÓN COMPLETA DE USUARIO CON SUS FAVORITOS
         fun eliminarUsuario(uid:String){
             //ELIMINAMOS FAVORITOS
             //personajes
@@ -59,6 +59,8 @@ class DataBaseUtils {
                     }
                 }
         }
+
+        //AÑADIR USUARIO Y MODIFICAR SUS DATOS
         fun guardarUsuarioEnBbdd(user:User){
             database.collection("users").document(user.uid!!).set(
                 hashMapOf("email" to user.email,
@@ -68,24 +70,19 @@ class DataBaseUtils {
             )
         }
         fun cambiarPassUser(user: User,password:String){
-            database.collection("users").document(user.uid!!).set(
-                hashMapOf(
-                    "displayName" to user.username!!,
-                    "status" to user.status,
-                    "email" to user.email,
-                    "password" to password
-                )
-            )
+            val sfDocRef= database.collection("users").document(user.uid!!)
+            database.runTransaction { transaction->
+                transaction.update(sfDocRef,"password",password)
+            }
         }
-        fun cambiarStatusUser(user: User, status:String){
-            database.collection("users").document(user.uid!!).set(
-                hashMapOf("displayName" to user.username!!,
-                    "status" to status,
-                    "email" to user.email,
-                    "password" to user.pass
-                )
-            )
+        fun cambiarStatusUser(user: String, status:String){
+            val sfDocRef= database.collection("users").document(user)
+            database.runTransaction { transaction->
+                transaction.update(sfDocRef,"status",status)
+            }
         }
+
+        //FAVORITOS USER
         fun guardarPersonaje(uid:String,personaje:Character){
             //guardamos en una coleccion "characters" la información de los personajes
             database.collection("users").document(uid)
@@ -151,6 +148,8 @@ class DataBaseUtils {
                 .collection("series")
                 .document(serie.id.toString()).delete()
         }
+
+        //COMENTARIOS
         fun guardarComentario(coment: Coment) {
             database.collection("coments").document().set(
                 hashMapOf(
@@ -187,22 +186,11 @@ class DataBaseUtils {
             database.collection("users/${auth.currentUser!!.uid}/comentsVotes").document(idComent.toString()).delete()
         }
         fun cambiarPuntuacionComentario(puntNew: Int, coment: Coment) {
-            database.collection("coments").document(coment.idComent!!).get().addOnCompleteListener {
-                if (it.isSuccessful){
-                    val puntuacion=(it.result.data!!["score"] as Long).toInt()
-                    //cambiamos la puntuacion
-                    val actuScore=puntuacion+puntNew
-                    database.collection("coments").document(coment.idComent!!).set(
-                        hashMapOf(
-                            "type" to coment.type,
-                            "score" to actuScore,
-                            "username" to coment.username,
-                            "id_type" to coment.id_type,
-                            "coment" to coment.comentario,
-                            "id_coment_resp" to coment.id_coment_resp
-                        )
-                    )
-                }
+            val sfDocRef= database.collection("coments").document(coment.idComent!!)
+            database.runTransaction { transaction->
+                val snapshot=transaction.get(sfDocRef)
+                val actuScore=snapshot.getLong("score")!!+puntNew
+                transaction.update(sfDocRef,"score",actuScore)
             }
         }
     }
