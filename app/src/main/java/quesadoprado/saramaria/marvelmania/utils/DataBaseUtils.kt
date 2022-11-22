@@ -11,13 +11,14 @@ import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 class DataBaseUtils {
-    companion object{
+    companion object {
         @SuppressLint("StaticFieldLeak")
-        private val database=firebaseDatabase
-        private val auth= firebaseAuth
+        private val database = firebaseDatabase
+        private val auth = firebaseAuth
+
         //FUNCIONES
         //ELIMINACIÓN COMPLETA DE USUARIO CON SUS FAVORITOS
-        fun eliminarUsuario(uid:String){
+        fun eliminarUsuario(uid: String) {
             //ELIMINAMOS FAVORITOS
             //personajes
             borrarPersonajesFavUser(uid)
@@ -29,31 +30,35 @@ class DataBaseUtils {
             database.collection("users").document(uid).delete()
 
         }
+
         private fun borrarPersonajesFavUser(uid: String) {
             database.collection("users/$uid/characters")
-                .get().addOnCompleteListener{personajes->
-                    if (personajes.isSuccessful){
+                .get().addOnCompleteListener { personajes ->
+                    if (personajes.isSuccessful) {
                         for (personaje in personajes.result) {
-                            database.collection("users/$uid/characters").document(personaje.id).delete()
+                            database.collection("users/$uid/characters").document(personaje.id)
+                                .delete()
                         }
                     }
-            }
+                }
         }
-        private fun borrarComicsFavUser(uid: String){
+
+        private fun borrarComicsFavUser(uid: String) {
             database.collection("users/$uid/comics")
-                .get().addOnCompleteListener { comics->
-                    if (comics.isSuccessful){
-                        for (comic in comics.result){
+                .get().addOnCompleteListener { comics ->
+                    if (comics.isSuccessful) {
+                        for (comic in comics.result) {
                             database.collection("users/$uid/comics").document(comic.id).delete()
                         }
                     }
                 }
         }
-        private fun borrarSeriesFavUser(uid: String){
+
+        private fun borrarSeriesFavUser(uid: String) {
             database.collection("users/$uid/series")
-                .get().addOnCompleteListener { series->
-                    if (series.isSuccessful){
-                        for (serie in series.result){
+                .get().addOnCompleteListener { series ->
+                    if (series.isSuccessful) {
+                        for (serie in series.result) {
                             database.collection("users/$uid/series").document(serie.id).delete()
                         }
                     }
@@ -61,29 +66,33 @@ class DataBaseUtils {
         }
 
         //AÑADIR USUARIO Y MODIFICAR SUS DATOS
-        fun guardarUsuarioEnBbdd(user:User){
+        fun guardarUsuarioEnBbdd(user: User) {
             database.collection("users").document(user.uid!!).set(
-                hashMapOf("email" to user.email,
+                hashMapOf(
+                    "email" to user.email,
                     "displayName" to user.username,
                     "password" to user.pass,
-                    "status" to user.status)
+                    "status" to user.status
+                )
             )
         }
-        fun cambiarPassUser(user: User,password:String){
-            val sfDocRef= database.collection("users").document(user.uid!!)
-            database.runTransaction { transaction->
-                transaction.update(sfDocRef,"password",password)
+
+        fun cambiarPassUser(user: User, password: String) {
+            val sfDocRef = database.collection("users").document(user.uid!!)
+            database.runTransaction { transaction ->
+                transaction.update(sfDocRef, "password", password)
             }
         }
-        fun cambiarStatusUser(user: String, status:String){
-            val sfDocRef= database.collection("users").document(user)
-            database.runTransaction { transaction->
-                transaction.update(sfDocRef,"status",status)
+
+        fun cambiarStatusUser(user: String, status: String) {
+            val sfDocRef = database.collection("users").document(user)
+            database.runTransaction { transaction ->
+                transaction.update(sfDocRef, "status", status)
             }
         }
 
         //FAVORITOS USER
-        fun guardarPersonaje(uid:String,personaje:Character){
+        fun guardarPersonaje(uid: String, personaje: Character) {
             //guardamos en una coleccion "characters" la información de los personajes
             database.collection("users").document(uid)
                 .collection("characters").document(personaje.id.toString()).set(
@@ -95,17 +104,19 @@ class DataBaseUtils {
                     )
                 )
         }
+
         fun eliminarPersonaje(uid: String, character: Character) {
-             database.collection("users").document(uid)
-                 .collection("characters")
-                 .document(character.id.toString()).delete()
+            database.collection("users").document(uid)
+                .collection("characters")
+                .document(character.id.toString()).delete()
         }
+
         fun guardarComic(uid: String, comic: Comic) {
             //variaciones de portada
-            val imagenes= mutableListOf<Thumbnail>()
-            for (i in 0 until comic.images!!.size){
-                val image = Thumbnail(comic.images[i].path,comic.images[i].extension)
-                imagenes+=image
+            val imagenes = mutableListOf<Thumbnail>()
+            for (i in 0 until comic.images!!.size) {
+                val image = Thumbnail(comic.images[i].path, comic.images[i].extension)
+                imagenes += image
             }
             //guardamos en una coleccion llamada "comics" la información de los comics
             database.collection("users").document(uid)
@@ -122,11 +133,13 @@ class DataBaseUtils {
                     )
                 )
         }
-        fun eliminarComic(uid: String, comic: Comic){
+
+        fun eliminarComic(uid: String, comic: Comic) {
             database.collection("users").document(uid)
                 .collection("comics")
                 .document(comic.id.toString()).delete()
         }
+
         fun guardarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series").document(serie.id.toString()).set(
@@ -143,6 +156,7 @@ class DataBaseUtils {
                     )
                 )
         }
+
         fun eliminarSerie(uid: String, serie: Serie) {
             database.collection("users").document(uid)
                 .collection("series")
@@ -162,9 +176,10 @@ class DataBaseUtils {
                 )
             )
         }
-        fun addVotoUser(upVoteOrDownVote : String, idComent: String?) {
-            when(upVoteOrDownVote){
-                "upvote"->{
+
+        fun addVotoUser(upVoteOrDownVote: String, idComent: String?) {
+            when (upVoteOrDownVote) {
+                "upvote" -> {
                     database.collection("users").document(auth.currentUser!!.uid)
                         .collection("comentsVotes").document(idComent.toString()).set(
                             hashMapOf(
@@ -172,7 +187,7 @@ class DataBaseUtils {
                             )
                         )
                 }
-                "downvote"->{
+                "downvote" -> {
                     database.collection("users").document(auth.currentUser!!.uid)
                         .collection("comentsVotes").document(idComent.toString()).set(
                             hashMapOf(
@@ -182,15 +197,18 @@ class DataBaseUtils {
                 }
             }
         }
+
         fun delVotoUser(idComent: String?) {
-            database.collection("users/${auth.currentUser!!.uid}/comentsVotes").document(idComent.toString()).delete()
+            database.collection("users/${auth.currentUser!!.uid}/comentsVotes")
+                .document(idComent.toString()).delete()
         }
+
         fun cambiarPuntuacionComentario(puntNew: Int, coment: Coment) {
-            val sfDocRef= database.collection("coments").document(coment.idComent!!)
-            database.runTransaction { transaction->
-                val snapshot=transaction.get(sfDocRef)
-                val actuScore=snapshot.getLong("score")!!+puntNew
-                transaction.update(sfDocRef,"score",actuScore)
+            val sfDocRef = database.collection("coments").document(coment.idComent!!)
+            database.runTransaction { transaction ->
+                val snapshot = transaction.get(sfDocRef)
+                val actuScore = snapshot.getLong("score")!! + puntNew
+                transaction.update(sfDocRef, "score", actuScore)
             }
         }
     }

@@ -17,84 +17,96 @@ import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 
 class ListFavoritesSeriesFragment : Fragment() {
-    private var _binding:FragmentListFavoritesSeriesBinding?=null
-    private val binding get()=_binding!!
-    private var database= FirebaseUtils.firebaseDatabase
-    private val currentUser= FirebaseUtils.firebaseAuth.currentUser
-    private lateinit var rutaColeccionSerieFavoritos:String
+    private var _binding: FragmentListFavoritesSeriesBinding? = null
+    private val binding get() = _binding!!
+    private var database = FirebaseUtils.firebaseDatabase
+    private val currentUser = FirebaseUtils.firebaseAuth.currentUser
+    private lateinit var rutaColeccionSerieFavoritos: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentListFavoritesSeriesBinding.inflate(inflater,container,false)
+        _binding = FragmentListFavoritesSeriesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        if (currentUser!=null){
-            rutaColeccionSerieFavoritos="users/${currentUser.uid}/series"
+        if (currentUser != null) {
+            rutaColeccionSerieFavoritos = "users/${currentUser.uid}/series"
             obtenerSeriesFavoritos(rutaColeccionSerieFavoritos)
         }
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (currentUser!=null){
-            rutaColeccionSerieFavoritos="users/${currentUser.uid}/series"
+        if (currentUser != null) {
+            rutaColeccionSerieFavoritos = "users/${currentUser.uid}/series"
             obtenerSeriesFavoritos(rutaColeccionSerieFavoritos)
         }
     }
+
     private fun obtenerSeriesFavoritos(ruta: String) {
         database.collection(ruta).get()
-            .addOnCompleteListener { document->
-                if (document.isSuccessful){
-                    var series= arrayOf<Serie>()
-                    for(i in 0 until document.result.size()){
+            .addOnCompleteListener { document ->
+                if (document.isSuccessful) {
+                    var series = arrayOf<Serie>()
+                    for (i in 0 until document.result.size()) {
                         //datos de las series
-                        val item=document.result.documents[i].data
-                        val id=item!!["id"] as Long?
-                        val description=item["description"] as String?
-                        val endYear=item["endYear"] as Long?
-                        val rating=item["rating"] as String?
-                        val startYear=item["startYear"] as Long?
-                        val thumbnailHashMap=item["thumbnail"] as HashMap<*,*>
-                        val thumbnail=Thumbnail(
+                        val item = document.result.documents[i].data
+                        val id = item!!["id"] as Long?
+                        val description = item["description"] as String?
+                        val endYear = item["endYear"] as Long?
+                        val rating = item["rating"] as String?
+                        val startYear = item["startYear"] as Long?
+                        val thumbnailHashMap = item["thumbnail"] as HashMap<*, *>
+                        val thumbnail = Thumbnail(
                             thumbnailHashMap["path"] as String?,
                             thumbnailHashMap["extension"] as String?
                         )
-                        val title=item["title"] as String?
-                        val nextHashMap=item["next"] as Any?
-                        val next:Item? = if (nextHashMap is HashMap<*,*>){
+                        val title = item["title"] as String?
+                        val nextHashMap = item["next"] as Any?
+                        val next: Item? = if (nextHashMap is HashMap<*, *>) {
                             Item(
                                 nextHashMap["name"] as String?,
                                 nextHashMap["resourceURI"] as String?
                             )
-                        }else{
+                        } else {
                             null
                         }
-                        val previousHashMap=item["previous"] as Any?
-                        val previous:Item?=if (previousHashMap is HashMap<*,*>){
+                        val previousHashMap = item["previous"] as Any?
+                        val previous: Item? = if (previousHashMap is HashMap<*, *>) {
                             Item(
                                 previousHashMap["name"] as String?,
                                 previousHashMap["resourceURI"] as String?
                             )
-                        }else{
+                        } else {
                             null
                         }
-                        val serie=Serie(id!!.toInt(),title,description,startYear?.toInt(), endYear?.toInt(), rating, thumbnail,next,previous)
-                        series=series.plus(serie)
+                        val serie = Serie(
+                            id!!.toInt(),
+                            title,
+                            description,
+                            startYear?.toInt(),
+                            endYear?.toInt(),
+                            rating,
+                            thumbnail,
+                            next,
+                            previous
+                        )
+                        series = series.plus(serie)
 
                     }
                     //mostramos las series
-                    binding.listaSeriesFavoritos.layoutManager=GridLayoutManager(context,2)
-                    val adapter=SeriesFavouritesAdapter(series)
-                    binding.listaSeriesFavoritos.adapter=adapter
-                    adapter.setOnItemClickListener(object : OnItemClickListener{
+                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 2)
+                    val adapter = SeriesFavouritesAdapter(series)
+                    binding.listaSeriesFavoritos.adapter = adapter
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
                         override fun onItemClick(position: Int) {
-                            val serie=series[position]
-                            val intent= Intent(context, InfoCompleteSeries::class.java)
-                            intent.putExtra("serie",serie)
+                            val serie = series[position]
+                            val intent = Intent(context, InfoCompleteSeries::class.java)
+                            intent.putExtra("serie", serie)
                             startActivity(intent)
                         }
 

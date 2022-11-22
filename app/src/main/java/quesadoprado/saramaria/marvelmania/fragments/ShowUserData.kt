@@ -36,72 +36,92 @@ class ShowUserData(
     private var submenuLogin: MenuItem?,
     private var database: FirebaseFirestore
 ) : Fragment() {
-    private var _binding: FragmentShowUserDataBinding?=null
+    private var _binding: FragmentShowUserDataBinding? = null
     private val binding get() = _binding!!
-    private var user:User?=null
+    private var user: User? = null
 
-    private val storage=firebaseStorage
+    private val storage = firebaseStorage
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentShowUserDataBinding.inflate(inflater,container,false)
+        _binding = FragmentShowUserDataBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val uid: String =auth.currentUser!!.uid
+        val uid: String = auth.currentUser!!.uid
         //ponemos la imagen del usuario
         mostrarImagenUser()
 
         //obtenemos los datos del usuario con su uid
         obtenerDatosUser(uid)
 
-        binding.emailtext.text=auth.currentUser!!.email
+        binding.emailtext.text = auth.currentUser!!.email
         binding.logout.setOnClickListener {
             FirebaseUtils.firebaseAuth.signOut()
-            nombreUsuarioND.text=getString(R.string.sinUsuario)
+            nombreUsuarioND.text = getString(R.string.sinUsuario)
             submenuLogin!!.title = getString(R.string.inicio_sesion)
             submenuLogin!!.setIcon(R.drawable.login_icon)
             //cambiamos en la base de datos su estado a offline
-            DataBaseUtils.cambiarStatusUser(user!!.uid!!,getString(R.string.offline))
+            DataBaseUtils.cambiarStatusUser(user!!.uid!!, getString(R.string.offline))
             val intent = Intent(context, MainActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
         //cambiar la contraseña del usuario
         binding.botonActualizarPass.setOnClickListener {
-            if(!comprobarNulos()) {
+            if (!comprobarNulos()) {
                 obtenerDatosUser(uid)
                 if (comprobarAntiguaContrasena(user)) {
-                    val userCredential: AuthCredential =EmailAuthProvider.getCredential(user!!.email!!, user!!.pass!!)
+                    val userCredential: AuthCredential =
+                        EmailAuthProvider.getCredential(user!!.email!!, user!!.pass!!)
                     auth.currentUser!!.reauthenticate(userCredential).addOnCompleteListener {
                         if (it.isSuccessful) {
                             auth.currentUser!!.updatePassword(binding.passtextrepetirnueva.text.toString())
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        DataBaseUtils.cambiarPassUser(user!!,binding.passtextnueva.text.toString())
-                                        Snackbar.make(view,getString(R.string.cambioPassCorrecto),Snackbar.LENGTH_SHORT).show()
+                                        DataBaseUtils.cambiarPassUser(
+                                            user!!,
+                                            binding.passtextnueva.text.toString()
+                                        )
+                                        Snackbar.make(
+                                            view,
+                                            getString(R.string.cambioPassCorrecto),
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
                                     } else {
-                                        Snackbar.make(view,getString(R.string.cambioPassError),Snackbar.LENGTH_SHORT).show()
+                                        Snackbar.make(
+                                            view,
+                                            getString(R.string.cambioPassError),
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
                                     }
                                 }
                         } else {
-                            Snackbar.make(view,getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(view, getString(R.string.error), Snackbar.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 } else {
-                    Snackbar.make(view,getString(R.string.oldpassNocoincide),Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(
+                        view,
+                        getString(R.string.oldpassNocoincide),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
-            }else{
-                Snackbar.make(view,getString(R.string.camposRellenos),Snackbar.LENGTH_SHORT).show()
+            } else {
+                Snackbar.make(view, getString(R.string.camposRellenos), Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
         binding.deleteUser.setOnClickListener {
-            val userCredential: AuthCredential =EmailAuthProvider.getCredential(user!!.email!!, user!!.pass!!)
-            val builder=AlertDialog.Builder(context)
+            val userCredential: AuthCredential =
+                EmailAuthProvider.getCredential(user!!.email!!, user!!.pass!!)
+            val builder = AlertDialog.Builder(context)
             //comprobamos que es usuario está seguro de que quiere eliminar su cuenta
             builder.setMessage(getString(R.string.asegurarBorradoUser))
                 .setPositiveButton(getString(R.string.si)) { _, _ ->
@@ -127,7 +147,7 @@ class ShowUserData(
         //cambiar imagen usuario
         binding.imageView.setOnClickListener {
             fileManager()
-            
+
 
         }
     }
@@ -154,14 +174,16 @@ class ShowUserData(
         galleryIntent.type = "image/*"
         imagePickerActivityResult.launch(galleryIntent)
     }
+
     //añadir la imagen nueva del usuario
     private var imagePickerActivityResult: ActivityResultLauncher<Intent> =
-        registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result ->
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result != null) {
                 val imageUri: Uri? = result.data?.data
-                if (imageUri!=null){
+                if (imageUri != null) {
                     //añadimos nueva imagen del usuario
-                    val uploadTask = storage.child("file/${auth.currentUser!!.uid}").putFile(imageUri)
+                    val uploadTask =
+                        storage.child("file/${auth.currentUser!!.uid}").putFile(imageUri)
                     uploadTask.addOnSuccessListener {
                         storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
                             Glide.with(this)
@@ -176,10 +198,18 @@ class ShowUserData(
                                 .circleCrop()
                                 .into(imageUser)
                         }.addOnFailureListener {
-                            Snackbar.make(requireView(),getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(
+                                requireView(),
+                                getString(R.string.error),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                         }
                     }.addOnFailureListener {
-                        Snackbar.make(requireView(),getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(
+                            requireView(),
+                            getString(R.string.error),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -187,27 +217,30 @@ class ShowUserData(
         }
 
     private fun obtenerDatosUser(uid: String) {
-        database.collection("users").document(uid).get().addOnSuccessListener {document->
+        database.collection("users").document(uid).get().addOnSuccessListener { document ->
             if (document != null) {
-                user=User()
-                user= User(document.data?.get("displayName") as String?,
+                user = User()
+                user = User(
+                    document.data?.get("displayName") as String?,
                     document.data?.get("status") as String?,
                     auth.currentUser!!.uid,
                     document.data?.get("password") as String?,
                     document.data?.get("email") as String?
                 )
-                binding.user.text= user!!.username
+                binding.user.text = user!!.username
             } else {
-                Toast.makeText(context,getString(R.string.error),Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun comprobarNulos(): Boolean {
-        return binding.passtext.text.trim().toString().isEmpty()||binding.passtextnueva.text.trim().toString().isEmpty()||binding.passtextrepetirnueva.text.trim().toString().isEmpty()
+        return binding.passtext.text.trim().toString()
+            .isEmpty() || binding.passtextnueva.text.trim().toString()
+            .isEmpty() || binding.passtextrepetirnueva.text.trim().toString().isEmpty()
     }
 
     private fun comprobarAntiguaContrasena(user: User?): Boolean {
-        return binding.passtext.text.trim().toString()== user?.pass!!.trim()
+        return binding.passtext.text.trim().toString() == user?.pass!!.trim()
     }
 }

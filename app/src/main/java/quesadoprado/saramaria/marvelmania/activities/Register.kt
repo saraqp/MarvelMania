@@ -22,7 +22,6 @@ class Register : AppCompatActivity() {
     lateinit var bindind:ActivityRegisterBinding
     private lateinit var createAccountInputsArray:Array<EditText>
     private lateinit var auth:FirebaseAuth
-    private val storage= FirebaseUtils.firebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         auth= firebaseAuth
@@ -56,8 +55,6 @@ class Register : AppCompatActivity() {
                 }
         }
     }
-
-
     private fun enviarMensajeVerificacionEmail() {
         auth.currentUser!!.sendEmailVerification()
             .addOnCompleteListener { task ->

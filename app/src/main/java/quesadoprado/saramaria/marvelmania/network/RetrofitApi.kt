@@ -11,108 +11,121 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(Constants.BASE_URL)
     .build()
 
-interface RetrofitApiService{
+interface RetrofitApiService {
     @GET("characters")
     fun getAllCharacters(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderCharact
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderCharact
+    ): Call<String>
+
     @GET("characters")
     fun getCharacterByName(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("nameStartsWith")name:String
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("nameStartsWith") name: String
+    ): Call<String>
+
     @GET("characters/{id}/comics")
     fun getComicsForCharacterId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderComics_Series
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderComics_Series
+    ): Call<String>
+
     @GET("characters/{id}/series")
     fun getSeriesForCharacterId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderComics_Series
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderComics_Series
+    ): Call<String>
+
     @GET("comics")
     fun getAllComics(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderComics_Series
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderComics_Series
+    ): Call<String>
+
     @GET("comics")
     fun getComicsByTittle(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("titleStartsWith")title:String
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("titleStartsWith") title: String
+    ): Call<String>
+
     @GET("comics/{id}/characters")
     fun getCharactersForComicId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderCharact
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderCharact
+    ): Call<String>
+
     @GET("series")
     fun getAllSeries(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderComics_Series
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderComics_Series
+    ): Call<String>
+
     @GET("series")
     fun getSerieByName(
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("titleStartsWith")title:String
-    ):Call<String>
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("titleStartsWith") title: String
+    ): Call<String>
+
     @GET("series/{id}")
     fun getSerieForId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit
+    ): Call<String>
+
     @GET("series/{id}/characters")
     fun getCharactersForSerieId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderCharact
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderCharact
+    ): Call<String>
+
     @GET("series/{id}/comics")
     fun getComicsForSerieId(
-        @Path("id")id:Int,
-        @Query("apikey")apikey:String=Constants.API_KEY,
-        @Query("ts")ts:String=Constants.timeStamp,
-        @Query("hash")hash:String=Constants.hash(),
-        @Query("limit")limit:Int=Constants.limit,
-        @Query("orderBy")orderby:String=Constants.orderComics_Series
-    ):Call<String>
+        @Path("id") id: Int,
+        @Query("apikey") apikey: String = Constants.API_KEY,
+        @Query("ts") ts: String = Constants.timeStamp,
+        @Query("hash") hash: String = Constants.hash(),
+        @Query("limit") limit: Int = Constants.limit,
+        @Query("orderBy") orderby: String = Constants.orderComics_Series
+    ): Call<String>
 
 }
+
 object RetrofitApi {
-    val retrofitService : RetrofitApiService by lazy {
-        retrofit.create(RetrofitApiService::class.java) }
+    val retrofitService: RetrofitApiService by lazy {
+        retrofit.create(RetrofitApiService::class.java)
+    }
 }

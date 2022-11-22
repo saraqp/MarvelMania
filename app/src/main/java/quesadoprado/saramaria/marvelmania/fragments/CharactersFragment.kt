@@ -31,7 +31,7 @@ import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
-class CharactersFragment(private val auth: FirebaseAuth,private val imageUser: ImageView) : Fragment() {
+class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: ImageView) : Fragment() {
 
     private var _binding:FragmentCharactersBinding?=null
     private val binding get() = _binding!!

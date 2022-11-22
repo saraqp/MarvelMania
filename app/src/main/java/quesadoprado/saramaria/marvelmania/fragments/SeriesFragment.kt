@@ -30,40 +30,46 @@ import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
-class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: ImageView, private val username: String) : Fragment() {
+class SeriesFragment(
+    private val auth: FirebaseAuth,
+    private val imageUser: ImageView,
+    private val username: String
+) : Fragment() {
 
-    private var _binding: FragmentSeriesBinding?=null
+    private var _binding: FragmentSeriesBinding? = null
     private val binding get() = _binding!!
-    private lateinit var series:Array<Serie>
-    private val database=firebaseDatabase
-    private val storage= FirebaseUtils.firebaseStorage
+    private lateinit var series: Array<Serie>
+    private val database = firebaseDatabase
+    private val storage = FirebaseUtils.firebaseStorage
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding= FragmentSeriesBinding.inflate(inflater,container,false)
+        _binding = FragmentSeriesBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mostrarImagenUser()
 
-        binding.recyclerViewSeries.layoutManager=GridLayoutManager(context,2)
+        binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 2)
         //mostrar todas las series de base
         buscarTodasLasSeries()
 
         //el usuario busca por titulo
         binding.ETBuscadorSerie.doOnTextChanged { _, _, _, _ ->
-            if(binding.ETBuscadorSerie.text.trim().toString().isNotEmpty()){
+            if (binding.ETBuscadorSerie.text.trim().toString().isNotEmpty()) {
                 buscarSeriesPorTitulo()
-            }else{
+            } else {
                 buscarTodasLasSeries()
-                binding.recyclerViewSeries.visibility=View.VISIBLE
-                binding.noInformationFound.visibility=View.GONE
+                binding.recyclerViewSeries.visibility = View.VISIBLE
+                binding.noInformationFound.visibility = View.GONE
             }
         }
 
     }
+
     private fun mostrarImagenUser() {
         storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
             Glide.with(this)
@@ -79,70 +85,80 @@ class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: Image
                 .into(imageUser)
         }
     }
+
     override fun onStart() {
         super.onStart()
         buscarTodasLasSeries()
     }
+
     private fun ocultarProgressBar() {
-        val handler= Handler()
-        val runnable=Runnable{
-            binding.progressbar.visibility=View.GONE
+        val handler = Handler()
+        val runnable = Runnable {
+            binding.progressbar.visibility = View.GONE
         }
-        handler.postDelayed(runnable,200)
+        handler.postDelayed(runnable, 200)
     }
-    private fun buscarTodasLasSeries(){
+
+    private fun buscarTodasLasSeries() {
         RetrofitBroker.getRequestAllSeries(
             onResponse = {
-                val respuesta: SeriesDTO =Gson().fromJson(it, SeriesDTO::class.java)
+                val respuesta: SeriesDTO = Gson().fromJson(it, SeriesDTO::class.java)
 
-                series=respuesta.data?.results!!
-                val adapter= SeriesAdapter(series)
-                binding.recyclerViewSeries.adapter=adapter
+                series = respuesta.data?.results!!
+                val adapter = SeriesAdapter(series)
+                binding.recyclerViewSeries.adapter = adapter
 
                 ocultarProgressBar()
 
-                adapter.setOnItemClickListener(object : OnItemClickListener{
+                adapter.setOnItemClickListener(object : OnItemClickListener {
                     override fun onItemClick(position: Int) {
-                        val serie= series[position]
-                        val intent= Intent(context, InfoCompleteSeries::class.java)
-                        intent.putExtra("serie",serie)
-                        intent.putExtra("username",username)
+                        val serie = series[position]
+                        val intent = Intent(context, InfoCompleteSeries::class.java)
+                        intent.putExtra("serie", serie)
+                        intent.putExtra("username", username)
                         startActivity(intent)
                     }
                 })
-                adapter.setOnItemLongClickListener(object : OnItemLongClickListener{
+                adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
                     override fun onItemLongClick(position: Int, view: View): Boolean {
-                        val serie=series[position]
+                        val serie = series[position]
                         //creamos un popmenu para que el usuario pueda agregar a
                         // favoritos desde la lista de series
-                        val popupMenu=PopupMenu(context,view)
+                        val popupMenu = PopupMenu(context, view)
                         popupMenu.inflate(R.menu.menu_add_delete_fav)
-                        popupMenu.setOnMenuItemClickListener { task->
-                            when(task.title){
-                                getString(R.string.addFav)->{
-                                    if (auth.currentUser!=null){
+                        popupMenu.setOnMenuItemClickListener { task ->
+                            when (task.title) {
+                                getString(R.string.addFav) -> {
+                                    if (auth.currentUser != null) {
                                         //comprobamos si ya se encuentra en favoritos
                                         database.collection("users/${auth.currentUser!!.uid}/series")
                                             .document(serie.id.toString()).get()
-                                            .addOnCompleteListener { seri->
-                                                if (seri.isSuccessful){
+                                            .addOnCompleteListener { seri ->
+                                                if (seri.isSuccessful) {
                                                     //esta en fav
-                                                    if (seri.result.exists()){
+                                                    if (seri.result.exists()) {
                                                         //le comunicamos al usuario que ya esta en favoritos
                                                         Snackbar.make(
                                                             view,
                                                             getString(R.string.cantAddFav),
                                                             Snackbar.LENGTH_SHORT
                                                         ).show()
-                                                    //No está en fav
-                                                    }else{
-                                                        DataBaseUtils.guardarSerie(auth.currentUser!!.uid,serie)
+                                                        //No está en fav
+                                                    } else {
+                                                        DataBaseUtils.guardarSerie(
+                                                            auth.currentUser!!.uid,
+                                                            serie
+                                                        )
                                                         buscarTodasLasSeries()
-                                                        Snackbar.make(view,getString(R.string.addingFav),Snackbar.LENGTH_SHORT).show()
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.addingFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
                                                     }
                                                 }
                                             }
-                                    }else{
+                                    } else {
                                         Snackbar.make(
                                             view,
                                             getString(R.string.necesitasLogin),
@@ -151,23 +167,30 @@ class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: Image
                                     }
                                     true
                                 }
-                                getString(R.string.delFav)->{
-                                    if (auth.currentUser!=null){
+                                getString(R.string.delFav) -> {
+                                    if (auth.currentUser != null) {
                                         //comprobamos si está en favoritos
                                         database.collection("users/${auth.currentUser!!.uid}/series")
                                             .document(serie.id.toString()).get()
-                                            .addOnCompleteListener { seri->
-                                                if (seri.isSuccessful){
+                                            .addOnCompleteListener { seri ->
+                                                if (seri.isSuccessful) {
                                                     //esta en fav
-                                                    if (seri.result.exists()){
+                                                    if (seri.result.exists()) {
                                                         //eliminamos la serie
-                                                        DataBaseUtils.eliminarSerie(auth.currentUser!!.uid,serie)
+                                                        DataBaseUtils.eliminarSerie(
+                                                            auth.currentUser!!.uid,
+                                                            serie
+                                                        )
                                                         //refrescamos la lista
                                                         buscarTodasLasSeries()
                                                         //informamos al usuario
-                                                        Snackbar.make(view,getString(R.string.removingFav),Snackbar.LENGTH_SHORT).show()
-                                                    //no esta en fav
-                                                    }else{
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.removingFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
+                                                        //no esta en fav
+                                                    } else {
                                                         Snackbar.make(
                                                             view,
                                                             getString(R.string.cantRemFav),
@@ -176,7 +199,7 @@ class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: Image
                                                     }
                                                 }
                                             }
-                                    }else{
+                                    } else {
                                         Snackbar.make(
                                             view,
                                             getString(R.string.necesitasLogin),
@@ -185,7 +208,9 @@ class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: Image
                                     }
                                     true
                                 }
-                                else->{false}
+                                else -> {
+                                    false
+                                }
                             }
                         }
                         popupMenu.show()
@@ -193,126 +218,151 @@ class SeriesFragment(private val auth: FirebaseAuth,private val imageUser: Image
                     }
                 })
             }, onFailure = {
-                Snackbar.make(binding.contentSerie,getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.contentSerie,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
     }
-    private fun buscarSeriesPorTitulo(){
-            val tituloSerie=binding.ETBuscadorSerie.text.toString()
-            RetrofitBroker.getRequestSerieByName(tituloSerie,
-                onResponse = {
-                    val respuesta: SeriesDTO =Gson().fromJson(it, SeriesDTO::class.java)
 
-                    series=respuesta.data?.results!!
+    private fun buscarSeriesPorTitulo() {
+        val tituloSerie = binding.ETBuscadorSerie.text.toString()
+        RetrofitBroker.getRequestSerieByName(tituloSerie,
+            onResponse = {
+                val respuesta: SeriesDTO = Gson().fromJson(it, SeriesDTO::class.java)
 
-                    if (series.size!=0){
-                        binding.recyclerViewSeries.visibility=View.VISIBLE
-                        binding.noInformationFound.visibility=View.GONE
+                series = respuesta.data?.results!!
 
-                        val adapter= SeriesAdapter(series)
-                        binding.recyclerViewSeries.adapter=adapter
+                if (series.size != 0) {
+                    binding.recyclerViewSeries.visibility = View.VISIBLE
+                    binding.noInformationFound.visibility = View.GONE
 
-                        adapter.setOnItemClickListener(object : OnItemClickListener{
-                            override fun onItemClick(position: Int) {
-                                val serie= series[position]
-                                val intent= Intent(context, InfoCompleteSeries::class.java)
-                                intent.putExtra("serie",serie)
-                                startActivity(intent)
-                            }
-                        })
-                        adapter.setOnItemLongClickListener(object :OnItemLongClickListener{
-                            override fun onItemLongClick(position: Int, view: View): Boolean {
-                                val serie=series[position]
-                                //creamos un popmenu para que el usuario pueda agregar a
-                                // favoritos desde la lista de series
-                                val popupMenu=PopupMenu(context,view)
-                                popupMenu.inflate(R.menu.menu_add_delete_fav)
-                                popupMenu.setOnMenuItemClickListener { task->
-                                    when(task.title){
-                                        getString(R.string.addFav)->{
-                                            if (auth.currentUser!=null){
-                                                //comprobamos si ya se encuentra en favoritos
-                                                database.collection("users/${auth.currentUser!!.uid}/series")
-                                                    .document(serie.id.toString()).get()
-                                                    .addOnCompleteListener { seri->
-                                                        if (seri.isSuccessful){
-                                                            //esta en fav
-                                                            if (seri.result.exists()){
-                                                                //le comunicamos al usuario que ya esta en favoritos
-                                                                Snackbar.make(
-                                                                    view,
-                                                                    getString(R.string.cantAddFav),
-                                                                    Snackbar.LENGTH_SHORT
-                                                                ).show()
-                                                                //No está en fav
-                                                            }else{
-                                                                DataBaseUtils.guardarSerie(auth.currentUser!!.uid,serie)
-                                                                buscarSeriesPorTitulo()
-                                                                Snackbar.make(view,getString(R.string.addingFav),Snackbar.LENGTH_SHORT).show()
-                                                            }
+                    val adapter = SeriesAdapter(series)
+                    binding.recyclerViewSeries.adapter = adapter
+
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val serie = series[position]
+                            val intent = Intent(context, InfoCompleteSeries::class.java)
+                            intent.putExtra("serie", serie)
+                            startActivity(intent)
+                        }
+                    })
+                    adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
+                        override fun onItemLongClick(position: Int, view: View): Boolean {
+                            val serie = series[position]
+                            //creamos un popmenu para que el usuario pueda agregar a
+                            // favoritos desde la lista de series
+                            val popupMenu = PopupMenu(context, view)
+                            popupMenu.inflate(R.menu.menu_add_delete_fav)
+                            popupMenu.setOnMenuItemClickListener { task ->
+                                when (task.title) {
+                                    getString(R.string.addFav) -> {
+                                        if (auth.currentUser != null) {
+                                            //comprobamos si ya se encuentra en favoritos
+                                            database.collection("users/${auth.currentUser!!.uid}/series")
+                                                .document(serie.id.toString()).get()
+                                                .addOnCompleteListener { seri ->
+                                                    if (seri.isSuccessful) {
+                                                        //esta en fav
+                                                        if (seri.result.exists()) {
+                                                            //le comunicamos al usuario que ya esta en favoritos
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.cantAddFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
+                                                            //No está en fav
+                                                        } else {
+                                                            DataBaseUtils.guardarSerie(
+                                                                auth.currentUser!!.uid,
+                                                                serie
+                                                            )
+                                                            buscarSeriesPorTitulo()
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.addingFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
                                                         }
                                                     }
-                                            }else{
-                                                Snackbar.make(
-                                                    view,
-                                                    getString(R.string.necesitasLogin),
-                                                    Snackbar.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            true
+                                                }
+                                        } else {
+                                            Snackbar.make(
+                                                view,
+                                                getString(R.string.necesitasLogin),
+                                                Snackbar.LENGTH_SHORT
+                                            ).show()
                                         }
-                                        getString(R.string.delFav)->{
-                                            if (auth.currentUser!=null){
-                                                //comprobamos si está en favoritos
-                                                database.collection("users/${auth.currentUser!!.uid}/series")
-                                                    .document(serie.id.toString()).get()
-                                                    .addOnCompleteListener { seri->
-                                                        if (seri.isSuccessful){
-                                                            //esta en fav
-                                                            if (seri.result.exists()){
-                                                                //eliminamos la serie
-                                                                DataBaseUtils.eliminarSerie(auth.currentUser!!.uid,serie)
-                                                                //refrescamos la lista
-                                                                buscarSeriesPorTitulo()
-                                                                //informamos al usuario
-                                                                Snackbar.make(view,getString(R.string.removingFav),Snackbar.LENGTH_SHORT).show()
-                                                                //no esta en fav
-                                                            }else{
-                                                                Snackbar.make(
-                                                                    view,
-                                                                    getString(R.string.cantRemFav),
-                                                                    Snackbar.LENGTH_SHORT
-                                                                ).show()
-                                                            }
+                                        true
+                                    }
+                                    getString(R.string.delFav) -> {
+                                        if (auth.currentUser != null) {
+                                            //comprobamos si está en favoritos
+                                            database.collection("users/${auth.currentUser!!.uid}/series")
+                                                .document(serie.id.toString()).get()
+                                                .addOnCompleteListener { seri ->
+                                                    if (seri.isSuccessful) {
+                                                        //esta en fav
+                                                        if (seri.result.exists()) {
+                                                            //eliminamos la serie
+                                                            DataBaseUtils.eliminarSerie(
+                                                                auth.currentUser!!.uid,
+                                                                serie
+                                                            )
+                                                            //refrescamos la lista
+                                                            buscarSeriesPorTitulo()
+                                                            //informamos al usuario
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.removingFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
+                                                            //no esta en fav
+                                                        } else {
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.cantRemFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
                                                         }
                                                     }
-                                            }else{
-                                                Snackbar.make(
-                                                    view,
-                                                    getString(R.string.necesitasLogin),
-                                                    Snackbar.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                            true
+                                                }
+                                        } else {
+                                            Snackbar.make(
+                                                view,
+                                                getString(R.string.necesitasLogin),
+                                                Snackbar.LENGTH_SHORT
+                                            ).show()
                                         }
-                                        else->{false}
+                                        true
+                                    }
+                                    else -> {
+                                        false
                                     }
                                 }
-                                popupMenu.show()
-                                return true
                             }
+                            popupMenu.show()
+                            return true
+                        }
 
-                        })
-                    }else{
-                        binding.recyclerViewSeries.visibility=View.GONE
-                        binding.noInformationFound.visibility=View.VISIBLE
-                        binding.noInformationFound.text=getString(R.string.informacionNoEncontrada)
-                    }
-
-                }, onFailure = {
-                    Snackbar.make(binding.contentSerie,getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                    })
+                } else {
+                    binding.recyclerViewSeries.visibility = View.GONE
+                    binding.noInformationFound.visibility = View.VISIBLE
+                    binding.noInformationFound.text = getString(R.string.informacionNoEncontrada)
                 }
-            )
+
+            }, onFailure = {
+                Snackbar.make(
+                    binding.contentSerie,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        )
     }
 
 }

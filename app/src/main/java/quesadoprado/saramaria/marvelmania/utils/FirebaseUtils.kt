@@ -6,8 +6,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 
 object FirebaseUtils {
-    val firebaseAuth:FirebaseAuth=FirebaseAuth.getInstance()
+    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
     @SuppressLint("StaticFieldLeak")
-    val firebaseDatabase=FirebaseFirestore.getInstance()
-    val firebaseStorage=FirebaseStorage.getInstance().reference
+    val firebaseDatabase = FirebaseFirestore.getInstance()
+    val firebaseStorage = FirebaseStorage.getInstance().reference
 }

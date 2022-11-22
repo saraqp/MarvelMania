@@ -12,12 +12,12 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         //hacer que el activity se muestre durante 1 segundo y despues no se pueda vuelver a éste
-        handler=Handler()
+        handler = Handler()
         handler.postDelayed({
-            val intent= Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        },1000)
+        }, 1000)
 
     }
 }

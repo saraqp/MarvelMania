@@ -15,15 +15,20 @@ import quesadoprado.saramaria.marvelmania.adapter.ViewPagerAdapter
 import quesadoprado.saramaria.marvelmania.databinding.FragmentLibraryBinding
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 
-class LibraryFragment(private val auth: FirebaseAuth,private val imageUser: ImageView) : Fragment() {
-    private var _binding: FragmentLibraryBinding?=null
+class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: ImageView) :
+    Fragment() {
+    private var _binding: FragmentLibraryBinding? = null
     private val binding get() = _binding!!
 
     private val currentUser = auth.currentUser
-    private val storage= FirebaseUtils.firebaseStorage
+    private val storage = FirebaseUtils.firebaseStorage
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
-        _binding= FragmentLibraryBinding.inflate(inflater,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLibraryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -31,25 +36,26 @@ class LibraryFragment(private val auth: FirebaseAuth,private val imageUser: Imag
         super.onViewCreated(view, savedInstanceState)
         mostrarImagenUser()
         //si el usuario esta conectado se le muestran sus favoritos
-        if(currentUser != null){
-            binding.mensajeNoLogueados.visibility=View.GONE
-            binding.tabLayout.visibility=View.VISIBLE
-            binding.viewPager.visibility=View.VISIBLE
-            val adapter=ViewPagerAdapter(childFragmentManager)
-            adapter.addFragment(ListFavoritesCharactersFragment(),getString(R.string.personajes))
-            adapter.addFragment(ListFavoritesComicsFragment(),getString(R.string.comics))
-            adapter.addFragment(ListFavoritesSeriesFragment(),getString(R.string.series))
-            binding.viewPager.adapter=adapter
+        if (currentUser != null) {
+            binding.mensajeNoLogueados.visibility = View.GONE
+            binding.tabLayout.visibility = View.VISIBLE
+            binding.viewPager.visibility = View.VISIBLE
+            val adapter = ViewPagerAdapter(childFragmentManager)
+            adapter.addFragment(ListFavoritesCharactersFragment(), getString(R.string.personajes))
+            adapter.addFragment(ListFavoritesComicsFragment(), getString(R.string.comics))
+            adapter.addFragment(ListFavoritesSeriesFragment(), getString(R.string.series))
+            binding.viewPager.adapter = adapter
             binding.tabLayout.setupWithViewPager(binding.viewPager)
             //si no esta conectado se le muestra un mensaje diciendo que tiene que conectarse
-        }else{
-            binding.mensajeNoLogueados.text=getString(R.string.loginLibrary)
-            binding.mensajeNoLogueados.visibility=View.VISIBLE
-            binding.tabLayout.visibility=View.GONE
-            binding.viewPager.visibility=View.GONE
+        } else {
+            binding.mensajeNoLogueados.text = getString(R.string.loginLibrary)
+            binding.mensajeNoLogueados.visibility = View.VISIBLE
+            binding.tabLayout.visibility = View.GONE
+            binding.viewPager.visibility = View.GONE
         }
 
     }
+
     private fun mostrarImagenUser() {
         storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
             Glide.with(this)

@@ -30,33 +30,38 @@ import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
 
-class ComicsFragment(private val auth: FirebaseAuth,private val imageUser: ImageView) : Fragment() {
+class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: ImageView) :
+    Fragment() {
 
-    private var _binding: FragmentComicsBinding?=null
+    private var _binding: FragmentComicsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var comics:Array<Comic>
-    private val database=firebaseDatabase
+    private lateinit var comics: Array<Comic>
+    private val database = firebaseDatabase
 
-    private val storage= FirebaseUtils.firebaseStorage
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
-        _binding=FragmentComicsBinding.inflate(inflater,container,false)
+    private val storage = FirebaseUtils.firebaseStorage
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentComicsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mostrarImagenUser()
-        binding.recyclerViewComics.layoutManager=GridLayoutManager(context,2)
+        binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 2)
         //Mostrar todos los comics
         buscarTodosLosComics()
         //Cuando el usuario busca por titulo
         binding.ETBuscadorComic.doOnTextChanged { _, _, _, _ ->
-            if (binding.ETBuscadorComic.text.toString().trim().isNotEmpty()){
+            if (binding.ETBuscadorComic.text.toString().trim().isNotEmpty()) {
                 buscarComicsPorTitulo()
-            }else{
+            } else {
                 buscarTodosLosComics()
-                binding.noInformationFound.visibility=View.GONE
-                binding.recyclerViewComics.visibility=View.VISIBLE
+                binding.noInformationFound.visibility = View.GONE
+                binding.recyclerViewComics.visibility = View.VISIBLE
             }
         }
     }
@@ -65,6 +70,7 @@ class ComicsFragment(private val auth: FirebaseAuth,private val imageUser: Image
         super.onStart()
         buscarTodosLosComics()
     }
+
     private fun mostrarImagenUser() {
         storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
             Glide.with(this)
@@ -81,81 +87,115 @@ class ComicsFragment(private val auth: FirebaseAuth,private val imageUser: Image
         }
     }
 
-    private fun buscarTodosLosComics(){
+    private fun buscarTodosLosComics() {
         RetrofitBroker.getRequestAllComics(
             onResponse = {
-                val gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
-                val respuesta:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
+                val gson = Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
+                val respuesta: ComicsDTO = gson.fromJson(it, ComicsDTO::class.java)
 
-                comics= respuesta.data?.results!!
-                val adapter=ComicAdapter(comics)
-                binding.recyclerViewComics.adapter=adapter
+                comics = respuesta.data?.results!!
+                val adapter = ComicAdapter(comics)
+                binding.recyclerViewComics.adapter = adapter
                 ocultarProgressBar()
-                adapter.setOnItemClickListener(object :OnItemClickListener{
+                adapter.setOnItemClickListener(object : OnItemClickListener {
                     override fun onItemClick(position: Int) {
-                        val comic= comics[position]
-                        val intent= Intent(context,InfoCompleteComics::class.java)
-                        intent.putExtra("comic",comic)
+                        val comic = comics[position]
+                        val intent = Intent(context, InfoCompleteComics::class.java)
+                        intent.putExtra("comic", comic)
                         startActivity(intent)
                     }
 
                 })
-                adapter.setOnItemLongClickListener(object : OnItemLongClickListener{
+                adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
                     override fun onItemLongClick(position: Int, view: View): Boolean {
-                        val comic=comics[position]
-                        val popupMenu=PopupMenu(context,view)
+                        val comic = comics[position]
+                        val popupMenu = PopupMenu(context, view)
                         popupMenu.inflate(R.menu.menu_add_delete_fav)
-                        popupMenu.setOnMenuItemClickListener { task->
-                                when(task.title){
-                                    getString(R.string.addFav)->{
-                                        if (auth.currentUser!=null){
-                                            database.collection("users/${auth.currentUser!!.uid}/comics")
-                                                .document(comic.id.toString()).get()
-                                                .addOnCompleteListener { comics->
-                                                    if (comics.isSuccessful){
-                                                        //se encuentra en favoritos
-                                                        if (comics.result.exists()){
-                                                            //comunicamos q se encuentra en favoritos
-                                                            Snackbar.make(view,getString(R.string.cantAddFav),Snackbar.LENGTH_SHORT).show()
+                        popupMenu.setOnMenuItemClickListener { task ->
+                            when (task.title) {
+                                getString(R.string.addFav) -> {
+                                    if (auth.currentUser != null) {
+                                        database.collection("users/${auth.currentUser!!.uid}/comics")
+                                            .document(comic.id.toString()).get()
+                                            .addOnCompleteListener { comics ->
+                                                if (comics.isSuccessful) {
+                                                    //se encuentra en favoritos
+                                                    if (comics.result.exists()) {
+                                                        //comunicamos q se encuentra en favoritos
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.cantAddFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
                                                         //no está en favoritos
-                                                        }else{
-                                                            DataBaseUtils.guardarComic(auth.currentUser!!.uid,comic)
-                                                            buscarTodosLosComics()
-                                                            Snackbar.make(view,getString(R.string.addingFav),Snackbar.LENGTH_SHORT).show()
-                                                        }
+                                                    } else {
+                                                        DataBaseUtils.guardarComic(
+                                                            auth.currentUser!!.uid,
+                                                            comic
+                                                        )
+                                                        buscarTodosLosComics()
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.addingFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
                                                     }
                                                 }
-                                        }else{Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()}
-                                        true
+                                            }
+                                    } else {
+                                        Snackbar.make(
+                                            view,
+                                            getString(R.string.necesitasLogin),
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
                                     }
-                                    getString(R.string.delFav)->{
-                                        if (auth.currentUser!=null){
-                                            //comprobamos si el comic esta en favoritos
-                                            database.collection("users/${auth.currentUser!!.uid}/comics")
-                                                .document(comic.id.toString()).get()
-                                                .addOnCompleteListener { comc->
-                                                    if (comc.isSuccessful){
-                                                        //se encuentra en fav
-                                                        if (comc.result.exists()){
-                                                            DataBaseUtils.eliminarComic(auth.currentUser!!.uid,comic)
-                                                            //actualizamos la lista para que desaparezca de favoritos
-                                                            buscarTodosLosComics()
-                                                            Snackbar.make(view,getString(R.string.removingFav),Snackbar.LENGTH_SHORT).show()
+                                    true
+                                }
+                                getString(R.string.delFav) -> {
+                                    if (auth.currentUser != null) {
+                                        //comprobamos si el comic esta en favoritos
+                                        database.collection("users/${auth.currentUser!!.uid}/comics")
+                                            .document(comic.id.toString()).get()
+                                            .addOnCompleteListener { comc ->
+                                                if (comc.isSuccessful) {
+                                                    //se encuentra en fav
+                                                    if (comc.result.exists()) {
+                                                        DataBaseUtils.eliminarComic(
+                                                            auth.currentUser!!.uid,
+                                                            comic
+                                                        )
+                                                        //actualizamos la lista para que desaparezca de favoritos
+                                                        buscarTodosLosComics()
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.removingFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
                                                         //No esta en fav
-                                                        }else{
-                                                            Snackbar.make(view,getString(R.string.cantRemFav),Snackbar.LENGTH_SHORT).show()
+                                                    } else {
+                                                        Snackbar.make(
+                                                            view,
+                                                            getString(R.string.cantRemFav),
+                                                            Snackbar.LENGTH_SHORT
+                                                        ).show()
 
-                                                        }
                                                     }
                                                 }
-                                        }else{Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()}
-                                        true
+                                            }
+                                    } else {
+                                        Snackbar.make(
+                                            view,
+                                            getString(R.string.necesitasLogin),
+                                            Snackbar.LENGTH_SHORT
+                                        ).show()
                                     }
-                                    else->{
-                                        false
-                                    }
+                                    true
+                                }
+                                else -> {
+                                    false
                                 }
                             }
+                        }
                         popupMenu.show()
                         return true
                     }
@@ -163,114 +203,156 @@ class ComicsFragment(private val auth: FirebaseAuth,private val imageUser: Image
                 })
 
             }, onFailure = {
-                Snackbar.make(binding.contentComics,getString(R.string.error), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    binding.contentComics,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
 
             }
         )
     }
 
     private fun ocultarProgressBar() {
-        val handler= Handler()
-        val runnable=Runnable{
-            binding.progressbar.visibility=View.GONE
+        val handler = Handler()
+        val runnable = Runnable {
+            binding.progressbar.visibility = View.GONE
         }
-        handler.postDelayed(runnable,200)
+        handler.postDelayed(runnable, 200)
     }
 
-    private fun buscarComicsPorTitulo(){
-            val tituloComic=binding.ETBuscadorComic.text.toString()
-            RetrofitBroker.getRequestComicByName(tituloComic,
-                onResponse = {
-                    val gson=Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
-                    val respuesta:ComicsDTO=gson.fromJson(it,ComicsDTO::class.java)
+    private fun buscarComicsPorTitulo() {
+        val tituloComic = binding.ETBuscadorComic.text.toString()
+        RetrofitBroker.getRequestComicByName(tituloComic,
+            onResponse = {
+                val gson = Gson().newBuilder().setDateFormat("yyyy-MM-dd").create()
+                val respuesta: ComicsDTO = gson.fromJson(it, ComicsDTO::class.java)
 
-                    comics= respuesta.data?.results!!
+                comics = respuesta.data?.results!!
 
-                    if (comics.size!=0){
-                        binding.noInformationFound.visibility=View.GONE
-                        binding.recyclerViewComics.visibility=View.VISIBLE
-                        val adapter=ComicAdapter(comics)
-                        binding.recyclerViewComics.adapter=adapter
-                        adapter.setOnItemClickListener(object : OnItemClickListener{
-                            override fun onItemClick(position: Int) {
-                                val comic= comics[position]
-                                val intent= Intent(context,InfoCompleteComics::class.java)
-                                intent.putExtra("comic",comic)
-                                startActivity(intent)
-                            }
+                if (comics.size != 0) {
+                    binding.noInformationFound.visibility = View.GONE
+                    binding.recyclerViewComics.visibility = View.VISIBLE
+                    val adapter = ComicAdapter(comics)
+                    binding.recyclerViewComics.adapter = adapter
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
+                        override fun onItemClick(position: Int) {
+                            val comic = comics[position]
+                            val intent = Intent(context, InfoCompleteComics::class.java)
+                            intent.putExtra("comic", comic)
+                            startActivity(intent)
+                        }
 
-                        })
-                        adapter.setOnItemLongClickListener(object : OnItemLongClickListener{
-                            override fun onItemLongClick(position: Int, view: View): Boolean {
-                                val comic=comics[position]
-                                val popupMenu=PopupMenu(context,view)
-                                popupMenu.inflate(R.menu.menu_add_delete_fav)
-                                popupMenu.setOnMenuItemClickListener { task->
-                                    when(task.title){
-                                        getString(R.string.addFav)->{
-                                            if (auth.currentUser!=null){
-                                                database.collection("users/${auth.currentUser!!.uid}/comics")
-                                                    .document(comic.id.toString()).get()
-                                                    .addOnCompleteListener { comics->
-                                                        if (comics.isSuccessful){
-                                                            //se encuentra en favoritos
-                                                            if (comics.result.exists()){
-                                                                //comunicamos q se encuentra en favoritos
-                                                                Snackbar.make(view,getString(R.string.cantAddFav),Snackbar.LENGTH_SHORT).show()
-                                                                //no está en favoritos
-                                                            }else{
-                                                                DataBaseUtils.guardarComic(auth.currentUser!!.uid,comic)
-                                                                buscarComicsPorTitulo()
-                                                                Snackbar.make(view,getString(R.string.addingFav),Snackbar.LENGTH_SHORT).show()
-                                                            }
+                    })
+                    adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
+                        override fun onItemLongClick(position: Int, view: View): Boolean {
+                            val comic = comics[position]
+                            val popupMenu = PopupMenu(context, view)
+                            popupMenu.inflate(R.menu.menu_add_delete_fav)
+                            popupMenu.setOnMenuItemClickListener { task ->
+                                when (task.title) {
+                                    getString(R.string.addFav) -> {
+                                        if (auth.currentUser != null) {
+                                            database.collection("users/${auth.currentUser!!.uid}/comics")
+                                                .document(comic.id.toString()).get()
+                                                .addOnCompleteListener { comics ->
+                                                    if (comics.isSuccessful) {
+                                                        //se encuentra en favoritos
+                                                        if (comics.result.exists()) {
+                                                            //comunicamos q se encuentra en favoritos
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.cantAddFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
+                                                            //no está en favoritos
+                                                        } else {
+                                                            DataBaseUtils.guardarComic(
+                                                                auth.currentUser!!.uid,
+                                                                comic
+                                                            )
+                                                            buscarComicsPorTitulo()
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.addingFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
                                                         }
                                                     }
-                                            }else{Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()}
-                                            true
+                                                }
+                                        } else {
+                                            Snackbar.make(
+                                                view,
+                                                getString(R.string.necesitasLogin),
+                                                Snackbar.LENGTH_SHORT
+                                            ).show()
                                         }
-                                        getString(R.string.delFav)->{
-                                            if (auth.currentUser!=null){
-                                                //comprobamos si el comic esta en favoritos
-                                                database.collection("users/${auth.currentUser!!.uid}/comics")
-                                                    .document(comic.id.toString()).get()
-                                                    .addOnCompleteListener { comc->
-                                                        if (comc.isSuccessful){
-                                                            //se encuentra en fav
-                                                            if (comc.result.exists()){
-                                                                DataBaseUtils.eliminarComic(auth.currentUser!!.uid,comic)
-                                                                //actualizamos la lista para que desaparezca de favoritos
-                                                                buscarComicsPorTitulo()
-                                                                Snackbar.make(view,getString(R.string.removingFav),Snackbar.LENGTH_SHORT).show()
-                                                                //No esta en fav
-                                                            }else{
-                                                                Snackbar.make(view,getString(R.string.cantRemFav),Snackbar.LENGTH_SHORT).show()
+                                        true
+                                    }
+                                    getString(R.string.delFav) -> {
+                                        if (auth.currentUser != null) {
+                                            //comprobamos si el comic esta en favoritos
+                                            database.collection("users/${auth.currentUser!!.uid}/comics")
+                                                .document(comic.id.toString()).get()
+                                                .addOnCompleteListener { comc ->
+                                                    if (comc.isSuccessful) {
+                                                        //se encuentra en fav
+                                                        if (comc.result.exists()) {
+                                                            DataBaseUtils.eliminarComic(
+                                                                auth.currentUser!!.uid,
+                                                                comic
+                                                            )
+                                                            //actualizamos la lista para que desaparezca de favoritos
+                                                            buscarComicsPorTitulo()
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.removingFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
+                                                            //No esta en fav
+                                                        } else {
+                                                            Snackbar.make(
+                                                                view,
+                                                                getString(R.string.cantRemFav),
+                                                                Snackbar.LENGTH_SHORT
+                                                            ).show()
 
-                                                            }
                                                         }
                                                     }
-                                            }else{Snackbar.make(view,getString(R.string.necesitasLogin),Snackbar.LENGTH_SHORT).show()}
-                                            true
+                                                }
+                                        } else {
+                                            Snackbar.make(
+                                                view,
+                                                getString(R.string.necesitasLogin),
+                                                Snackbar.LENGTH_SHORT
+                                            ).show()
                                         }
-                                        else->{
-                                            false
-                                        }
+                                        true
+                                    }
+                                    else -> {
+                                        false
                                     }
                                 }
-                                popupMenu.show()
-                                return true
                             }
+                            popupMenu.show()
+                            return true
+                        }
 
-                        })
-                    }else{
-                        binding.noInformationFound.visibility=View.VISIBLE
-                        binding.recyclerViewComics.visibility=View.GONE
-                        binding.noInformationFound.text=getString(R.string.informacionNoEncontrada)
-                    }
-
-                }, onFailure = {
-                    Snackbar.make(binding.contentComics,getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                    })
+                } else {
+                    binding.noInformationFound.visibility = View.VISIBLE
+                    binding.recyclerViewComics.visibility = View.GONE
+                    binding.noInformationFound.text = getString(R.string.informacionNoEncontrada)
                 }
-            )
+
+            }, onFailure = {
+                Snackbar.make(
+                    binding.contentComics,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        )
 
     }
 }
