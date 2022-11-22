@@ -13,6 +13,7 @@ import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityRegisterBinding
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 
 class Register : AppCompatActivity() {
@@ -21,6 +22,7 @@ class Register : AppCompatActivity() {
     lateinit var bindind:ActivityRegisterBinding
     private lateinit var createAccountInputsArray:Array<EditText>
     private lateinit var auth:FirebaseAuth
+    private val storage= FirebaseUtils.firebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         auth= firebaseAuth
@@ -54,6 +56,8 @@ class Register : AppCompatActivity() {
                 }
         }
     }
+
+
     private fun enviarMensajeVerificacionEmail() {
         auth.currentUser!!.sendEmailVerification()
             .addOnCompleteListener { task ->

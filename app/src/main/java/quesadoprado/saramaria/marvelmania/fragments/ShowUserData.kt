@@ -2,14 +2,20 @@ package quesadoprado.saramaria.marvelmania.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.EmailAuthProvider
@@ -21,16 +27,20 @@ import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.FragmentShowUserDataBinding
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseStorage
 
 class ShowUserData(
     private var auth: FirebaseAuth,
     private var nombreUsuarioND: TextView,
+    imageUser: ImageView,
     private var submenuLogin: MenuItem?,
     private var database: FirebaseFirestore
 ) : Fragment() {
     private var _binding: FragmentShowUserDataBinding?=null
     private val binding get() = _binding!!
     private var user:User?=null
+
+    private val storage=firebaseStorage
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,10 +53,11 @@ class ShowUserData(
         super.onViewCreated(view, savedInstanceState)
 
         val uid: String =auth.currentUser!!.uid
+        //ponemos la imagen del usuario
+        mostrarImagenUser()
+
         //obtenemos los datos del usuario con su uid
         obtenerDatosUser(uid)
-
-
 
         binding.emailtext.text=auth.currentUser!!.email
         binding.logout.setOnClickListener {
@@ -61,7 +72,7 @@ class ShowUserData(
             startActivity(intent)
         }
         //cambiar la contraseña del usuario
-        binding.botonActualizarPerfil.setOnClickListener {
+        binding.botonActualizarPass.setOnClickListener {
             if(!comprobarNulos()) {
                 obtenerDatosUser(uid)
                 if (comprobarAntiguaContrasena(user)) {
@@ -113,7 +124,67 @@ class ShowUserData(
                 }.show()
 
         }
+        //cambiar imagen usuario
+        binding.imageView.setOnClickListener {
+            fileManager()
+            
+
+        }
     }
+
+    private fun mostrarImagenUser() {
+        storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(binding.imageView)
+        }.addOnFailureListener {
+            Glide.with(this)
+                .load(R.mipmap.icon)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(binding.imageView)
+        }
+    }
+
+    private fun fileManager() {
+        //abrir galeria para seleccionar imagen
+        val galleryIntent = Intent(Intent.ACTION_PICK)
+        galleryIntent.type = "image/*"
+        imagePickerActivityResult.launch(galleryIntent)
+    }
+    //añadir la imagen nueva del usuario
+    private var imagePickerActivityResult: ActivityResultLauncher<Intent> =
+        registerForActivityResult( ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result != null) {
+                val imageUri: Uri? = result.data?.data
+                if (imageUri!=null){
+                    //añadimos nueva imagen del usuario
+                    val uploadTask = storage.child("file/${auth.currentUser!!.uid}").putFile(imageUri)
+                    uploadTask.addOnSuccessListener {
+                        storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+                            Glide.with(this)
+                                .load(it)
+                                .apply(RequestOptions().override(512, 512))
+                                .circleCrop()
+                                .into(binding.imageView)
+                            //cambiamos tambien la imagen del navigator Drawer
+                            Glide.with(this)
+                                .load(it)
+                                .apply(RequestOptions().override(512, 512))
+                                .circleCrop()
+                                .into(imageUser)
+                        }.addOnFailureListener {
+                            Snackbar.make(requireView(),getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                        }
+                    }.addOnFailureListener {
+                        Snackbar.make(requireView(),getString(R.string.error),Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+
+            }
+        }
 
     private fun obtenerDatosUser(uid: String) {
         database.collection("users").document(uid).get().addOnSuccessListener {document->

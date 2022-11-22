@@ -7,12 +7,12 @@
     android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
     android:background="@color/white">
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/image_view"
-        app:shapeAppearanceOverlay="@style/circleImageView"
         app:srcCompat="@mipmap/icon"
         android:layout_height="60dp"
         android:layout_width="60dp"/>
+
     <TextView
         android:id="@+id/user_name"
         android:layout_width="match_parent"

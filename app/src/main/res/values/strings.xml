@@ -26,7 +26,7 @@
     <string name="antiguapass">Antigua contraseña</string>
     <string name="nuevapass">Nueva contraseña</string>
     <string name="repetirpass">Repetir contraseña</string>
-    <string name="actualizar">Actualizar perfil</string>
+    <string name="actualizar">Actualizar contraseña</string>
     <string name="registrarse">Registrarse</string>
     <string name="username">Nombre de usuario</string>
     <string name="camposRellenos">Ningún campo puede estar vacío</string>

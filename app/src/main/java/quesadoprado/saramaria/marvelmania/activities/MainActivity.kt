@@ -1,8 +1,10 @@
 package quesadoprado.saramaria.marvelmania.activities
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -10,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import quesadoprado.saramaria.marvelmania.R
@@ -17,6 +21,7 @@ import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityMainBinding
 import quesadoprado.saramaria.marvelmania.fragments.*
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
 
@@ -27,7 +32,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     private lateinit var binding: ActivityMainBinding
     private var database= firebaseDatabase
     private lateinit var nombreUsuarioND:TextView
+    private lateinit var imageUser:ImageView
     private var submenuLogin:MenuItem?=null
+
+    private val storage= FirebaseUtils.firebaseStorage
 
     override fun onStart() {
         super.onStart()
@@ -40,6 +48,8 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+
         //NAVIGATION DRAWER
         toggle=ActionBarDrawerToggle(this,binding.drawerLayout,R.string.abierto,R.string.cerrado)
         binding.drawerLayout.addDrawerListener(toggle)
@@ -51,10 +61,15 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         //obtenemos la cabecera
         val headerView=binding.navView.getHeaderView(0)
         nombreUsuarioND= headerView.findViewById(R.id.user_name)
+        imageUser=headerView.findViewById(R.id.image_view)
         submenuLogin= binding.navView.menu[4].subMenu!![0]
+
         if (firebaseAuth.currentUser!=null){
             submenuLogin!!.title = getString(R.string.perfil)
             submenuLogin!!.setIcon(R.drawable.ic_account_settings)
+            obtenerImageUser()
+        }else{
+            ponerImagenDefault()
         }
 
         cambiarNombreUser(firebaseAuth.currentUser?.uid)
@@ -68,6 +83,28 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         setToolBarTitle(getString(R.string.biblioteca))
         changeFragment(LibraryFragment(firebaseAuth))
     }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun ponerImagenDefault() {
+        Glide.with(this)
+            .load(getDrawable(R.mipmap.icon))
+            .apply(RequestOptions().override(512, 512))
+            .circleCrop()
+            .into(imageUser)
+    }
+
+    private fun obtenerImageUser() {
+        storage.child("file/${firebaseAuth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+            Glide.with(this)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }.addOnFailureListener {
+            ponerImagenDefault()
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (toggle.onOptionsItemSelected(item)) return true
@@ -109,7 +146,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.id.nav_login->{
                 if (firebaseAuth.currentUser!=null){
                     setToolBarTitle(getString(R.string.datosUsuario))
-                    changeFragment(ShowUserData(firebaseAuth, nombreUsuarioND,submenuLogin, firebaseDatabase))
+                    changeFragment(ShowUserData(firebaseAuth, nombreUsuarioND,imageUser,submenuLogin, firebaseDatabase))
                 }else {
                     setToolBarTitle(getString(R.string.inicio_sesion))
                     changeFragment(LoginFragment(firebaseAuth, nombreUsuarioND))
