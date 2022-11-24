@@ -68,7 +68,7 @@ class ListFavoritesCharactersFragment : Fragment() {
                         personajes = personajes.plus(character)
                     }
                     //Mostramos los personajes favoritos del usuario
-                    binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 2)
+                    binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
                     binding.listaPersonajesFavoritos.setHasFixedSize(true)
                     val adapter = CharacterFavouritesAdapter(personajes)
                     binding.listaPersonajesFavoritos.adapter = adapter

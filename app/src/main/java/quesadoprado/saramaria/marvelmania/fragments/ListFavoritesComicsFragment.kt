@@ -92,7 +92,7 @@ class ListFavoritesComicsFragment : Fragment() {
                     }
                     //mostramos los comics
 
-                    binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 2)
+                    binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 3)
                     val adapter = ComicFavouritesAdapter(comics)
                     binding.listaComicsFavoritos.adapter = adapter
                     adapter.setOnItemClickListener(object : OnItemClickListener {

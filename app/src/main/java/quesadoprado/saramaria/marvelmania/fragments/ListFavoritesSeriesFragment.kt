@@ -99,7 +99,7 @@ class ListFavoritesSeriesFragment : Fragment() {
 
                     }
                     //mostramos las series
-                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 2)
+                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
                     val adapter = SeriesFavouritesAdapter(series)
                     binding.listaSeriesFavoritos.adapter = adapter
                     adapter.setOnItemClickListener(object : OnItemClickListener {

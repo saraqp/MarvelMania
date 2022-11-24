@@ -53,7 +53,7 @@ class SeriesFragment(
         super.onViewCreated(view, savedInstanceState)
         mostrarImagenUser()
 
-        binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 3)
         //mostrar todas las series de base
         buscarTodasLasSeries()
 

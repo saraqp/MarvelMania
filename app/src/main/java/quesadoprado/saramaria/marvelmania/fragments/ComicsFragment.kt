@@ -51,7 +51,7 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mostrarImagenUser()
-        binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 2)
+        binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 3)
         //Mostrar todos los comics
         buscarTodosLosComics()
         //Cuando el usuario busca por titulo

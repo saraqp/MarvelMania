@@ -31,7 +31,7 @@ class ListCharactersAdapter(private val list_characters: Array<Character>?): Rec
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val characterHolder: Character = list_characters?.get(position)!!
         val imageUrl="${characterHolder.thumbnail?.path}/portrait_uncanny.${characterHolder.thumbnail?.extension}"
-        Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(300,450)).into(holder.image)
+        Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(400,350)).into(holder.image)
     }
 
     override fun getItemCount()=list_characters?.size!!

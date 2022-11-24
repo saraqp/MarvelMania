@@ -46,7 +46,7 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerViewCharacters.layoutManager=GridLayoutManager(context,2)
+        binding.recyclerViewCharacters.layoutManager=GridLayoutManager(context,3)
         mostrarImagenUser()
         //Mostrar todos los personajes
         buscarTodoslosPersonajes()

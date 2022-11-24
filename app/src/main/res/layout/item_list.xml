@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/cardView_item"
-    android:foreground="?selectableItemBackground"
-    android:layout_margin="5dp"
-    app:cardCornerRadius="20dp">
-    <RelativeLayout
+    android:id="@+id/cardView_item">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/contenedor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:foreground="?selectableItemBackground"
+        app:cardCornerRadius="20dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/IV_imagen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:scaleType="center"/>
+            <ImageView
+                android:id="@+id/iconFav"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_fav_added"
+                android:layout_alignEnd="@id/IV_imagen"/>
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/nombre"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/IV_imagen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="center"
-            android:layout_margin="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_alignParentTop="true"
-            android:src="@mipmap/icon"/>
-
-        <TextView
-            android:id="@+id/nombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="prueba"
-            android:textAlignment="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_below="@id/IV_imagen"
-            android:padding="5dp"/>
-        <ImageView
-            android:id="@+id/iconFav"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/ic_fav_added"
-            android:layout_alignParentEnd="true"/>
-
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_below="@id/contenedor"
+        android:padding="5dp"/>
 
 
 
-</androidx.cardview.widget.CardView>
+</RelativeLayout>

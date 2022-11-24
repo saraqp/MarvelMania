@@ -31,7 +31,7 @@ class ListComicsAdapter(private val list_comics: Array<Comic>?): RecyclerView.Ad
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comicHolder: Comic = list_comics?.get(position)!!
         val imageUrl="${comicHolder.thumbnail?.path}/portrait_uncanny.${comicHolder.thumbnail?.extension}"
-        Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(300,450)).into(holder.image)
+        Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(400,350)).into(holder.image)
     }
 
     override fun getItemCount()=list_comics?.size!!
