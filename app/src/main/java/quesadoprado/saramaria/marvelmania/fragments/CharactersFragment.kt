@@ -68,13 +68,21 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
         buscarTodoslosPersonajes()
     }
     private fun mostrarImagenUser() {
-        storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
-            Glide.with(this)
-                .load(it)
-                .apply(RequestOptions().override(512, 512))
-                .circleCrop()
-                .into(imageUser)
-        }.addOnFailureListener {
+        if (auth.currentUser!=null) {
+            storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
+                Glide.with(this)
+                    .load(it)
+                    .apply(RequestOptions().override(512, 512))
+                    .circleCrop()
+                    .into(imageUser)
+            }.addOnFailureListener {
+                Glide.with(this)
+                    .load(R.mipmap.icon)
+                    .apply(RequestOptions().override(512, 512))
+                    .circleCrop()
+                    .into(imageUser)
+            }
+        }else{
             Glide.with(this)
                 .load(R.mipmap.icon)
                 .apply(RequestOptions().override(512, 512))

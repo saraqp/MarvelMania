@@ -8,17 +8,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <ImageView
+            android:id="@+id/imageUser"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/ic_icon"/>
         <TextView
             android:id="@+id/user_coment"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/imageUser"/>
         <TextView
             android:id="@+id/respComent"
             android:layout_width="match_parent"
@@ -26,8 +31,8 @@
             android:padding="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_below="@id/user_coment"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/imageUser"
             android:background="@color/background"/>
         <TextView
             android:id="@+id/TVComent"
@@ -35,14 +40,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:textSize="18sp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:layout_below="@id/respComent"/>
             <ImageView
                 android:id="@+id/upVote"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_upvotes"
                 android:layout_marginEnd="20dp"
                 android:tag="@string/novotado"
@@ -50,8 +55,8 @@
                 android:layout_toStartOf="@id/downVote"/>
             <ImageView
                 android:id="@+id/downVote"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_downvotes"
                 android:layout_marginEnd="20dp"
                 android:tag="@string/novotado"
@@ -59,8 +64,8 @@
                 android:layout_toStartOf="@id/reply"/>
             <ImageView
                 android:id="@+id/reply"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:src="@drawable/ic_reply"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"

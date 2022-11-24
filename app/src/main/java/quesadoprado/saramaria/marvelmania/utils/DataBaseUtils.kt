@@ -170,6 +170,7 @@ class DataBaseUtils {
                     "type" to coment.type,
                     "id_type" to coment.id_type,
                     "username" to coment.username,
+                    "id_userComent" to coment.id_userComent,
                     "score" to coment.puntuacion,
                     "coment" to coment.comentario,
                     "id_coment_resp" to coment.id_coment_resp.toString()

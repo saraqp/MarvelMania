@@ -138,6 +138,7 @@ class InfoCompleteComics : AppCompatActivity() {
                             "comic",
                             id,
                             username,
+                            auth.currentUser!!.uid,
                             0,
                             comentario_user,
                             idComentResp,
@@ -172,9 +173,10 @@ class InfoCompleteComics : AppCompatActivity() {
                         //comprobamos q el comentario corresponda con el comic visualizado
                         if (id_type == id) {
                             val comentario = Coment(
-                                coment.data!!["type"] as String?,
-                                (coment.data!!["id_type"] as Long?)?.toInt(),
-                                coment.data!!["username"] as String?,
+                                coment.data!!["type"] as String,
+                                (coment.data!!["id_type"] as Long).toInt(),
+                                coment.data!!["username"] as String,
+                                coment.data!!["id_userComent"] as String,
                                 (coment.data!!["score"] as Long?)?.toInt(),
                                 coment.data!!["coment"] as String?,
                                 coment.data!!["id_coment_resp"] as String?,

@@ -153,7 +153,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
     }
 
     private fun obtenerNombreUsuario(id: Int) {
-        val comentario_user = binding.escribirComentario.text.toString()
+        val comentUser = binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -163,12 +163,13 @@ class InfoCompleteCharacts : AppCompatActivity() {
                             "charact",
                             id,
                             username,
+                            auth.currentUser!!.uid,
                             0,
-                            comentario_user,
+                            comentUser,
                             idComentResp,
                             coment?.idComent
                         )
-                        if (comentario_user.trim().isNotEmpty()) {
+                        if (comentUser.trim().isNotEmpty()) {
                             DataBaseUtils.guardarComentario(coment!!)
                             obtenerComentarios(id)
                         }
@@ -183,31 +184,32 @@ class InfoCompleteCharacts : AppCompatActivity() {
         database.collection("coments").get().addOnCompleteListener { documents ->
             if (documents.isSuccessful) {
                 val comentarios = documents.result.documents
-                var lista_coments = arrayOf<Coment>()
+                var listaComents = arrayOf<Coment>()
                 for (coment in comentarios) {
                     if (coment.data!!["type"] == "charact") {
                         val id_type = (coment.data!!["id_type"] as Long).toInt()
                         //comprobamos q el comentario corresponda a la serie que esta viendo el usuario
                         if (id_type == id_serie) {
                             val comentario = Coment(
-                                coment.data!!["type"] as String?,
-                                (coment.data!!["id_type"] as Long?)?.toInt(),
-                                coment.data!!["username"] as String?,
+                                coment.data!!["type"] as String,
+                                (coment.data!!["id_type"] as Long).toInt(),
+                                coment.data!!["username"] as String,
+                                coment.data!!["id_userComent"] as String,
                                 (coment.data!!["score"] as Long?)?.toInt(),
                                 coment.data!!["coment"] as String?,
                                 coment.data!!["id_coment_resp"] as String?,
                                 coment.id
                             )
-                            lista_coments = lista_coments.plus(comentario)
+                            listaComents = listaComents.plus(comentario)
                         }
                     }
                 }
-                val adapter = ComentAdapter(lista_coments)
+                val adapter = ComentAdapter(listaComents)
 
                 binding.listaComentarios.adapter = adapter
                 adapter.setOnItemClickListener(object : OnComentClickListener {
                     override fun onReplyClick(position: Int) {
-                        idComentResp = lista_coments[position].idComent
+                        idComentResp = listaComents[position].idComent
                         binding.respuestaComent.visibility = View.VISIBLE
                         obtenerComentarioResp()
                         binding.escribirComentario.requestFocus()
@@ -220,7 +222,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         holder: ImageView,
                         downvote: ImageView
                     ) {
-                        val coment = lista_coments[position]
+                        val coment = listaComents[position]
                         when (holder.tag) {
                             //ya se habia votado
                             getString(R.string.votado) -> {
@@ -297,7 +299,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         holder: ImageView,
                         upvote: ImageView
                     ) {
-                        val coment = lista_coments[position]
+                        val coment = listaComents[position]
                         when (holder.tag) {
                             //ya se habia votado
                             getString(R.string.votado) -> {

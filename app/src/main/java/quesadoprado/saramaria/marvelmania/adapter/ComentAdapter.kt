@@ -1,5 +1,6 @@
 package quesadoprado.saramaria.marvelmania.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.util.Coment
 import quesadoprado.saramaria.marvelmania.interfaces.OnComentClickListener
-import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseStorage
 
 class ComentAdapter(private val list_coments: Array<Coment>?): RecyclerView.Adapter<ComentAdapter.ViewHolder>() {
 
@@ -20,6 +23,7 @@ class ComentAdapter(private val list_coments: Array<Coment>?): RecyclerView.Adap
     private lateinit var mListener: OnComentClickListener
     private val database=firebaseDatabase
     private val auth= firebaseAuth
+    private val storage= firebaseStorage
 
     private var holder:ViewHolder?=null
     fun setOnItemClickListener(listener: OnComentClickListener){
@@ -44,10 +48,29 @@ class ComentAdapter(private val list_coments: Array<Coment>?): RecyclerView.Adap
             holder.respComent.visibility=View.VISIBLE
             obtenerTextoComentarioResp(comentHolder.id_coment_resp!!,holder)
         }
+        obtenerImageUser(holder.imageUser,comentHolder.id_userComent)
         comprobarVotoUsuario(comentHolder.idComent,holder)
 
     }
-
+    private fun obtenerImageUser(imageUser: ImageView, idUsercoment: String) {
+        storage.child("file/$idUsercoment").downloadUrl.addOnSuccessListener {
+            Glide.with(context!!)
+                .load(it)
+                .apply(RequestOptions().override(512, 512))
+                .circleCrop()
+                .into(imageUser)
+        }.addOnFailureListener {
+            ponerImagenDefault(imageUser)
+        }
+    }
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun ponerImagenDefault(imageUser: ImageView) {
+        Glide.with(context!!)
+            .load(context!!.getDrawable(R.mipmap.icon))
+            .apply(RequestOptions().override(512, 512))
+            .circleCrop()
+            .into(imageUser)
+    }
     private fun comprobarVotoUsuario(idComent: String?, holder: ViewHolder) {
         database.collection("users/${auth.currentUser!!.uid}/comentsVotes")
             .document(idComent.toString()).get().addOnCompleteListener {comentario->
@@ -92,6 +115,8 @@ class ComentAdapter(private val list_coments: Array<Coment>?): RecyclerView.Adap
         val reply:ImageView=itemView.findViewById(R.id.reply)
         val score:TextView=itemView.findViewById(R.id.TVpuntuacionText)
         val username:TextView=itemView.findViewById(R.id.user_coment)
+        val imageUser:ImageView=itemView.findViewById(R.id.imageUser)
+
         init {
             reply.setOnClickListener {
                 listener.onReplyClick(adapterPosition)
