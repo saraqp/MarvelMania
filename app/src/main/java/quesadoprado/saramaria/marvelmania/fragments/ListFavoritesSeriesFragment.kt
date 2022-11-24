@@ -49,69 +49,67 @@ class ListFavoritesSeriesFragment : Fragment() {
 
     private fun obtenerSeriesFavoritos(ruta: String) {
         database.collection(ruta).get()
-            .addOnCompleteListener { document ->
-                if (document.isSuccessful) {
-                    var series = arrayOf<Serie>()
-                    for (i in 0 until document.result.size()) {
-                        //datos de las series
-                        val item = document.result.documents[i].data
-                        val id = item!!["id"] as Long?
-                        val description = item["description"] as String?
-                        val endYear = item["endYear"] as Long?
-                        val rating = item["rating"] as String?
-                        val startYear = item["startYear"] as Long?
-                        val thumbnailHashMap = item["thumbnail"] as HashMap<*, *>
-                        val thumbnail = Thumbnail(
-                            thumbnailHashMap["path"] as String?,
-                            thumbnailHashMap["extension"] as String?
+            .addOnSuccessListener { document ->
+                var series = arrayOf<Serie>()
+                for (i in 0 until document.size()) {
+                    //datos de las series
+                    val item = document.documents[i].data
+                    val id = item!!["id"] as Long?
+                    val description = item["description"] as String?
+                    val endYear = item["endYear"] as Long?
+                    val rating = item["rating"] as String?
+                    val startYear = item["startYear"] as Long?
+                    val thumbnailHashMap = item["thumbnail"] as HashMap<*, *>
+                    val thumbnail = Thumbnail(
+                        thumbnailHashMap["path"] as String?,
+                        thumbnailHashMap["extension"] as String?
+                    )
+                    val title = item["title"] as String?
+                    val nextHashMap = item["next"] as Any?
+                    val next: Item? = if (nextHashMap is HashMap<*, *>) {
+                        Item(
+                            nextHashMap["name"] as String?,
+                            nextHashMap["resourceURI"] as String?
                         )
-                        val title = item["title"] as String?
-                        val nextHashMap = item["next"] as Any?
-                        val next: Item? = if (nextHashMap is HashMap<*, *>) {
-                            Item(
-                                nextHashMap["name"] as String?,
-                                nextHashMap["resourceURI"] as String?
-                            )
-                        } else {
-                            null
-                        }
-                        val previousHashMap = item["previous"] as Any?
-                        val previous: Item? = if (previousHashMap is HashMap<*, *>) {
-                            Item(
-                                previousHashMap["name"] as String?,
-                                previousHashMap["resourceURI"] as String?
-                            )
-                        } else {
-                            null
-                        }
-                        val serie = Serie(
-                            id!!.toInt(),
-                            title,
-                            description,
-                            startYear?.toInt(),
-                            endYear?.toInt(),
-                            rating,
-                            thumbnail,
-                            next,
-                            previous
-                        )
-                        series = series.plus(serie)
-
+                    } else {
+                        null
                     }
-                    //mostramos las series
-                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
-                    val adapter = SeriesFavouritesAdapter(series)
-                    binding.listaSeriesFavoritos.adapter = adapter
-                    adapter.setOnItemClickListener(object : OnItemClickListener {
-                        override fun onItemClick(position: Int) {
-                            val serie = series[position]
-                            val intent = Intent(context, InfoCompleteSeries::class.java)
-                            intent.putExtra("serie", serie)
-                            startActivity(intent)
-                        }
+                    val previousHashMap = item["previous"] as Any?
+                    val previous: Item? = if (previousHashMap is HashMap<*, *>) {
+                        Item(
+                            previousHashMap["name"] as String?,
+                            previousHashMap["resourceURI"] as String?
+                        )
+                    } else {
+                        null
+                    }
+                    val serie = Serie(
+                        id!!.toInt(),
+                        title,
+                        description,
+                        startYear?.toInt(),
+                        endYear?.toInt(),
+                        rating,
+                        thumbnail,
+                        next,
+                        previous
+                    )
+                    series = series.plus(serie)
 
-                    })
                 }
+                //mostramos las series
+                binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                val adapter = SeriesFavouritesAdapter(series)
+                binding.listaSeriesFavoritos.adapter = adapter
+                adapter.setOnItemClickListener(object : OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val serie = series[position]
+                        val intent = Intent(context, InfoCompleteSeries::class.java)
+                        intent.putExtra("serie", serie)
+                        startActivity(intent)
+                    }
+
+                })
             }
     }
 

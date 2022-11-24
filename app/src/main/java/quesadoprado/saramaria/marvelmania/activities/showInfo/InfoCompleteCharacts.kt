@@ -7,22 +7,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.core.view.get
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.adapter.ComentAdapter
@@ -32,10 +23,10 @@ import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.ComicsDTO
 import quesadoprado.saramaria.marvelmania.data.series.SeriesDTO
 import quesadoprado.saramaria.marvelmania.data.util.Coment
-import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.ActivityInfoCompleteBinding
 import quesadoprado.saramaria.marvelmania.fragments.*
 import quesadoprado.saramaria.marvelmania.interfaces.OnComentClickListener
+import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
@@ -155,24 +146,22 @@ class InfoCompleteCharacts : AppCompatActivity() {
     private fun obtenerNombreUsuario(id: Int) {
         val comentUser = binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    if (task.result.exists()) {
-                        val username = task.result.data!!["displayName"] as String
-                        coment = Coment(
-                            "charact",
-                            id,
-                            username,
-                            auth.currentUser!!.uid,
-                            0,
-                            comentUser,
-                            idComentResp,
-                            coment?.idComent
-                        )
-                        if (comentUser.trim().isNotEmpty()) {
-                            DataBaseUtils.guardarComentario(coment!!)
-                            obtenerComentarios(id)
-                        }
+            .addOnSuccessListener { task ->
+                if (task.exists()) {
+                    val username = task.data!!["displayName"] as String
+                    coment = Coment(
+                        "charact",
+                        id,
+                        username,
+                        auth.currentUser!!.uid,
+                        0,
+                        comentUser,
+                        idComentResp,
+                        coment?.idComent
+                    )
+                    if (comentUser.trim().isNotEmpty()) {
+                        DataBaseUtils.guardarComentario(coment!!)
+                        obtenerComentarios(id)
                     }
                 }
 
@@ -181,138 +170,105 @@ class InfoCompleteCharacts : AppCompatActivity() {
     }
 
     private fun obtenerComentarios(id_serie: Int) {
-        database.collection("coments").get().addOnCompleteListener { documents ->
-            if (documents.isSuccessful) {
-                val comentarios = documents.result.documents
-                var listaComents = arrayOf<Coment>()
-                for (coment in comentarios) {
-                    if (coment.data!!["type"] == "charact") {
-                        val id_type = (coment.data!!["id_type"] as Long).toInt()
-                        //comprobamos q el comentario corresponda a la serie que esta viendo el usuario
-                        if (id_type == id_serie) {
-                            val comentario = Coment(
-                                coment.data!!["type"] as String,
-                                (coment.data!!["id_type"] as Long).toInt(),
-                                coment.data!!["username"] as String,
-                                coment.data!!["id_userComent"] as String,
-                                (coment.data!!["score"] as Long?)?.toInt(),
-                                coment.data!!["coment"] as String?,
-                                coment.data!!["id_coment_resp"] as String?,
-                                coment.id
-                            )
-                            listaComents = listaComents.plus(comentario)
-                        }
+        database.collection("coments").get().addOnSuccessListener { documents ->
+            val comentarios = documents.documents
+            var listaComents = arrayOf<Coment>()
+            for (coment in comentarios) {
+                if (coment.data!!["type"] == "charact") {
+                    val id_type = (coment.data!!["id_type"] as Long).toInt()
+                    //comprobamos q el comentario corresponda a la serie que esta viendo el usuario
+                    if (id_type == id_serie) {
+                        val comentario = Coment(
+                            coment.data!!["type"] as String,
+                            (coment.data!!["id_type"] as Long).toInt(),
+                            coment.data!!["username"] as String,
+                            coment.data!!["id_userComent"] as String,
+                            (coment.data!!["score"] as Long?)?.toInt(),
+                            coment.data!!["coment"] as String?,
+                            coment.data!!["id_coment_resp"] as String?,
+                            coment.id
+                        )
+                        listaComents = listaComents.plus(comentario)
                     }
                 }
-                val adapter = ComentAdapter(listaComents)
+            }
+            val adapter = ComentAdapter(listaComents)
 
-                binding.listaComentarios.adapter = adapter
-                adapter.setOnItemClickListener(object : OnComentClickListener {
-                    override fun onReplyClick(position: Int) {
-                        idComentResp = listaComents[position].idComent
-                        binding.respuestaComent.visibility = View.VISIBLE
-                        obtenerComentarioResp()
-                        binding.escribirComentario.requestFocus()
+            binding.listaComentarios.adapter = adapter
+            adapter.setOnItemClickListener(object : OnComentClickListener {
+                override fun onReplyClick(position: Int) {
+                    idComentResp = listaComents[position].idComent
+                    binding.respuestaComent.visibility = View.VISIBLE
+                    obtenerComentarioResp()
+                    binding.escribirComentario.requestFocus()
 
-                    }
+                }
 
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onUpVoteClick(
-                        position: Int,
-                        holder: ImageView,
-                        downvote: ImageView
-                    ) {
-                        val coment = listaComents[position]
-                        when (holder.tag) {
-                            //ya se habia votado
-                            getString(R.string.votado) -> {
-                                //cambiamos el tag a "novotado" y cambiamos el icono a negro
-                                holder.tag = getString(R.string.novotado)
-                                holder.setImageResource(R.drawable.ic_upvotes)
-                                //quitamos su voto
-                                DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
-                                DataBaseUtils.delVotoUser(coment.idComent)
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onUpVoteClick(
+                    position: Int,
+                    holder: ImageView,
+                    downvote: ImageView
+                ) {
+                    val coment = listaComents[position]
+                    when (holder.tag) {
+                        //ya se habia votado
+                        getString(R.string.votado) -> {
+                            //cambiamos el tag a "novotado" y cambiamos el icono a negro
+                            holder.tag = getString(R.string.novotado)
+                            holder.setImageResource(R.drawable.ic_upvotes)
+                            //quitamos su voto
+                            DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
+                            DataBaseUtils.delVotoUser(coment.idComent)
+
+                            database.collection("coments").document(coment.idComent!!).get()
+                                .addOnSuccessListener { doc ->
+                                    val puntuacionDoc = doc.data!!["score"].toString().toInt()
+                                    coment.puntuacion = puntuacionDoc - 1
+
+                                    adapter.notifyDataSetChanged()
+
+                                }
+
+
+                        }
+                        //no se habia votado
+                        getString(R.string.novotado) -> {
+                            //comprobamos si downvote esta activo
+                            if (downvote.tag == getString(R.string.votado)) {
+                                holder.tag = getString(R.string.votado)
+                                holder.setImageResource(R.drawable.ic_upvotes_voted)
+                                downvote.tag = getString(R.string.novotado)
+                                downvote.setImageResource(R.drawable.ic_downvotes)
+
+
+                                DataBaseUtils.cambiarPuntuacionComentario(2, coment)
+
+
+                                DataBaseUtils.addVotoUser("upvote", coment.idComent)
 
                                 database.collection("coments").document(coment.idComent!!).get()
                                     .addOnSuccessListener { doc ->
-                                        val puntuacionDoc = doc.data!!["score"].toString().toInt()
-                                        coment.puntuacion = puntuacionDoc - 1
+                                        val puntuacionDoc =
+                                            doc.data!!["score"].toString().toInt()
+                                        coment.puntuacion = puntuacionDoc + 2
 
                                         adapter.notifyDataSetChanged()
 
                                     }
 
 
-                            }
-                            //no se habia votado
-                            getString(R.string.novotado) -> {
-                                //comprobamos si downvote esta activo
-                                if (downvote.tag == getString(R.string.votado)) {
-                                    holder.tag = getString(R.string.votado)
-                                    holder.setImageResource(R.drawable.ic_upvotes_voted)
-                                    downvote.tag = getString(R.string.novotado)
-                                    downvote.setImageResource(R.drawable.ic_downvotes)
-
-
-                                    DataBaseUtils.cambiarPuntuacionComentario(2, coment)
-
-
-                                    DataBaseUtils.addVotoUser("upvote", coment.idComent)
-
-                                    database.collection("coments").document(coment.idComent!!).get()
-                                        .addOnSuccessListener { doc ->
-                                            val puntuacionDoc =
-                                                doc.data!!["score"].toString().toInt()
-                                            coment.puntuacion = puntuacionDoc + 2
-
-                                            adapter.notifyDataSetChanged()
-
-                                        }
-
-
-                                } else {
-                                    holder.tag = getString(R.string.votado)
-                                    holder.setImageResource(R.drawable.ic_upvotes_voted)
-
-                                    DataBaseUtils.cambiarPuntuacionComentario(1, coment)
-
-                                    DataBaseUtils.addVotoUser("upvote", coment.idComent)
-                                    database.collection("coments").document(coment.idComent!!).get()
-                                        .addOnSuccessListener { doc ->
-                                            val puntuacionDoc =
-                                                doc.data!!["score"].toString().toInt()
-                                            coment.puntuacion = puntuacionDoc + 1
-
-                                            adapter.notifyDataSetChanged()
-
-                                        }
-
-                                }
-                            }
-                        }
-
-                    }
-
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onDownVoteClick(
-                        position: Int,
-                        holder: ImageView,
-                        upvote: ImageView
-                    ) {
-                        val coment = listaComents[position]
-                        when (holder.tag) {
-                            //ya se habia votado
-                            getString(R.string.votado) -> {
-                                //cambiamos el tag a "novotado" y cambiamos el icono a negro
-                                holder.tag = getString(R.string.novotado)
-                                holder.setImageResource(R.drawable.ic_downvotes)
+                            } else {
+                                holder.tag = getString(R.string.votado)
+                                holder.setImageResource(R.drawable.ic_upvotes_voted)
 
                                 DataBaseUtils.cambiarPuntuacionComentario(1, coment)
 
-                                DataBaseUtils.delVotoUser(coment.idComent)
+                                DataBaseUtils.addVotoUser("upvote", coment.idComent)
                                 database.collection("coments").document(coment.idComent!!).get()
                                     .addOnSuccessListener { doc ->
-                                        val puntuacionDoc = doc.data!!["score"].toString().toInt()
+                                        val puntuacionDoc =
+                                            doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc + 1
 
                                         adapter.notifyDataSetChanged()
@@ -320,63 +276,94 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                     }
 
                             }
-                            //no se habia votado
-                            getString(R.string.novotado) -> {
-                                //comprobamos si upvote esta activo
-                                if (upvote.tag == getString(R.string.votado)) {
-                                    holder.tag = getString(R.string.votado)
-                                    holder.setImageResource(R.drawable.ic_downvotes_voted)
-
-                                    upvote.tag = getString(R.string.novotado)
-                                    upvote.setImageResource(R.drawable.ic_upvotes)
-
-                                    DataBaseUtils.cambiarPuntuacionComentario(-2, coment)
-
-                                    DataBaseUtils.addVotoUser("downvote", coment.idComent)
-                                    database.collection("coments").document(coment.idComent!!).get()
-                                        .addOnSuccessListener { doc ->
-                                            val puntuacionDoc =
-                                                doc.data!!["score"].toString().toInt()
-                                            coment.puntuacion = puntuacionDoc - 2
-
-                                            adapter.notifyDataSetChanged()
-
-                                        }
-
-
-                                } else {
-                                    //cambiamos el tag a "votado" y cambiamos el icono a color
-                                    holder.tag = getString(R.string.votado)
-                                    holder.setImageResource(R.drawable.ic_downvotes_voted)
-
-                                    DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
-                                    DataBaseUtils.addVotoUser("downvote", coment.idComent)
-                                    database.collection("coments").document(coment.idComent!!).get()
-                                        .addOnSuccessListener { doc ->
-                                            val puntuacionDoc =
-                                                doc.data!!["score"].toString().toInt()
-                                            coment.puntuacion = puntuacionDoc - 1
-
-                                            adapter.notifyDataSetChanged()
-                                        }
-
-                                }
-                            }
                         }
                     }
 
-                    private fun obtenerComentarioResp() {
-                        database.collection("coments").document(idComentResp!!).get()
-                            .addOnCompleteListener { doc ->
-                                if (doc.isSuccessful) {
-                                    val comentario = doc.result.data!!["coment"].toString()
-                                    binding.respuestaComent.text = comentario
-                                }
-                            }
-                    }
-                })
+                }
 
-            }
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onDownVoteClick(
+                    position: Int,
+                    holder: ImageView,
+                    upvote: ImageView
+                ) {
+                    val coment = listaComents[position]
+                    when (holder.tag) {
+                        //ya se habia votado
+                        getString(R.string.votado) -> {
+                            //cambiamos el tag a "novotado" y cambiamos el icono a negro
+                            holder.tag = getString(R.string.novotado)
+                            holder.setImageResource(R.drawable.ic_downvotes)
+
+                            DataBaseUtils.cambiarPuntuacionComentario(1, coment)
+
+                            DataBaseUtils.delVotoUser(coment.idComent)
+                            database.collection("coments").document(coment.idComent!!).get()
+                                .addOnSuccessListener { doc ->
+                                    val puntuacionDoc = doc.data!!["score"].toString().toInt()
+                                    coment.puntuacion = puntuacionDoc + 1
+
+                                    adapter.notifyDataSetChanged()
+
+                                }
+
+                        }
+                        //no se habia votado
+                        getString(R.string.novotado) -> {
+                            //comprobamos si upvote esta activo
+                            if (upvote.tag == getString(R.string.votado)) {
+                                holder.tag = getString(R.string.votado)
+                                holder.setImageResource(R.drawable.ic_downvotes_voted)
+
+                                upvote.tag = getString(R.string.novotado)
+                                upvote.setImageResource(R.drawable.ic_upvotes)
+
+                                DataBaseUtils.cambiarPuntuacionComentario(-2, coment)
+
+                                DataBaseUtils.addVotoUser("downvote", coment.idComent)
+                                database.collection("coments").document(coment.idComent!!).get()
+                                    .addOnSuccessListener { doc ->
+                                        val puntuacionDoc =
+                                            doc.data!!["score"].toString().toInt()
+                                        coment.puntuacion = puntuacionDoc - 2
+
+                                        adapter.notifyDataSetChanged()
+
+                                    }
+
+
+                            } else {
+                                //cambiamos el tag a "votado" y cambiamos el icono a color
+                                holder.tag = getString(R.string.votado)
+                                holder.setImageResource(R.drawable.ic_downvotes_voted)
+
+                                DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
+                                DataBaseUtils.addVotoUser("downvote", coment.idComent)
+                                database.collection("coments").document(coment.idComent!!).get()
+                                    .addOnSuccessListener { doc ->
+                                        val puntuacionDoc =
+                                            doc.data!!["score"].toString().toInt()
+                                        coment.puntuacion = puntuacionDoc - 1
+
+                                        adapter.notifyDataSetChanged()
+                                    }
+
+                            }
+                        }
+                    }
+                }
+
+                private fun obtenerComentarioResp() {
+                    database.collection("coments").document(idComentResp!!).get()
+                        .addOnCompleteListener { doc ->
+                            if (doc.isSuccessful) {
+                                val comentario = doc.result.data!!["coment"].toString()
+                                binding.respuestaComent.text = comentario
+                            }
+                        }
+                }
+            })
+
         }
     }
 
@@ -395,7 +382,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                     val adapter = ListSeriesAdapter(series)
                     binding.recyclerViewListSeries.adapter = adapter
-                    adapter.setOnItemClickListener(object : ListSeriesAdapter.onIntemClickListener {
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
                         override fun onItemClick(position: Int) {
                             val serie = series?.get(position)
                             val intent = Intent(contexto, InfoCompleteSeries::class.java)
@@ -430,7 +417,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                     val adapter = ListComicsAdapter(comics)
                     binding.recyclerViewListComics.adapter = adapter
-                    adapter.setOnItemClickListener(object : ListComicsAdapter.onIntemClickListener {
+                    adapter.setOnItemClickListener(object : OnItemClickListener {
                         override fun onItemClick(position: Int) {
                             val comic = comics?.get(position)
                             val intent = Intent(contexto, InfoCompleteComics::class.java)
@@ -452,15 +439,13 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
     private fun comprobarSiFavorito(uid: String, charact: Character?) {
         database.collection("users/$uid/characters").document(charact!!.id.toString()).get()
-            .addOnCompleteListener { document ->
-                if (document.isSuccessful) {
-                    if (document.result.exists()) {
-                        binding.iconFav.setImageResource(R.drawable.ic_fav_added)
-                        binding.iconFav.tag = getString(R.string.fav)
-                    } else {
-                        binding.iconFav.setImageResource(R.drawable.ic_fav_noadded)
-                        binding.iconFav.tag = getString(R.string.nofav)
-                    }
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    binding.iconFav.setImageResource(R.drawable.ic_fav_added)
+                    binding.iconFav.tag = getString(R.string.fav)
+                } else {
+                    binding.iconFav.setImageResource(R.drawable.ic_fav_noadded)
+                    binding.iconFav.tag = getString(R.string.nofav)
                 }
             }
     }

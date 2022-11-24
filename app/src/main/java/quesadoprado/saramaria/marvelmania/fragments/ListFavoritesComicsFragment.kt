@@ -25,7 +25,7 @@ class ListFavoritesComicsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentListFavoritesComicsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,62 +48,60 @@ class ListFavoritesComicsFragment : Fragment() {
 
     private fun obtenerComicsFavoritos(ruta: String) {
         database.collection(ruta).get()
-            .addOnCompleteListener { document ->
-                if (document.isSuccessful) {
-                    //obtenemos los comics
-                    var comics = arrayOf<Comic>()
-                    for (i in 0 until document.result.size()) {
-                        //datos de los comics
-                        val item = document.result.documents[i].data
-                        val id = item!!["id"] as Long?
-                        val description = item["description"] as String?
-                        val format = item["format"] as String?
-                        val pageCount = item["pageCount"] as Long?
-                        val title = item["title"] as String?
-                        val variantDescription = item["vatiantDescription"] as String?
-                        //variantImages
-                        val imagesList = item["images"] as List<HashMap<*, *>>
-                        var images = arrayOf<Thumbnail>()
-                        //imagelist devuelve una List<Map<String,String>>
-                        for (img in imagesList) {
-                            images = images.plus(
-                                Thumbnail(
-                                    img["path"] as String,
-                                    img["extension"] as String
-                                )
+            .addOnSuccessListener { document ->
+                //obtenemos los comics
+                var comics = arrayOf<Comic>()
+                for (i in 0 until document.size()) {
+                    //datos de los comics
+                    val item = document.documents[i].data
+                    val id = item!!["id"] as Long?
+                    val description = item["description"] as String?
+                    val format = item["format"] as String?
+                    val pageCount = item["pageCount"] as Long?
+                    val title = item["title"] as String?
+                    val variantDescription = item["vatiantDescription"] as String?
+                    //variantImages
+                    val imagesList = item["images"] as List<HashMap<*, *>>
+                    var images = arrayOf<Thumbnail>()
+                    //imagelist devuelve una List<Map<String,String>>
+                    for (img in imagesList) {
+                        images = images.plus(
+                            Thumbnail(
+                                img["path"] as String,
+                                img["extension"] as String
                             )
-                        }
-                        val thumbnailMap = item["thumbnail"] as HashMap<*, *>
-                        val thumbnail = Thumbnail(
-                            thumbnailMap["path"] as String,
-                            thumbnailMap["extension"] as String
                         )
-                        val comic = Comic(
-                            id!!.toInt(),
-                            title,
-                            variantDescription,
-                            description,
-                            format,
-                            pageCount!!.toInt(),
-                            thumbnail,
-                            images
-                        )
-                        comics = comics.plus(comic)
                     }
-                    //mostramos los comics
-
-                    binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 3)
-                    val adapter = ComicFavouritesAdapter(comics)
-                    binding.listaComicsFavoritos.adapter = adapter
-                    adapter.setOnItemClickListener(object : OnItemClickListener {
-                        override fun onItemClick(position: Int) {
-                            val comic = comics[position]
-                            val intent = Intent(context, InfoCompleteComics::class.java)
-                            intent.putExtra("comic", comic)
-                            startActivity(intent)
-                        }
-                    })
+                    val thumbnailMap = item["thumbnail"] as HashMap<*, *>
+                    val thumbnail = Thumbnail(
+                        thumbnailMap["path"] as String,
+                        thumbnailMap["extension"] as String
+                    )
+                    val comic = Comic(
+                        id!!.toInt(),
+                        title,
+                        variantDescription,
+                        description,
+                        format,
+                        pageCount!!.toInt(),
+                        thumbnail,
+                        images
+                    )
+                    comics = comics.plus(comic)
                 }
+                //mostramos los comics
+
+                binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 3)
+                val adapter = ComicFavouritesAdapter(comics)
+                binding.listaComicsFavoritos.adapter = adapter
+                adapter.setOnItemClickListener(object : OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val comic = comics[position]
+                        val intent = Intent(context, InfoCompleteComics::class.java)
+                        intent.putExtra("comic", comic)
+                        startActivity(intent)
+                    }
+                })
             }
     }
 

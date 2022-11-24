@@ -5,14 +5,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
 @Suppress("DEPRECATION")
-class ViewPagerAdapter(fm:FragmentManager):FragmentStatePagerAdapter(fm) {
-    private val mFrgmentList=ArrayList<Fragment>()
-    private val mFrgmentTitleList=ArrayList<String>()
+class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val mFrgmentList = ArrayList<Fragment>()
+    private val mFrgmentTitleList = ArrayList<String>()
 
-    override fun getCount()=mFrgmentList.size
-    override fun getItem(position: Int)=mFrgmentList[position]
-    override fun getPageTitle(position: Int)=mFrgmentTitleList[position]
-    fun addFragment(fragment: Fragment,title:String){
+    override fun getCount() = mFrgmentList.size
+    override fun getItem(position: Int) = mFrgmentList[position]
+    override fun getPageTitle(position: Int) = mFrgmentTitleList[position]
+    fun addFragment(fragment: Fragment, title: String) {
         mFrgmentList.add(fragment)
         mFrgmentTitleList.add(title)
     }

@@ -1,6 +1,8 @@
 package quesadoprado.saramaria.marvelmania.utils
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
@@ -9,12 +11,14 @@ import quesadoprado.saramaria.marvelmania.data.util.Coment
 import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseAuth
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
+import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseStorage
 
 class DataBaseUtils {
     companion object {
         @SuppressLint("StaticFieldLeak")
         private val database = firebaseDatabase
         private val auth = firebaseAuth
+        private val storage= firebaseStorage
 
         //FUNCIONES
         //ELIMINACIÓN COMPLETA DE USUARIO CON SUS FAVORITOS
@@ -66,7 +70,7 @@ class DataBaseUtils {
         }
 
         //AÑADIR USUARIO Y MODIFICAR SUS DATOS
-        fun guardarUsuarioEnBbdd(user: User) {
+        fun guardarUsuarioEnBbdd(user: User, imageUri: Uri) {
             database.collection("users").document(user.uid!!).set(
                 hashMapOf(
                     "email" to user.email,
@@ -75,6 +79,8 @@ class DataBaseUtils {
                     "status" to user.status
                 )
             )
+            //le ponemos una imagen default
+            storage.child("file/${user.uid}").putFile(imageUri)
         }
 
         fun cambiarPassUser(user: User, password: String) {

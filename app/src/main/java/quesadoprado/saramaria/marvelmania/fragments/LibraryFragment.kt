@@ -1,19 +1,16 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.adapter.ViewPagerAdapter
 import quesadoprado.saramaria.marvelmania.databinding.FragmentLibraryBinding
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
+import quesadoprado.saramaria.marvelmania.utils.UtilsApp
 
 class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: ImageView) :
     Fragment() {
@@ -21,7 +18,6 @@ class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: Ima
     private val binding get() = _binding!!
 
     private val currentUser = auth.currentUser
-    private val storage = FirebaseUtils.firebaseStorage
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +30,11 @@ class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: Ima
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mostrarImagenUser()
+        if (auth.currentUser!=null){
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
+        }else{
+            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        }
         //si el usuario esta conectado se le muestran sus favoritos
         if (currentUser != null) {
             binding.mensajeNoLogueados.visibility = View.GONE
@@ -54,29 +54,5 @@ class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: Ima
             binding.viewPager.visibility = View.GONE
         }
 
-    }
-
-    private fun mostrarImagenUser() {
-        if (auth.currentUser!=null) {
-            storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
-                Glide.with(this)
-                    .load(it)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }.addOnFailureListener {
-                Glide.with(this)
-                    .load(R.mipmap.icon)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }
-        }else{
-            Glide.with(this)
-                .load(R.mipmap.icon)
-                .apply(RequestOptions().override(512, 512))
-                .circleCrop()
-                .into(imageUser)
-        }
     }
 }

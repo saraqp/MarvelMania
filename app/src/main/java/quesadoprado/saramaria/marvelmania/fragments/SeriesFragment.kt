@@ -3,7 +3,6 @@ package quesadoprado.saramaria.marvelmania.fragments
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,6 @@ import android.widget.PopupMenu
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -27,8 +24,8 @@ import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
+import quesadoprado.saramaria.marvelmania.utils.UtilsApp
 
 class SeriesFragment(
     private val auth: FirebaseAuth,
@@ -40,7 +37,6 @@ class SeriesFragment(
     private val binding get() = _binding!!
     private lateinit var series: Array<Serie>
     private val database = firebaseDatabase
-    private val storage = FirebaseUtils.firebaseStorage
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,13 +47,18 @@ class SeriesFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mostrarImagenUser()
+        //Mostramos la imagen del usuario en el Navigation Drawer
+        if (auth.currentUser!=null){
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
+        }else{
+            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        }
 
         binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 3)
-        //mostrar todas las series de base
+        //mostrar todas las series
         buscarTodasLasSeries()
 
-        //el usuario busca por titulo
+        //el usuario busca por titulo la serie
         binding.ETBuscadorSerie.doOnTextChanged { _, _, _, _ ->
             if (binding.ETBuscadorSerie.text.trim().toString().isNotEmpty()) {
                 buscarSeriesPorTitulo()
@@ -69,36 +70,12 @@ class SeriesFragment(
         }
 
     }
-
-    private fun mostrarImagenUser() {
-        if (auth.currentUser!=null) {
-            storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
-                Glide.with(this)
-                    .load(it)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }.addOnFailureListener {
-                Glide.with(this)
-                    .load(R.mipmap.icon)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }
-        }else{
-            Glide.with(this)
-                .load(R.mipmap.icon)
-                .apply(RequestOptions().override(512, 512))
-                .circleCrop()
-                .into(imageUser)
-        }
-    }
-
+    //al activarse la pantalla se refrescan las series
     override fun onStart() {
         super.onStart()
         buscarTodasLasSeries()
     }
-
+    //ocultar la barra de progreso cuando se carguen las series
     private fun ocultarProgressBar() {
         val handler = Handler()
         val runnable = Runnable {
@@ -107,20 +84,25 @@ class SeriesFragment(
         handler.postDelayed(runnable, 200)
     }
 
+
     private fun buscarTodasLasSeries() {
+        //hacemos una llamada a la api para obtener todas las series
         RetrofitBroker.getRequestAllSeries(
             onResponse = {
                 val respuesta: SeriesDTO = Gson().fromJson(it, SeriesDTO::class.java)
 
                 series = respuesta.data?.results!!
+
                 val adapter = SeriesAdapter(series)
                 binding.recyclerViewSeries.adapter = adapter
 
+                //ocultamos el progressbar
                 ocultarProgressBar()
 
                 adapter.setOnItemClickListener(object : OnItemClickListener {
                     override fun onItemClick(position: Int) {
                         val serie = series[position]
+                        //nos vamos al activity donde muestra toda la información de la serie
                         val intent = Intent(context, InfoCompleteSeries::class.java)
                         intent.putExtra("serie", serie)
                         intent.putExtra("username", username)
@@ -130,8 +112,9 @@ class SeriesFragment(
                 adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
                     override fun onItemLongClick(position: Int, view: View): Boolean {
                         val serie = series[position]
-                        //creamos un popmenu para que el usuario pueda agregar a
-                        // favoritos desde la lista de series
+                        /*creamos un popmenu para que el usuario pueda agregar a
+                         favoritos desde la lista de series
+                         */
                         val popupMenu = PopupMenu(context, view)
                         popupMenu.inflate(R.menu.menu_add_delete_fav)
                         popupMenu.setOnMenuItemClickListener { task ->
@@ -221,6 +204,7 @@ class SeriesFragment(
                                 }
                             }
                         }
+                        //mostramos el popup
                         popupMenu.show()
                         return true
                     }
@@ -236,6 +220,7 @@ class SeriesFragment(
     }
 
     private fun buscarSeriesPorTitulo() {
+        //hacemos una llamada a la api para obtener las series que empiecen por lo que indica el usuario
         val tituloSerie = binding.ETBuscadorSerie.text.toString()
         RetrofitBroker.getRequestSerieByName(tituloSerie,
             onResponse = {
@@ -358,6 +343,7 @@ class SeriesFragment(
 
                     })
                 } else {
+                    //en caso de que no halla coincidencias mostramos al usuario un mensaje
                     binding.recyclerViewSeries.visibility = View.GONE
                     binding.noInformationFound.visibility = View.VISIBLE
                     binding.noInformationFound.text = getString(R.string.informacionNoEncontrada)

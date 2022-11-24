@@ -21,6 +21,7 @@ class ListFavoritesCharactersFragment : Fragment() {
 
     private var database = FirebaseUtils.firebaseDatabase
     private val currentUser = FirebaseUtils.firebaseAuth.currentUser
+
     private lateinit var rutaColeccionCharactersFavoritos: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,37 +51,35 @@ class ListFavoritesCharactersFragment : Fragment() {
 
     private fun obtenerPersonajesFavoritos(ruta: String) {
         database.collection(ruta).get()
-            .addOnCompleteListener { document ->
-                if (document.isSuccessful) {
-                    //obtenemos los personajes
-                    var personajes = arrayOf<Character>()
-                    for (i in 0 until document.result.size()) {
-                        val item = document.result.documents[i].data
-                        val id = item!!["id"] as Long?
-                        val name = item["name"] as String?
-                        val description = item["description"] as String?
-                        val thumbnailhashMap = item["thumbnail"] as HashMap<*, *>
-                        val thumbnail = Thumbnail(
-                            thumbnailhashMap["path"] as String,
-                            thumbnailhashMap["extension"] as String
-                        )
-                        val character = Character(id?.toInt(), name, description, thumbnail)
-                        personajes = personajes.plus(character)
-                    }
-                    //Mostramos los personajes favoritos del usuario
-                    binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
-                    binding.listaPersonajesFavoritos.setHasFixedSize(true)
-                    val adapter = CharacterFavouritesAdapter(personajes)
-                    binding.listaPersonajesFavoritos.adapter = adapter
-                    adapter.setOnItemClickListener(object : OnItemClickListener {
-                        override fun onItemClick(position: Int) {
-                            val character = personajes[position]
-                            val intent = Intent(context, InfoCompleteCharacts::class.java)
-                            intent.putExtra("charact", character)
-                            startActivity(intent)
-                        }
-                    })
+            .addOnSuccessListener { document ->
+                //obtenemos los personajes
+                var personajes = arrayOf<Character>()
+                for (i in 0 until document.size()) {
+                    val item = document.documents[i].data
+                    val id = item!!["id"] as Long?
+                    val name = item["name"] as String?
+                    val description = item["description"] as String?
+                    val thumbnailhashMap = item["thumbnail"] as HashMap<*, *>
+                    val thumbnail = Thumbnail(
+                        thumbnailhashMap["path"] as String,
+                        thumbnailhashMap["extension"] as String
+                    )
+                    val character = Character(id?.toInt(), name, description, thumbnail)
+                    personajes = personajes.plus(character)
                 }
+                //Mostramos los personajes favoritos del usuario
+                binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                binding.listaPersonajesFavoritos.setHasFixedSize(true)
+                val adapter = CharacterFavouritesAdapter(personajes)
+                binding.listaPersonajesFavoritos.adapter = adapter
+                adapter.setOnItemClickListener(object : OnItemClickListener {
+                    override fun onItemClick(position: Int) {
+                        val character = personajes[position]
+                        val intent = Intent(context, InfoCompleteCharacts::class.java)
+                        intent.putExtra("charact", character)
+                        startActivity(intent)
+                    }
+                })
             }
     }
 

@@ -1,6 +1,6 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
-import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -19,13 +20,14 @@ import com.google.firebase.auth.FirebaseAuth
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.MainActivity
 import quesadoprado.saramaria.marvelmania.activities.Register
-import quesadoprado.saramaria.marvelmania.data.util.User
 import quesadoprado.saramaria.marvelmania.databinding.FragmentLoginBinding
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
+import quesadoprado.saramaria.marvelmania.utils.UtilsApp
 
 @Suppress("DEPRECATION")
-class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND: TextView) :
+class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND: TextView,
+                    private val imageUser: ImageView) :
     Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
@@ -34,8 +36,7 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
     private lateinit var loginAccountInputsArray: Array<EditText>
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,12 +45,18 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //array de los elementos necesarios para posibles errores
         loginAccountInputsArray = arrayOf(binding.ETemail, binding.ETPpassword)
+        UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+
         binding.btnLogin.setOnClickListener {
             login()
+            //ocultamos el teclado para poder ver en caso de que suceda el mensaje de error
             hideKeyBoard(view)
         }
+
         binding.registrar.setOnClickListener {
+            //nos dirigimos a la pantalla de registro
             val intentRegistro = Intent(context, Register::class.java)
             startActivity(intentRegistro)
         }
@@ -91,23 +98,26 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
             }
         }
     }
-
     //OCULTAR TECLADO
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun Fragment.hideKeyBoard(view: View?=activity?.window?.decorView?.rootView){
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.R){
+    private fun Fragment.hideKeyBoard(view: View? = activity?.window?.decorView?.rootView) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             view?.hideKeyBoard(view)
-        }else{
-            inputMethodManager()?.hideSoftInputFromWindow(view?.applicationWindowToken,0)
+        } else {
+            inputMethodManager()?.hideSoftInputFromWindow(view?.applicationWindowToken, 0)
         }
     }
-    private fun Fragment.inputMethodManager()= context?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+
+    private fun Fragment.inputMethodManager() =
+        context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun View.hideKeyBoard(view: View){
+    private fun View.hideKeyBoard(view: View) {
         windowInsetsController?.hide(WindowInsets.Type.ime())
         view.clearFocus()
     }
+
+
     //NAVIGATION DRAWER
     private fun cambiarUsernameNavigationDrawer(uid: String) {
         val sfDocRef = database.collection("users").document(uid)
@@ -121,6 +131,4 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
 
     private fun notEmpty(): Boolean = binding.ETemail.text?.trim().toString().isNotEmpty()
             && binding.ETPpassword.text?.trim().toString().isNotEmpty()
-
-
 }

@@ -11,8 +11,6 @@ import android.widget.PopupMenu
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
@@ -26,8 +24,8 @@ import quesadoprado.saramaria.marvelmania.interfaces.OnItemClickListener
 import quesadoprado.saramaria.marvelmania.interfaces.OnItemLongClickListener
 import quesadoprado.saramaria.marvelmania.network.RetrofitBroker
 import quesadoprado.saramaria.marvelmania.utils.DataBaseUtils
-import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseDatabase
+import quesadoprado.saramaria.marvelmania.utils.UtilsApp
 
 
 class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: ImageView) :
@@ -38,7 +36,6 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
     private lateinit var comics: Array<Comic>
     private val database = firebaseDatabase
 
-    private val storage = FirebaseUtils.firebaseStorage
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,7 +47,11 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mostrarImagenUser()
+        if (auth.currentUser!=null){
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
+        }else{
+            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        }
         binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 3)
         //Mostrar todos los comics
         buscarTodosLosComics()
@@ -69,30 +70,6 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
     override fun onStart() {
         super.onStart()
         buscarTodosLosComics()
-    }
-
-    private fun mostrarImagenUser() {
-        if (auth.currentUser!=null) {
-            storage.child("file/${auth.currentUser!!.uid}").downloadUrl.addOnSuccessListener {
-                Glide.with(this)
-                    .load(it)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }.addOnFailureListener {
-                Glide.with(this)
-                    .load(R.mipmap.icon)
-                    .apply(RequestOptions().override(512, 512))
-                    .circleCrop()
-                    .into(imageUser)
-            }
-        }else{
-            Glide.with(this)
-                .load(R.mipmap.icon)
-                .apply(RequestOptions().override(512, 512))
-                .circleCrop()
-                .into(imageUser)
-        }
     }
 
     private fun buscarTodosLosComics() {
