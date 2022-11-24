@@ -18,7 +18,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
+        android:paddingStart="10dp"
         android:text="Anonymous"
+        android:textSize="16sp"
         android:textColor="@color/black"
         android:textStyle="bold"/>
     <View
