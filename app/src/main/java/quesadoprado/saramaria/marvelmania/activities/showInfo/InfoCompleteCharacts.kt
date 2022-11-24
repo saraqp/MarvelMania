@@ -161,6 +161,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                     )
                     if (comentUser.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
+                        idComentResp=null
                         obtenerComentarios(id)
                     }
                 }

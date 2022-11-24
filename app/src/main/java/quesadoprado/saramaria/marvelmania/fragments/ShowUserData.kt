@@ -98,7 +98,7 @@ class ShowUserData(
                                     if (task.isSuccessful) {
                                         //cambiamos el campo contraseña en la base de datos firestore
                                         DataBaseUtils.cambiarPassUser(
-                                            user!!,
+                                            user!!.uid!!,
                                             binding.passtextnueva.text.toString()
                                         )
                                         //avidamos al usuario que la contraseña se ha cambiado correctamente

@@ -62,4 +62,7 @@
     <string name="informacionNoEncontrada">No data found</string>
     <string name="titleAlertExit">Confirmation</string>
     <string name="msgAlertExit">Sure you want to exit?</string>
+    <string name="forgotPass">Forgot your password?</string>
+    <string name="cancel">Cancel</string>
+    <string name="campoNoVacio">Email cannot be empty</string>
 </resources>

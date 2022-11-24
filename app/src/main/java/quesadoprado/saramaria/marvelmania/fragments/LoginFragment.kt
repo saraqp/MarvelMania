@@ -1,10 +1,14 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.ContactsContract.RawContacts.Data
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,6 +64,34 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
             val intentRegistro = Intent(context, Register::class.java)
             startActivity(intentRegistro)
         }
+        binding.forgotPass.setOnClickListener {
+            changePass()
+        }
+    }
+
+    private fun changePass() {
+        val dialogForgotPass:AlertDialog.Builder= AlertDialog.Builder(requireActivity())
+        val inflater= requireActivity().layoutInflater
+        val dialogLayout=inflater.inflate(R.layout.dialog_resetpass,null)
+        val email=dialogLayout.findViewById<EditText>(R.id.email_resetPass)
+        with(dialogForgotPass){
+            setTitle(getString(R.string.cambiarpass))
+            setPositiveButton(getString(R.string.cambiarpass)){dialog,which->
+                if (email.text.toString().isNotEmpty()){
+                    auth.sendPasswordResetEmail(email.text.toString())
+                        .addOnSuccessListener { task->
+                            Snackbar.make(requireView(),getString(R.string.email_enviado)+email.text.toString(),Snackbar.LENGTH_SHORT).show()
+                        }
+                }else{
+                    Snackbar.make(requireView(),getString(R.string.campoNoVacio),Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            setNegativeButton(getString(R.string.cancel)){_,_->
+
+            }
+            setView(dialogLayout)
+            show()
+        }
     }
 
     private fun login() {
@@ -67,13 +99,13 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
             val email = binding.ETemail.text.toString()
             val pass = binding.ETPpassword.text.toString()
             auth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                .addOnSuccessListener { task ->
                         /*recuperamos de la cuenta que se loguea su nombre de usuario y en el
                           navigation drawer cambiamos "anonymous" por el nombre de usuario conectado
                         */
                         cambiarUsernameNavigationDrawer(auth.currentUser!!.uid)
-
+                        //actualizamos la pass por si acaso el usuario olvido la contraseña y la cambio
+                        DataBaseUtils.cambiarPassUser(auth.currentUser!!.uid,pass)
                         //dejamos medio segundo y cambiamos a la pantalla de home (biblioteca)
                         val handler = Handler()
                         handler.postDelayed({
@@ -81,13 +113,12 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(intent)
                         }, 500)
-                    } else {
-                        Snackbar.make(
-                            binding.contentLogin,
-                            getString(R.string.error_autentificar),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
+                }.addOnFailureListener {
+                    Snackbar.make(
+                        binding.contentLogin,
+                        getString(R.string.error_autentificar),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
         } else if (!notEmpty()) {
             //mostrar un error por cada campo vacio

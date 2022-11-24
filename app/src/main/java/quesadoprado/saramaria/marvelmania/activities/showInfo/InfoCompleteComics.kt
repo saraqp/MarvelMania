@@ -146,6 +146,7 @@ class InfoCompleteComics : AppCompatActivity() {
                     )
                     if (comentario_user.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
+                        idComentResp=null
                         obtenerComentarios(id)
                     }
                 }

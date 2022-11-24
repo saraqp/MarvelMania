@@ -67,16 +67,26 @@
         android:textColorHint="#37474F"
         android:layout_marginTop="16dp"
         tools:ignore="DuplicateSpeakableTextCheck" />
+    <TextView
+        android:id="@+id/forgotPass"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:text="@string/forgotPass"
+        android:textAlignment="textEnd"
+        android:textSize="18sp"
+        android:paddingEnd="25dp"
+        android:layout_marginTop="8dp"
 
+        android:layout_below="@id/ETPpassword"/>
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/iniciar"
-        android:layout_below="@id/ETPpassword"
+        android:layout_below="@id/forgotPass"
         android:layout_marginEnd="25dp"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="5dp"/>
 
     <TextView
         android:id="@+id/registrar"

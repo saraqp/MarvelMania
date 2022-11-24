@@ -83,8 +83,8 @@ class DataBaseUtils {
             storage.child("file/${user.uid}").putFile(imageUri)
         }
 
-        fun cambiarPassUser(user: User, password: String) {
-            val sfDocRef = database.collection("users").document(user.uid!!)
+        fun cambiarPassUser(uid:String, password: String) {
+            val sfDocRef = database.collection("users").document(uid)
             database.runTransaction { transaction ->
                 transaction.update(sfDocRef, "password", password)
             }

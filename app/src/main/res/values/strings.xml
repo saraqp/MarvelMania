@@ -21,7 +21,7 @@
     <string name="emailExample" translatable="false">example@gmail.com</string>
     <string name="pass">Contraseña</string>
     <string name="iniciar">Iniciar sesión</string>
-    <string name="registrar">¿No tienes cuenta? Regístrate</string>
+    <string name="registrar"><u>¿No tienes cuenta? Regístrate</u></string>
     <string name="cambiarpass">Cambiar contraseña</string>
     <string name="antiguapass">Antigua contraseña</string>
     <string name="nuevapass">Nueva contraseña</string>
@@ -69,4 +69,7 @@
     <string name="offline" translatable="false">offline</string>
     <string name="online" translatable="false">online</string>
     <string name="defaultImage" translatable="false">default.png</string>
+    <string name="forgotPass"><u>¿Has olvidado tu contraseña?</u></string>
+    <string name="cancel">Cancelar</string>
+    <string name="campoNoVacio">Email no puede estar vacío</string>
 </resources>
