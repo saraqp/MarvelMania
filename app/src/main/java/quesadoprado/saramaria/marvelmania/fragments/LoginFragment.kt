@@ -1,13 +1,18 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -36,11 +41,13 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loginAccountInputsArray = arrayOf(binding.ETemail, binding.ETPpassword)
         binding.btnLogin.setOnClickListener {
             login()
+            hideKeyBoard(view)
         }
         binding.registrar.setOnClickListener {
             val intentRegistro = Intent(context, Register::class.java)
@@ -85,6 +92,23 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
         }
     }
 
+    //OCULTAR TECLADO
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun Fragment.hideKeyBoard(view: View?=activity?.window?.decorView?.rootView){
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.R){
+            view?.hideKeyBoard(view)
+        }else{
+            inputMethodManager()?.hideSoftInputFromWindow(view?.applicationWindowToken,0)
+        }
+    }
+    private fun Fragment.inputMethodManager()= context?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+
+    @RequiresApi(Build.VERSION_CODES.R)
+    private fun View.hideKeyBoard(view: View){
+        windowInsetsController?.hide(WindowInsets.Type.ime())
+        view.clearFocus()
+    }
+    //NAVIGATION DRAWER
     private fun cambiarUsernameNavigationDrawer(uid: String) {
         val sfDocRef = database.collection("users").document(uid)
         database.runTransaction { transaction ->
