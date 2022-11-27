@@ -134,6 +134,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
             binding.contentComentarios.visibility = View.GONE
         }
     }
+
     //OCULTAR TECLADO
     fun AppCompatActivity.hideKeyboard() {
         val view = this.currentFocus
@@ -180,7 +181,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                     )
                     if (comentUser.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
-                        idComentResp=null
+                        idComentResp = null
                         obtenerComentarios(id)
                     }
                 }
@@ -354,7 +355,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                             doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc - 2
 
-                                        listaComents.set(position,coment)
+                                        listaComents.set(position, coment)
                                         adapter.notifyDataSetChanged()
 
                                     }
@@ -382,49 +383,60 @@ class InfoCompleteCharacts : AppCompatActivity() {
                 }
 
                 override fun onDeleteClick(position: Int) {
-                    val comentario=listaComents[position]
+                    val comentario = listaComents[position]
                     //verificamos que el usuario está seguro de borrar su comentario
                     val builder = AlertDialog.Builder(contexto)
 
                     builder.setMessage(getString(R.string.asegurarBorradoComent))
                         .setPositiveButton(getString(R.string.si)) { _, _ ->
-                            DataBaseUtils.camiarComentario(comentario,getString(R.string.comentarioBorradomsg))
-                            Snackbar.make(binding.drawerLayout,getString(R.string.comentarioBorrado),Snackbar.LENGTH_SHORT).show()
-                            comentario.comentario=getString(R.string.comentarioBorradomsg)
+                            DataBaseUtils.camiarComentario(
+                                comentario,
+                                getString(R.string.comentarioBorradomsg)
+                            )
+                            Snackbar.make(
+                                binding.drawerLayout,
+                                getString(R.string.comentarioBorrado),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            comentario.comentario = getString(R.string.comentarioBorradomsg)
                             listaComents[position] = comentario
                             adapter.notifyDataSetChanged()
                         }
                         //en caso negativo no hacemos nada
-                        .setNegativeButton(getString(R.string.no)) { _, _ ->}
+                        .setNegativeButton(getString(R.string.no)) { _, _ -> }
                         .show()
                 }
 
                 override fun onEditClick(position: Int) {
-                    val coment=listaComents[position]
+                    val coment = listaComents[position]
 
-                    val dialogEditComent:AlertDialog.Builder= AlertDialog.Builder(contexto)
-                    val inflater= layoutInflater
-                    val dialogLayout=inflater.inflate(R.layout.dialog_edit_coment,null)
-                    val edit=dialogLayout.findViewById<EditText>(R.id.edited_coment)
-                    with(dialogEditComent){
+                    val dialogEditComent: AlertDialog.Builder = AlertDialog.Builder(contexto)
+                    val inflater = layoutInflater
+                    val dialogLayout = inflater.inflate(R.layout.dialog_edit_coment, null)
+                    val edit = dialogLayout.findViewById<EditText>(R.id.edited_coment)
+                    with(dialogEditComent) {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
                         edit.setText(coment.comentario)
-                        setPositiveButton(getString(R.string.editBtn)){_,_->
-                            if (edit.text.toString().isNotEmpty()){
-                                DataBaseUtils.camiarComentario(coment,edit.text.toString())
+                        setPositiveButton(getString(R.string.editBtn)) { _, _ ->
+                            if (edit.text.toString().isNotEmpty()) {
+                                DataBaseUtils.camiarComentario(coment, edit.text.toString())
 
-                                coment.comentario=edit.text.toString()
-                                coment.edited=true
+                                coment.comentario = edit.text.toString()
+                                coment.edited = true
 
                                 listaComents[position] = coment
                                 adapter.notifyDataSetChanged()
 
-                            }else{
-                                Snackbar.make(binding.drawerLayout,getString(R.string.campoNoVacio),Snackbar.LENGTH_SHORT).show()
+                            } else {
+                                Snackbar.make(
+                                    binding.drawerLayout,
+                                    getString(R.string.campoNoVacio),
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                        setNegativeButton(getString(R.string.cancel)){_,_->
+                        setNegativeButton(getString(R.string.cancel)) { _, _ ->
 
                         }
                         show()
