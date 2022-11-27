@@ -1,19 +1,27 @@
 package quesadoprado.saramaria.marvelmania.activities.showInfo
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.adapter.ComentAdapter
@@ -117,6 +125,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
             binding.btnComent.setOnClickListener {
                 obtenerNombreUsuario(charact.id)
+                hideKeyboard()
                 binding.escribirComentario.text = null
                 binding.respuestaComent.visibility = View.GONE
             }
@@ -124,6 +133,15 @@ class InfoCompleteCharacts : AppCompatActivity() {
         } else {
             binding.contentComentarios.visibility = View.GONE
         }
+    }
+    //OCULTAR TECLADO
+    fun AppCompatActivity.hideKeyboard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     private fun ocultarProgressBar() {
@@ -170,7 +188,8 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
     }
 
-    private fun obtenerComentarios(id_serie: Int) {
+
+    private fun obtenerComentarios(id: Int) {
         database.collection("coments").get().addOnSuccessListener { documents ->
             val comentarios = documents.documents
             var listaComents = arrayOf<Coment>()
@@ -178,7 +197,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                 if (coment.data!!["type"] == "charact") {
                     val id_type = (coment.data!!["id_type"] as Long).toInt()
                     //comprobamos q el comentario corresponda a la serie que esta viendo el usuario
-                    if (id_type == id_serie) {
+                    if (id_type == id) {
                         val comentario = Coment(
                             coment.data!!["type"] as String,
                             (coment.data!!["id_type"] as Long).toInt(),
@@ -190,6 +209,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                             coment.id
                         )
                         listaComents = listaComents.plus(comentario)
+                        listaComents.sortByDescending { it.puntuacion }
                     }
                 }
             }
@@ -227,6 +247,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                     val puntuacionDoc = doc.data!!["score"].toString().toInt()
                                     coment.puntuacion = puntuacionDoc - 1
 
+                                    listaComents[position] = coment
                                     adapter.notifyDataSetChanged()
 
                                 }
@@ -254,6 +275,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                             doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc + 2
 
+                                        listaComents[position] = coment
                                         adapter.notifyDataSetChanged()
 
                                     }
@@ -272,6 +294,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                             doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc + 1
 
+                                        listaComents[position] = coment
                                         adapter.notifyDataSetChanged()
 
                                     }
@@ -304,6 +327,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                     val puntuacionDoc = doc.data!!["score"].toString().toInt()
                                     coment.puntuacion = puntuacionDoc + 1
 
+                                    listaComents[position] = coment
                                     adapter.notifyDataSetChanged()
 
                                 }
@@ -328,6 +352,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                             doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc - 2
 
+                                        listaComents.set(position,coment)
                                         adapter.notifyDataSetChanged()
 
                                     }
@@ -345,13 +370,63 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                         val puntuacionDoc =
                                             doc.data!!["score"].toString().toInt()
                                         coment.puntuacion = puntuacionDoc - 1
-
+                                        listaComents[position] = coment
                                         adapter.notifyDataSetChanged()
                                     }
 
                             }
                         }
                     }
+                }
+
+                override fun onDeleteClick(position: Int) {
+                    val comentario=listaComents[position]
+                    //verificamos que el usuario está seguro de borrar su comentario
+                    val builder = AlertDialog.Builder(contexto)
+
+                    builder.setMessage(getString(R.string.asegurarBorradoComent))
+                        .setPositiveButton(getString(R.string.si)) { _, _ ->
+                            DataBaseUtils.camiarComentario(comentario,getString(R.string.comentarioBorradomsg))
+                            Snackbar.make(binding.drawerLayout,getString(R.string.comentarioBorrado),Snackbar.LENGTH_SHORT).show()
+                            comentario.comentario=getString(R.string.comentarioBorradomsg)
+                            listaComents[position] = comentario
+                            adapter.notifyDataSetChanged()
+                        }
+                        //en caso negativo no hacemos nada
+                        .setNegativeButton(getString(R.string.no)) { _, _ ->}
+                        .show()
+                }
+
+                override fun onEditClick(position: Int) {
+                    val coment=listaComents[position]
+
+                    val dialogEditComent:AlertDialog.Builder= AlertDialog.Builder(contexto)
+                    val inflater= layoutInflater
+                    val dialogLayout=inflater.inflate(R.layout.dialog_edit_coment,null)
+                    val edit=dialogLayout.findViewById<EditText>(R.id.edited_coment)
+                    with(dialogEditComent){
+                        setTitle(getString(R.string.editComent))
+                        setView(dialogLayout)
+                        edit.setText(coment.comentario)
+                        setPositiveButton(getString(R.string.cambiarpass)){_,_->
+                            if (edit.text.toString().isNotEmpty()){
+                                DataBaseUtils.camiarComentario(coment,edit.text.toString())
+
+                                coment.comentario=edit.text.toString()
+                                listaComents[position] = coment
+                                adapter.notifyDataSetChanged()
+
+                            }else{
+                                Snackbar.make(binding.drawerLayout,getString(R.string.campoNoVacio),Snackbar.LENGTH_SHORT).show()
+                            }
+                        }
+                        setNegativeButton(getString(R.string.cancel)){_,_->
+
+                        }
+                        show()
+                    }
+
+
                 }
 
                 private fun obtenerComentarioResp() {

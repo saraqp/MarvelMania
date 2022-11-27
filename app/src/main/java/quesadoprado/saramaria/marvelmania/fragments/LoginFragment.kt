@@ -76,7 +76,7 @@ class LoginFragment(private var auth: FirebaseAuth, private var nombreUsuarioND:
         val email=dialogLayout.findViewById<EditText>(R.id.email_resetPass)
         with(dialogForgotPass){
             setTitle(getString(R.string.cambiarpass))
-            setPositiveButton(getString(R.string.cambiarpass)){dialog,which->
+            setPositiveButton(getString(R.string.cambiarpass)){_,_->
                 if (email.text.toString().isNotEmpty()){
                     auth.sendPasswordResetEmail(email.text.toString())
                         .addOnSuccessListener { task->

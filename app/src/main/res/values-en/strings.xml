@@ -65,4 +65,8 @@
     <string name="forgotPass">Forgot your password?</string>
     <string name="cancel">Cancel</string>
     <string name="campoNoVacio">Email cannot be empty</string>
+    <string name="asegurarBorradoComent">Are you sure?</string>
+    <string name="comentarioBorrado">Comment deleted</string>
+    <string name="comentarioBorradomsg">Comment deleted by author</string>
+    <string name="editComent">Edit coment</string>
 </resources>

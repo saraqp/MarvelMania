@@ -72,4 +72,8 @@
     <string name="forgotPass"><u>¿Has olvidado tu contraseña?</u></string>
     <string name="cancel">Cancelar</string>
     <string name="campoNoVacio">Email no puede estar vacío</string>
+    <string name="asegurarBorradoComent">¿Estas seguro?</string>
+    <string name="comentarioBorradomsg">Comentario eliminado por el autor</string>
+    <string name="comentarioBorrado">Comentario eliminado</string>
+    <string name="editComent">Editar comentario</string>
 </resources>

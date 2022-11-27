@@ -15,4 +15,6 @@ interface OnComentClickListener {
     fun onReplyClick(position: Int)
     fun onUpVoteClick(position: Int, holder: ImageView, downvote: ImageView)
     fun onDownVoteClick(position: Int, holder: ImageView, upvote: ImageView)
+    fun onDeleteClick(position: Int)
+    fun onEditClick(position: Int)
 }

@@ -2,7 +2,6 @@ package quesadoprado.saramaria.marvelmania.utils
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.data.characters.Character
 import quesadoprado.saramaria.marvelmania.data.comics.Comic
 import quesadoprado.saramaria.marvelmania.data.items.Thumbnail
@@ -183,7 +182,12 @@ class DataBaseUtils {
                 )
             )
         }
-
+        fun camiarComentario(coment: Coment, newMsg: String) {
+            val sfDocRef = database.collection("coments").document(coment.idComent!!)
+            database.runTransaction { transaction ->
+                transaction.update(sfDocRef, "coment", newMsg)
+            }
+        }
         fun addVotoUser(upVoteOrDownVote: String, idComent: String?) {
             when (upVoteOrDownVote) {
                 "upvote" -> {

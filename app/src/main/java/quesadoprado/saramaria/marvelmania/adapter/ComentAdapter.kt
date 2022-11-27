@@ -1,6 +1,7 @@
 package quesadoprado.saramaria.marvelmania.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +50,24 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
         }
         UtilsApp.mostrarImagenUser(comentHolder.id_userComent, null, holder.imageUser, context!!)
         comprobarVotoUsuario(comentHolder.idComent, holder)
+        //comprobar si el comentario es del usuario conectado
+        comprobarComentUser(comentHolder,holder)
+    }
 
+    private fun comprobarComentUser(comentHolder: Coment, holder: ViewHolder) {
+        //comprobar si el usuario conectado es el que ha escrito el comentario
+        if (comentHolder.id_userComent==auth.currentUser!!.uid){
+            //comprobar si el usuario ya ha sido borrado
+            if (comentHolder.comentario.equals(context!!.getString(R.string.comentarioBorradomsg))) {
+                holder.delete.visibility = View.GONE
+            }else{
+                holder.edit.visibility=View.VISIBLE
+                holder.delete.visibility=View.VISIBLE
+            }
+        }else{
+            holder.delete.visibility=View.GONE
+            holder.edit.visibility=View.GONE
+        }
     }
 
     private fun comprobarVotoUsuario(idComent: String?, holder: ViewHolder) {
@@ -94,6 +112,8 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
         val score: TextView = itemView.findViewById(R.id.TVpuntuacionText)
         val username: TextView = itemView.findViewById(R.id.user_coment)
         val imageUser: ImageView = itemView.findViewById(R.id.imageUser)
+        val delete: ImageView=itemView.findViewById(R.id.deleteComent)
+        val edit: ImageView=itemView.findViewById(R.id.editComent)
 
         init {
             reply.setOnClickListener {
@@ -104,6 +124,12 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
             }
             downvote.setOnClickListener {
                 listener.onDownVoteClick(adapterPosition, downvote, upvote)
+            }
+            delete.setOnClickListener{
+                listener.onDeleteClick(adapterPosition)
+            }
+            edit.setOnClickListener {
+                listener.onEditClick(adapterPosition)
             }
         }
 

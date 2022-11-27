@@ -4,16 +4,20 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="5dp"
-    app:cardCornerRadius="10dp">
+    app:cardCornerRadius="10dp"
+    android:backgroundTint="@color/comentbackgroundout">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/imageUser"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/ic_icon"/>
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"/>
         <TextView
             android:id="@+id/user_coment"
             android:layout_width="wrap_content"
@@ -23,27 +27,53 @@
             android:layout_marginBottom="10dp"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:textAllCaps="true"
             android:layout_toEndOf="@id/imageUser"/>
-        <TextView
-            android:id="@+id/respComent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
+        <ImageView
+            android:id="@+id/deleteComent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_below="@id/imageUser"
-            android:background="@color/background"/>
-        <TextView
-            android:id="@+id/TVComent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_delete" />
+        <ImageView
+            android:id="@+id/editComent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_editcoment"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@id/deleteComent"/>
+        <LinearLayout
+            android:id="@+id/contentComent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:textSize="18sp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            android:background="@color/comentbackgroundin"
             android:layout_marginBottom="20dp"
-            android:layout_below="@id/respComent"/>
+            android:layout_margin="7dp"
+            android:layout_below="@id/imageUser">
+            <TextView
+                android:id="@+id/respComent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/background"/>
+            <TextView
+                android:id="@+id/TVComent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:textSize="18sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"/>
+        </LinearLayout>
             <ImageView
                 android:id="@+id/upVote"
                 android:layout_width="40dp"
@@ -51,7 +81,7 @@
                 android:src="@drawable/ic_upvotes"
                 android:layout_marginEnd="20dp"
                 android:tag="@string/novotado"
-                android:layout_below="@id/TVComent"
+                android:layout_below="@id/contentComent"
                 android:layout_toStartOf="@id/downVote"/>
             <ImageView
                 android:id="@+id/downVote"
@@ -60,7 +90,7 @@
                 android:src="@drawable/ic_downvotes"
                 android:layout_marginEnd="20dp"
                 android:tag="@string/novotado"
-                android:layout_below="@id/TVComent"
+                android:layout_below="@id/contentComent"
                 android:layout_toStartOf="@id/reply"/>
             <ImageView
                 android:id="@+id/reply"
@@ -70,7 +100,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="8dp"
-                android:layout_below="@id/TVComent"/>
+                android:layout_below="@id/contentComent"/>
 
         <TextView
             android:id="@+id/TVpuntuacionText"
@@ -80,7 +110,7 @@
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginStart="10dp"
-            android:layout_below="@id/TVComent"
+            android:layout_below="@id/contentComent"
             android:layout_alignParentStart="true"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
