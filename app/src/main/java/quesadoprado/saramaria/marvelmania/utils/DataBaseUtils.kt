@@ -178,7 +178,8 @@ class DataBaseUtils {
                     "id_userComent" to coment.id_userComent,
                     "score" to coment.puntuacion,
                     "coment" to coment.comentario,
-                    "id_coment_resp" to coment.id_coment_resp.toString()
+                    "id_coment_resp" to coment.id_coment_resp.toString(),
+                    "edited" to coment.edited
                 )
             )
         }
@@ -186,6 +187,7 @@ class DataBaseUtils {
             val sfDocRef = database.collection("coments").document(coment.idComent!!)
             database.runTransaction { transaction ->
                 transaction.update(sfDocRef, "coment", newMsg)
+                transaction.update(sfDocRef, "edited", true)
             }
         }
         fun addVotoUser(upVoteOrDownVote: String, idComent: String?) {

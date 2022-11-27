@@ -76,4 +76,6 @@
     <string name="comentarioBorradomsg">Comentario eliminado por el autor</string>
     <string name="comentarioBorrado">Comentario eliminado</string>
     <string name="editComent">Editar comentario</string>
+    <string name="comentEdited">. Editado</string>
+    <string name="editBtn">Editar</string>
 </resources>

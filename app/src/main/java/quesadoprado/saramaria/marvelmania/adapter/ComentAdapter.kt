@@ -39,7 +39,19 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comentHolder: Coment = list_coments?.get(position)!!
         this.holder = holder
-        holder.coment.text = comentHolder.comentario
+        when (comentHolder.edited) {
+            true->{
+                if (comentHolder.comentario!= context!!.getString(R.string.comentarioBorradomsg)) {
+                    holder.coment.text =
+                        comentHolder.comentario + context!!.getString(R.string.comentEdited)
+                }else{
+                    holder.coment.text =comentHolder.comentario
+                }
+            }
+            false->{
+                holder.coment.text = comentHolder.comentario
+            }
+        }
         holder.score.text = comentHolder.puntuacion.toString()
         holder.username.text = comentHolder.username
         if (comentHolder.id_coment_resp!!.toString() == "null") {

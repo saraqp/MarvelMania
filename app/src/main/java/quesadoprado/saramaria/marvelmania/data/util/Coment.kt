@@ -8,5 +8,6 @@ data class Coment(
     var puntuacion:Int?=null,
     var comentario:String?=null,
     var id_coment_resp:String?=null,
-    var idComent:String?=null
+    var idComent:String?=null,
+    var edited:Boolean
 )

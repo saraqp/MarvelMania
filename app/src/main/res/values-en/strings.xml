@@ -21,7 +21,7 @@
     <string name="pass">Password</string>
     <string name="email">Email</string>
     <string name="iniciar">Log in</string>
-    <string name="registrar">You don\'t have an account? Sign in</string>
+    <string name="registrar"><u>You don\'t have an account? Sign in</u></string>
     <string name="cambiarpass">Change password</string>
     <string name="antiguapass">Old password</string>
     <string name="nuevapass">New password</string>
@@ -62,11 +62,13 @@
     <string name="informacionNoEncontrada">No data found</string>
     <string name="titleAlertExit">Confirmation</string>
     <string name="msgAlertExit">Sure you want to exit?</string>
-    <string name="forgotPass">Forgot your password?</string>
+    <string name="forgotPass"><u>Forgot your password?</u></string>
     <string name="cancel">Cancel</string>
     <string name="campoNoVacio">Email cannot be empty</string>
     <string name="asegurarBorradoComent">Are you sure?</string>
     <string name="comentarioBorrado">Comment deleted</string>
     <string name="comentarioBorradomsg">Comment deleted by author</string>
     <string name="editComent">Edit coment</string>
+    <string name="comentEdited">.Edited</string>
+    <string name="editBtn">Edit</string>
 </resources>

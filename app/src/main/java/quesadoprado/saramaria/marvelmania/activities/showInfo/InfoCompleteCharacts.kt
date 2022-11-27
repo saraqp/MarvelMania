@@ -175,7 +175,8 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         0,
                         comentUser,
                         idComentResp,
-                        coment?.idComent
+                        coment?.idComent,
+                        false
                     )
                     if (comentUser.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
@@ -206,7 +207,8 @@ class InfoCompleteCharacts : AppCompatActivity() {
                             (coment.data!!["score"] as Long?)?.toInt(),
                             coment.data!!["coment"] as String?,
                             coment.data!!["id_coment_resp"] as String?,
-                            coment.id
+                            coment.id,
+                            coment.data!!["edited"] as Boolean
                         )
                         listaComents = listaComents.plus(comentario)
                         listaComents.sortByDescending { it.puntuacion }
@@ -408,11 +410,13 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
                         edit.setText(coment.comentario)
-                        setPositiveButton(getString(R.string.cambiarpass)){_,_->
+                        setPositiveButton(getString(R.string.editBtn)){_,_->
                             if (edit.text.toString().isNotEmpty()){
                                 DataBaseUtils.camiarComentario(coment,edit.text.toString())
 
                                 coment.comentario=edit.text.toString()
+                                coment.edited=true
+
                                 listaComents[position] = coment
                                 adapter.notifyDataSetChanged()
 

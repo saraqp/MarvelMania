@@ -194,7 +194,8 @@ class InfoCompleteSeries : AppCompatActivity() {
                         0,
                         comentario_user,
                         idComentResp,
-                        coment?.idComent
+                        coment?.idComent,
+                        false
                     )
                     if (comentario_user.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
@@ -224,7 +225,8 @@ class InfoCompleteSeries : AppCompatActivity() {
                             (coment.data!!["score"] as Long?)?.toInt(),
                             coment.data!!["coment"] as String?,
                             coment.data!!["id_coment_resp"] as String?,
-                            coment.id
+                            coment.id,
+                            coment.data!!["edited"] as Boolean
                         )
                         lista_coments = lista_coments.plus(comentario)
                         lista_coments.sortByDescending { it.puntuacion }
@@ -431,7 +433,7 @@ class InfoCompleteSeries : AppCompatActivity() {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
                         edit.setText(coment.comentario)
-                        setPositiveButton(getString(R.string.cambiarpass)){_,_->
+                        setPositiveButton(getString(R.string.editBtn)){_,_->
                             if (edit.text.toString().isNotEmpty()){
                                 DataBaseUtils.camiarComentario(coment,edit.text.toString())
 
