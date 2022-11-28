@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteSeries
 import quesadoprado.saramaria.marvelmania.adapter.SeriesFavouritesAdapter
 import quesadoprado.saramaria.marvelmania.data.items.Item
@@ -98,7 +99,12 @@ class ListFavoritesSeriesFragment : Fragment() {
 
                 }
                 //mostramos las series
-                binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 5)
+                }else{
+                    binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                }
+
                 val adapter = SeriesFavouritesAdapter(series)
                 binding.listaSeriesFavoritos.adapter = adapter
                 adapter.setOnItemClickListener(object : OnItemClickListener {

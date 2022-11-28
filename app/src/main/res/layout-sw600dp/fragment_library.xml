@@ -11,6 +11,7 @@
         android:id="@+id/mensajeNoLogueados"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="30sp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
     <com.google.android.material.tabs.TabLayout
@@ -18,8 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:tabGravity="fill"
-        app:tabIndicatorColor="@color/primary"
-        app:tabSelectedTextColor="@color/primary_dark" />
+        app:tabMode="auto"
+        app:tabIndicatorColor="@color/teal_700"
+        app:tabSelectedTextColor="@color/teal_700" />
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

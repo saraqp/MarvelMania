@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.activities.showInfo.InfoCompleteCharacts
 import quesadoprado.saramaria.marvelmania.adapter.CharacterFavouritesAdapter
 import quesadoprado.saramaria.marvelmania.data.characters.Character
@@ -68,7 +69,12 @@ class ListFavoritesCharactersFragment : Fragment() {
                     personajes = personajes.plus(character)
                 }
                 //Mostramos los personajes favoritos del usuario
-                binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                if (resources.getBoolean(R.bool.isTablet)) {
+                    binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 5)
+                }else{
+                    binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
+                }
+
                 binding.listaPersonajesFavoritos.setHasFixedSize(true)
                 val adapter = CharacterFavouritesAdapter(personajes)
                 binding.listaPersonajesFavoritos.adapter = adapter

@@ -52,7 +52,11 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
         }else{
             UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
         }
-        binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 3)
+        if (resources.getBoolean(R.bool.isTablet)) {
+            binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 5)
+        }else{
+            binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 3)
+        }
         //Mostrar todos los comics
         buscarTodosLosComics()
         //Cuando el usuario busca por titulo

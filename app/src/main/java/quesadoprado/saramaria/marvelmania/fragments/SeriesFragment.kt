@@ -54,7 +54,12 @@ class SeriesFragment(
             UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
         }
 
-        binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 3)
+        if (resources.getBoolean(R.bool.isTablet)) {
+            binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 5)
+        }else{
+            binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 3)
+        }
+
         //mostrar todas las series
         buscarTodasLasSeries()
 

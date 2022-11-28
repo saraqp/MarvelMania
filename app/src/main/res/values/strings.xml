@@ -18,7 +18,7 @@
     <string name="anterior">Anterior:</string>
     <string name="siguiente">Próximo:</string>
     <string name="email">Correo electrónico</string>
-    <string name="emailExample" translatable="false">example@gmail.com</string>
+    <string name="emailExample" >ejemplo@gmail.com</string>
     <string name="pass">Contraseña</string>
     <string name="iniciar">Iniciar sesión</string>
     <string name="registrar"><u>¿No tienes cuenta? Regístrate</u></string>

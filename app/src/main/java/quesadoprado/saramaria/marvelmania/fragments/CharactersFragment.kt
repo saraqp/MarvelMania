@@ -47,7 +47,11 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.recyclerViewCharacters.layoutManager = GridLayoutManager(context, 3)
+        if (resources.getBoolean(R.bool.isTablet)){
+            binding.recyclerViewCharacters.layoutManager = GridLayoutManager(context, 5)
+        }else{
+            binding.recyclerViewCharacters.layoutManager = GridLayoutManager(context, 3)
+        }
 
         if (auth.currentUser != null) {
             UtilsApp.mostrarImagenUser(auth.currentUser!!.uid, null, imageUser, requireContext())

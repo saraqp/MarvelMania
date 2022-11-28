@@ -72,6 +72,7 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
             //comprobar si el usuario ya ha sido borrado
             if (comentHolder.comentario.equals(context!!.getString(R.string.comentarioBorradomsg))) {
                 holder.delete.visibility = View.GONE
+                holder.edit.visibility=View.GONE
             }else{
                 holder.edit.visibility=View.VISIBLE
                 holder.delete.visibility=View.VISIBLE

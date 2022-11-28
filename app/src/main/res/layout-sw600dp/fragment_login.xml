@@ -23,6 +23,13 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="50dp"
                 />
+            <LinearLayout
+                android:id="@+id/content_email"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/titulo">
             <ImageView
                 android:id="@+id/email"
                 android:layout_width="48dp"
@@ -32,30 +39,34 @@
                 android:src="@drawable/ic_user"
                 android:layout_marginTop="50dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="10dp"
-                android:layout_below="@id/titulo"/>
+                android:layout_marginEnd="10dp"/>
 
             <EditText
                 android:id="@+id/ETemail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/titulo"
                 android:autofillHints=""
                 android:ems="15"
                 android:hint="@string/emailExample"
                 android:inputType="textEmailAddress"
                 android:minHeight="48dp"
-                android:layout_toEndOf="@id/email"
                 android:textColorHint="#37474F"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="25dp"
                 tools:ignore="DuplicateSpeakableTextCheck" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/content_pass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/content_email">
             <ImageView
                 android:id="@+id/password"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/ic_pass"
-                android:layout_below="@id/email"
                 android:layout_marginTop="50dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="10dp"/>
@@ -64,8 +75,6 @@
                 android:id="@+id/ETPpassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ETemail"
-                android:layout_toEndOf="@id/password"
                 android:autofillHints=""
                 android:ems="15"
                 android:hint="@string/pass"
@@ -75,22 +84,25 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="25dp"
                 tools:ignore="DuplicateSpeakableTextCheck" />
+            </LinearLayout>
             <TextView
                 android:id="@+id/forgotPass"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:text="@string/forgotPass"
                 android:textAlignment="textEnd"
                 android:textSize="18sp"
-                android:paddingEnd="25dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:layout_below="@id/ETPpassword"/>
+                android:layout_below="@id/content_pass"/>
             <Button
                 android:id="@+id/btnLogin"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/iniciar"
                 android:layout_below="@id/forgotPass"
+                android:layout_centerHorizontal="true"
+                android:minWidth="500dp"
                 android:layout_marginEnd="25dp"
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="5dp"/>

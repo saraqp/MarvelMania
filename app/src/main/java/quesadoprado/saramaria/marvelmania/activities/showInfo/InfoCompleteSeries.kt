@@ -438,6 +438,8 @@ class InfoCompleteSeries : AppCompatActivity() {
                                 DataBaseUtils.camiarComentario(coment,edit.text.toString())
 
                                 coment.comentario=edit.text.toString()
+                                coment.edited=true
+
                                 lista_coments[position] = coment
                                 adapter.notifyDataSetChanged()
 

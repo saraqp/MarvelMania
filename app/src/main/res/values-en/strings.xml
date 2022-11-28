@@ -71,4 +71,5 @@
     <string name="editComent">Edit coment</string>
     <string name="comentEdited">.Edited</string>
     <string name="editBtn">Edit</string>
+    <string name="emailExample">example@gmail.com</string>
 </resources>
