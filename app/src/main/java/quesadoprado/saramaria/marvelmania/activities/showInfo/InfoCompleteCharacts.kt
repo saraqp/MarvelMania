@@ -4,19 +4,15 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -164,10 +160,12 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
     private fun obtenerNombreUsuario(id: Int) {
         val comentUser = binding.escribirComentario.text.toString()
+        //obtenemos el nombre de usuario del User que ha escrito el comentario
         database.collection("users").document(auth.currentUser!!.uid).get()
             .addOnSuccessListener { task ->
                 if (task.exists()) {
                     val username = task.data!!["displayName"] as String
+                    //creamos el comentario con el nombre de usuario y su uid
                     coment = Coment(
                         "charact",
                         id,
@@ -179,6 +177,10 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         coment?.idComent,
                         false
                     )
+                    /*guardamos el nombre de usuario y ponemos idComentResp a null por si el mensaje
+                    era una respuesta a otro y volvemos a obtener los comentarios para actualizar la
+                    lista y que aparezca el nuevo
+                     */
                     if (comentUser.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
                         idComentResp = null
@@ -244,7 +246,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
                             //quitamos su voto
                             DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
                             DataBaseUtils.delVotoUser(coment.idComent)
-
+                            //cambiamos visualmente la puntuacion del comentario
                             database.collection("coments").document(coment.idComent!!).get()
                                 .addOnSuccessListener { doc ->
                                     val puntuacionDoc = doc.data!!["score"].toString().toInt()
@@ -261,17 +263,25 @@ class InfoCompleteCharacts : AppCompatActivity() {
                         getString(R.string.novotado) -> {
                             //comprobamos si downvote esta activo
                             if (downvote.tag == getString(R.string.votado)) {
+
+                                //cambiamos el tag de upvote a "votado" y cambiamos el icono a color
                                 holder.tag = getString(R.string.votado)
                                 holder.setImageResource(R.drawable.ic_upvotes_voted)
+
+                                //cambiamos el tag de downvote a "novotado" y cambiamos el icono a negro
                                 downvote.tag = getString(R.string.novotado)
                                 downvote.setImageResource(R.drawable.ic_downvotes)
 
-
+                                //cambiamos la puntuación en la base de datos
+                                /*
+                                * Como se está cambiando de downvote a upvote ha de sumarse 2 puntos
+                                * a la puntuación: +1 para quitar el -1 del downvote y otro +1 para
+                                * añadir el voto de upvote
+                                * */
                                 DataBaseUtils.cambiarPuntuacionComentario(2, coment)
-
-
                                 DataBaseUtils.addVotoUser("upvote", coment.idComent)
 
+                                //cambiamos visualmente la puntuación de usuario
                                 database.collection("coments").document(coment.idComent!!).get()
                                     .addOnSuccessListener { doc ->
                                         val puntuacionDoc =
@@ -283,14 +293,14 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                                     }
 
-
+                                //downvote no esta activo
                             } else {
                                 holder.tag = getString(R.string.votado)
                                 holder.setImageResource(R.drawable.ic_upvotes_voted)
 
                                 DataBaseUtils.cambiarPuntuacionComentario(1, coment)
-
                                 DataBaseUtils.addVotoUser("upvote", coment.idComent)
+
                                 database.collection("coments").document(coment.idComent!!).get()
                                     .addOnSuccessListener { doc ->
                                         val puntuacionDoc =
@@ -357,10 +367,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                                         listaComents.set(position, coment)
                                         adapter.notifyDataSetChanged()
-
                                     }
-
-
                             } else {
                                 //cambiamos el tag a "votado" y cambiamos el icono a color
                                 holder.tag = getString(R.string.votado)
@@ -368,6 +375,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                                 DataBaseUtils.cambiarPuntuacionComentario(-1, coment)
                                 DataBaseUtils.addVotoUser("downvote", coment.idComent)
+
                                 database.collection("coments").document(coment.idComent!!).get()
                                     .addOnSuccessListener { doc ->
                                         val puntuacionDoc =
@@ -384,6 +392,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                 override fun onDeleteClick(position: Int) {
                     val comentario = listaComents[position]
+
                     //verificamos que el usuario está seguro de borrar su comentario
                     val builder = AlertDialog.Builder(contexto)
 
@@ -398,7 +407,9 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                 getString(R.string.comentarioBorrado),
                                 Snackbar.LENGTH_SHORT
                             ).show()
+
                             comentario.comentario = getString(R.string.comentarioBorradomsg)
+
                             listaComents[position] = comentario
                             adapter.notifyDataSetChanged()
                         }
@@ -410,10 +421,12 @@ class InfoCompleteCharacts : AppCompatActivity() {
                 override fun onEditClick(position: Int) {
                     val coment = listaComents[position]
 
+                    //mostramos un dialog con el texto del comentario que quiere cambiar
                     val dialogEditComent: AlertDialog.Builder = AlertDialog.Builder(contexto)
                     val inflater = layoutInflater
                     val dialogLayout = inflater.inflate(R.layout.dialog_edit_coment, null)
                     val edit = dialogLayout.findViewById<EditText>(R.id.edited_coment)
+
                     with(dialogEditComent) {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
@@ -427,7 +440,9 @@ class InfoCompleteCharacts : AppCompatActivity() {
 
                                 listaComents[position] = coment
                                 adapter.notifyDataSetChanged()
-
+                                /*si el edittext está vacío mostramos un mensaje diciendole al usuario
+                                * que no puede dejar el campo vacío
+                                * */
                             } else {
                                 Snackbar.make(
                                     binding.drawerLayout,
@@ -436,13 +451,11 @@ class InfoCompleteCharacts : AppCompatActivity() {
                                 ).show()
                             }
                         }
+                        //si cancela no se hace nada
                         setNegativeButton(getString(R.string.cancel)) { _, _ ->
-
                         }
                         show()
                     }
-
-
                 }
 
                 private fun obtenerComentarioResp() {
@@ -459,6 +472,7 @@ class InfoCompleteCharacts : AppCompatActivity() {
         }
     }
 
+    //obtener las series que pertenecen al personaje
     private fun obtenerSeriesPorPersonajeId(id: Int) {
         RetrofitBroker.getRequestSeriesForCharacterId(
             id,
@@ -489,11 +503,16 @@ class InfoCompleteCharacts : AppCompatActivity() {
                     binding.seriesNoEncontrados.text = getString(R.string.informacionNoEncontrada)
                 }
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
     }
 
+    //obtener los comics que pertenecen al personaje
     private fun obtenerComicsPorPersonajeId(id: Int) {
         RetrofitBroker.getRequestComicsForCharacterId(
             id,
@@ -524,7 +543,11 @@ class InfoCompleteCharacts : AppCompatActivity() {
                     binding.comicsNoEncontrados.text = getString(R.string.informacionNoEncontrada)
                 }
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             })
 
     }

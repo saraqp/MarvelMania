@@ -47,9 +47,12 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (resources.getBoolean(R.bool.isTablet)){
+        /*Si el usuario está desde una tablet se cambia visualmente el numero de columnas de la vista
+         * para una visualizacion mas comoda
+         */
+        if (resources.getBoolean(R.bool.isTablet)) {
             binding.recyclerViewCharacters.layoutManager = GridLayoutManager(context, 5)
-        }else{
+        } else {
             binding.recyclerViewCharacters.layoutManager = GridLayoutManager(context, 3)
         }
 
@@ -81,9 +84,14 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
 
     override fun onStart() {
         super.onStart()
-        buscarTodoslosPersonajes()
+        if (binding.ETBuscadorChar.text.isEmpty()) {
+            buscarTodoslosPersonajes()
+        } else {
+            buscarPersonajePorNombre()
+        }
     }
 
+    //Buscamos todos los personajes
     private fun buscarTodoslosPersonajes() {
         RetrofitBroker.getRequestAllCharacters(
             onResponse = {
@@ -95,12 +103,15 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
                 ocultarProgressBar()
                 adapter.setOnItemClickListener(object : OnItemClickListener {
                     override fun onItemClick(position: Int) {
+                        binding.ETBuscadorChar.setText("")
+                        binding.ETBuscadorChar.invalidate();
                         val character = characters[position]
                         val intent = Intent(context, InfoCompleteCharacts::class.java)
                         intent.putExtra("charact", character)
                         startActivity(intent)
                     }
                 })
+
                 adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
                     @SuppressLint("ResourceAsColor")
                     override fun onItemLongClick(position: Int, view: View): Boolean {
@@ -209,6 +220,7 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
         )
     }
 
+    //Ocultamos el progressBar despues de 0,2 segundos
     private fun ocultarProgressBar() {
         val handler = Handler()
         val runnable = Runnable {
@@ -217,6 +229,7 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
         handler.postDelayed(runnable, 200)
     }
 
+    //Buscamos la lista de personajes por el nombre indicado por el usuario
     private fun buscarPersonajePorNombre() {
         val nombrePersonaje = binding.ETBuscadorChar.text.toString()
         RetrofitBroker.getRequestCharactersByName(nombrePersonaje,
@@ -224,7 +237,7 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
                 val respuesta = Gson().fromJson(it, CharactersDTO::class.java)
                 characters = respuesta?.data?.results!!
 
-                if (characters.size != 0) {
+                if (characters.isNotEmpty()) {
                     binding.noInformationFound.visibility = View.GONE
                     binding.recyclerViewCharacters.visibility = View.VISIBLE
 
@@ -243,6 +256,7 @@ class CharactersFragment(private val auth: FirebaseAuth, private val imageUser: 
                         @SuppressLint("ResourceAsColor")
                         override fun onItemLongClick(position: Int, view: View): Boolean {
                             val character = characters[position]
+                            //Mostramos un popup para poder añadir/eliminar de favoritos desde la lista de personajes
                             val popupMenu = PopupMenu(
                                 context,
                                 view

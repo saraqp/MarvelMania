@@ -69,7 +69,7 @@
     <string name="comentarioBorrado">Comment deleted</string>
     <string name="comentarioBorradomsg">Comment deleted by author</string>
     <string name="editComent">Edit coment</string>
-    <string name="comentEdited">.Edited</string>
+    <string name="comentEdited">" (edited)"</string>
     <string name="editBtn">Edit</string>
     <string name="emailExample">example@gmail.com</string>
 </resources>

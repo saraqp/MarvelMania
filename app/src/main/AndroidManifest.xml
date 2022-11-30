@@ -5,26 +5,27 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="true"
+        android:configChanges="uiMode"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="nosensor"
         android:supportsRtl="true"
         android:theme="@style/Theme.MarvelMania"
-        android:screenOrientation="nosensor"
         android:usesCleartextTraffic="true"
-        android:configChanges="uiMode"
         tools:targetApi="31">
         <activity
             android:name=".activities.Register"
             android:configChanges="uiMode"
-            android:screenOrientation="nosensor"
-            android:exported="false">
+            android:exported="false"
+            android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -32,9 +33,9 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteCharacts"
             android:configChanges="uiMode"
-            android:screenOrientation="nosensor"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -42,9 +43,9 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteComics"
             android:configChanges="uiMode"
-            android:screenOrientation="nosensor"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -52,9 +53,9 @@
         <activity
             android:name=".activities.showInfo.InfoCompleteSeries"
             android:configChanges="uiMode"
-            android:screenOrientation="nosensor"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity">
+            android:parentActivityName=".activities.MainActivity"
+            android:screenOrientation="nosensor">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -73,9 +74,8 @@
         <activity
             android:name=".activities.MainActivity"
             android:configChanges="uiMode"
-            android:screenOrientation="nosensor"
-            android:exported="false">
-        </activity>
+            android:exported="false"
+            android:screenOrientation="nosensor" />
     </application>
 
 </manifest>

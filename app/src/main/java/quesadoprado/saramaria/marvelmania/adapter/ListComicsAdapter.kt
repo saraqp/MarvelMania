@@ -30,6 +30,7 @@ class ListComicsAdapter(private val list_comics: Array<Comic>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comicHolder: Comic = list_comics?.get(position)!!
+        //Url de la imagen que se va a mostrar
         val imageUrl =
             "${comicHolder.thumbnail?.path}/portrait_uncanny.${comicHolder.thumbnail?.extension}"
         Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(400, 350))

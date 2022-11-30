@@ -47,14 +47,23 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (auth.currentUser!=null){
-            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
-        }else{
-            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        //Mostramos la imagen del usuario en el Navigation Drawer
+        if (auth.currentUser != null) {
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid, null, imageUser, requireContext())
+        } else {
+            UtilsApp.mostrarImagenUser(
+                getString(R.string.defaultImage),
+                null,
+                imageUser,
+                requireContext()
+            )
         }
+        /*Si el usuario está desde una tablet se cambia visualmente el numero de columnas de la vista
+         * para una visualizacion mas comoda
+         */
         if (resources.getBoolean(R.bool.isTablet)) {
             binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 5)
-        }else{
+        } else {
             binding.recyclerViewComics.layoutManager = GridLayoutManager(context, 3)
         }
         //Mostrar todos los comics
@@ -73,7 +82,11 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
 
     override fun onStart() {
         super.onStart()
-        buscarTodosLosComics()
+        if (binding.ETBuscadorComic.text.isEmpty()) {
+            buscarTodosLosComics()
+        } else {
+            buscarComicsPorTitulo()
+        }
     }
 
     private fun buscarTodosLosComics() {
@@ -91,6 +104,7 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
                         val comic = comics[position]
                         val intent = Intent(context, InfoCompleteComics::class.java)
                         intent.putExtra("comic", comic)
+                        binding.ETBuscadorComic.setText("")
                         startActivity(intent)
                     }
 
@@ -202,6 +216,7 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
         )
     }
 
+    //Se oculta el ProgressBar después de 0,2 segundos
     private fun ocultarProgressBar() {
         val handler = Handler()
         val runnable = Runnable {
@@ -210,6 +225,7 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
         handler.postDelayed(runnable, 200)
     }
 
+    //Mostrar los comics segun el titulo dado por el usuario
     private fun buscarComicsPorTitulo() {
         val tituloComic = binding.ETBuscadorComic.text.toString()
         RetrofitBroker.getRequestComicByName(tituloComic,
@@ -219,7 +235,7 @@ class ComicsFragment(private val auth: FirebaseAuth, private val imageUser: Imag
 
                 comics = respuesta.data?.results!!
 
-                if (comics.size != 0) {
+                if (comics.isNotEmpty()) {
                     binding.noInformationFound.visibility = View.GONE
                     binding.recyclerViewComics.visibility = View.VISIBLE
                     val adapter = ComicAdapter(comics)

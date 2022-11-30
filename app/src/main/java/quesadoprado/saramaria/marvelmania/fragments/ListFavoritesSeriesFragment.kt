@@ -48,6 +48,7 @@ class ListFavoritesSeriesFragment : Fragment() {
         }
     }
 
+    //Obtener las series que tiene en favoritos el usuario
     private fun obtenerSeriesFavoritos(ruta: String) {
         database.collection(ruta).get()
             .addOnSuccessListener { document ->
@@ -101,7 +102,7 @@ class ListFavoritesSeriesFragment : Fragment() {
                 //mostramos las series
                 if (resources.getBoolean(R.bool.isTablet)) {
                     binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 5)
-                }else{
+                } else {
                     binding.listaSeriesFavoritos.layoutManager = GridLayoutManager(context, 3)
                 }
 

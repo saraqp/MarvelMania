@@ -42,12 +42,15 @@ class CharacterAdapter(private val list_characters: Array<Character>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val characterHolder: Character = list_characters?.get(position)!!
-        //url para que mostrar la imagen
+        //url para mostrar la imagen
         val imageUrl =
             "${characterHolder.thumbnail?.path}/portrait_uncanny.${characterHolder.thumbnail?.extension}"
+
         Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(300, 450))
             .into(holder.image)
+
         holder.nombre.text = characterHolder.name
+        //En caso de que el usuario esté conectado se muestra si está en favoritos
         if (currentUser != null) {
             comprobarFav(holder, characterHolder)
         } else {

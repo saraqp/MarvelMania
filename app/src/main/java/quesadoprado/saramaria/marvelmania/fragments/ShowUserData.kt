@@ -55,7 +55,7 @@ class ShowUserData(
 
         val uid: String = auth.currentUser!!.uid
         //ponemos la imagen del usuario
-        UtilsApp.mostrarImagenUser(uid,binding.imageView,imageUser,requireContext())
+        UtilsApp.mostrarImagenUser(uid, binding.imageView, imageUser, requireContext())
 
         //obtenemos los datos del usuario con su uid
         obtenerDatosUser(uid)
@@ -143,7 +143,7 @@ class ShowUserData(
             val builder = AlertDialog.Builder(context)
 
             builder.setMessage(getString(R.string.asegurarBorradoUser))
-                    //En caso afirmativo eliminamos la cuenta
+                //En caso afirmativo eliminamos la cuenta
                 .setPositiveButton(getString(R.string.si)) { _, _ ->
                     auth.currentUser!!.reauthenticate(userCredential).addOnCompleteListener {
                         if (it.isSuccessful) {
@@ -160,8 +160,8 @@ class ShowUserData(
                         }
                     }
                 }
-                 //en caso negativo no hacemos nada
-                .setNegativeButton(getString(R.string.no)) { _, _ ->}
+                //en caso negativo no hacemos nada
+                .setNegativeButton(getString(R.string.no)) { _, _ -> }
                 .show()
 
         }
@@ -187,13 +187,19 @@ class ShowUserData(
                 val imageUri: Uri? = result.data?.data
                 if (imageUri != null) {
                     //añadimos nueva imagen del usuario a Firebase storage
-                    val uploadTask =storage.child("file/${auth.currentUser!!.uid}").putFile(imageUri)
+                    val uploadTask =
+                        storage.child("file/${auth.currentUser!!.uid}").putFile(imageUri)
 
                     /*obtenemos la imagen del storage y actualizamos tanto visualmente en el
                         fragment el icono como el Navigation Drawer
                      */
                     uploadTask.addOnSuccessListener {
-                        UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,binding.imageView,imageUser,requireContext())
+                        UtilsApp.mostrarImagenUser(
+                            auth.currentUser!!.uid,
+                            binding.imageView,
+                            imageUser,
+                            requireContext()
+                        )
                     }.addOnFailureListener {
                         Snackbar.make(
                             requireView(),

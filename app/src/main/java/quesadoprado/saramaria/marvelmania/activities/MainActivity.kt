@@ -1,7 +1,6 @@
 package quesadoprado.saramaria.marvelmania.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
@@ -59,6 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         imageUserND = headerView.findViewById(R.id.image_view)
         submenuLogin = binding.navView.menu[4].subMenu!![0]
 
+        //si el usuario está conectado cambiamos en el Navitation Drawer la imagen
         if (firebaseAuth.currentUser != null) {
             submenuLogin!!.title = getString(R.string.perfil)
             submenuLogin!!.setIcon(R.drawable.ic_account_settings)
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    //NAVEGACION NAVIGATOR DRAWER
+    //NAVEGACION DE NAVIGATOR DRAWER
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         when (item.itemId) {
@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 )
             }
             R.id.nav_login -> {
+                //si el usuario está conectado va a la vista que muestra su información
                 if (firebaseAuth.currentUser != null) {
                     setToolBarTitle(getString(R.string.datosUsuario))
                     changeFragment(
@@ -145,6 +146,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             firebaseDatabase
                         )
                     )
+                    //si el usuario no está conectado va a la vista de iniciar sesión
                 } else {
                     setToolBarTitle(getString(R.string.inicio_sesion))
                     changeFragment(LoginFragment(firebaseAuth, nombreUsuarioND, imageUserND))
@@ -158,10 +160,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    //cambiar el titulo del toolbar
     fun setToolBarTitle(title: String) {
         supportActionBar?.title = title
     }
 
+    //cambiar entre fragments
     fun changeFragment(frag: Fragment) {
         val fragment = supportFragmentManager.beginTransaction()
         fragment.replace(R.id.fragmentcontainer, frag).commit()
@@ -176,6 +180,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    //Obtenemos los datos del usuario
     private fun obteneruser(uid: String) {
         var user: User?
         database.collection("users").document(uid).get().addOnSuccessListener { document ->
@@ -187,8 +192,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     document.data?.get("email") as String?
                 )
                 nombreUsuarioND.text = user?.username
-            } else {
-                Log.e("ERROR", "No such document")
             }
         }
     }

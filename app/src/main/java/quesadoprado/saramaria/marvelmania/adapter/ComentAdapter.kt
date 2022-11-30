@@ -40,20 +40,21 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
         val comentHolder: Coment = list_coments?.get(position)!!
         this.holder = holder
         when (comentHolder.edited) {
-            true->{
-                if (comentHolder.comentario!= context!!.getString(R.string.comentarioBorradomsg)) {
+            true -> {
+                if (comentHolder.comentario != context!!.getString(R.string.comentarioBorradomsg)) {
                     holder.coment.text =
                         comentHolder.comentario + context!!.getString(R.string.comentEdited)
-                }else{
-                    holder.coment.text =comentHolder.comentario
+                } else {
+                    holder.coment.text = comentHolder.comentario
                 }
             }
-            false->{
+            false -> {
                 holder.coment.text = comentHolder.comentario
             }
         }
         holder.score.text = comentHolder.puntuacion.toString()
         holder.username.text = comentHolder.username
+        //Si el comentario es una respuesta a otro se oculta el apartado del texto del comentario replicado
         if (comentHolder.id_coment_resp!!.toString() == "null") {
             holder.respComent.visibility = View.GONE
         } else {
@@ -63,23 +64,23 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
         UtilsApp.mostrarImagenUser(comentHolder.id_userComent, null, holder.imageUser, context!!)
         comprobarVotoUsuario(comentHolder.idComent, holder)
         //comprobar si el comentario es del usuario conectado
-        comprobarComentUser(comentHolder,holder)
+        comprobarComentUser(comentHolder, holder)
     }
 
     private fun comprobarComentUser(comentHolder: Coment, holder: ViewHolder) {
         //comprobar si el usuario conectado es el que ha escrito el comentario
-        if (comentHolder.id_userComent==auth.currentUser!!.uid){
+        if (comentHolder.id_userComent == auth.currentUser!!.uid) {
             //comprobar si el usuario ya ha sido borrado
             if (comentHolder.comentario.equals(context!!.getString(R.string.comentarioBorradomsg))) {
                 holder.delete.visibility = View.GONE
-                holder.edit.visibility=View.GONE
-            }else{
-                holder.edit.visibility=View.VISIBLE
-                holder.delete.visibility=View.VISIBLE
+                holder.edit.visibility = View.GONE
+            } else {
+                holder.edit.visibility = View.VISIBLE
+                holder.delete.visibility = View.VISIBLE
             }
-        }else{
-            holder.delete.visibility=View.GONE
-            holder.edit.visibility=View.GONE
+        } else {
+            holder.delete.visibility = View.GONE
+            holder.edit.visibility = View.GONE
         }
     }
 
@@ -125,8 +126,8 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
         val score: TextView = itemView.findViewById(R.id.TVpuntuacionText)
         val username: TextView = itemView.findViewById(R.id.user_coment)
         val imageUser: ImageView = itemView.findViewById(R.id.imageUser)
-        val delete: ImageView=itemView.findViewById(R.id.deleteComent)
-        val edit: ImageView=itemView.findViewById(R.id.editComent)
+        val delete: ImageView = itemView.findViewById(R.id.deleteComent)
+        val edit: ImageView = itemView.findViewById(R.id.editComent)
 
         init {
             reply.setOnClickListener {
@@ -138,7 +139,7 @@ class ComentAdapter(private val list_coments: Array<Coment>?) :
             downvote.setOnClickListener {
                 listener.onDownVoteClick(adapterPosition, downvote, upvote)
             }
-            delete.setOnClickListener{
+            delete.setOnClickListener {
                 listener.onDeleteClick(adapterPosition)
             }
             edit.setOnClickListener {

@@ -30,6 +30,7 @@ class ListCharactersAdapter(private val list_characters: Array<Character>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val characterHolder: Character = list_characters?.get(position)!!
+        //Url de la imagen a mostrar
         val imageUrl =
             "${characterHolder.thumbnail?.path}/portrait_uncanny.${characterHolder.thumbnail?.extension}"
         Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(400, 350))

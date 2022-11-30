@@ -48,15 +48,22 @@ class SeriesFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //Mostramos la imagen del usuario en el Navigation Drawer
-        if (auth.currentUser!=null){
-            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
-        }else{
-            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        if (auth.currentUser != null) {
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid, null, imageUser, requireContext())
+        } else {
+            UtilsApp.mostrarImagenUser(
+                getString(R.string.defaultImage),
+                null,
+                imageUser,
+                requireContext()
+            )
         }
-
+        /*Si el usuario está desde una tablet se cambia visualmente el numero de columnas de la vista
+         * para una visualizacion mas comoda
+         */
         if (resources.getBoolean(R.bool.isTablet)) {
             binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 5)
-        }else{
+        } else {
             binding.recyclerViewSeries.layoutManager = GridLayoutManager(context, 3)
         }
 
@@ -75,11 +82,17 @@ class SeriesFragment(
         }
 
     }
-    //al activarse la pantalla se refrescan las series
+
     override fun onStart() {
         super.onStart()
-        buscarTodasLasSeries()
+        if (binding.ETBuscadorSerie.text.isEmpty()) {
+            buscarTodasLasSeries()
+        } else {
+            buscarSeriesPorTitulo()
+        }
+
     }
+
     //ocultar la barra de progreso cuando se carguen las series
     private fun ocultarProgressBar() {
         val handler = Handler()
@@ -89,7 +102,7 @@ class SeriesFragment(
         handler.postDelayed(runnable, 200)
     }
 
-
+    //Buscar todas las series
     private fun buscarTodasLasSeries() {
         //hacemos una llamada a la api para obtener todas las series
         RetrofitBroker.getRequestAllSeries(
@@ -224,6 +237,7 @@ class SeriesFragment(
         )
     }
 
+    //Buscar las series segun el titulo dado por el usuario
     private fun buscarSeriesPorTitulo() {
         //hacemos una llamada a la api para obtener las series que empiecen por lo que indica el usuario
         val tituloSerie = binding.ETBuscadorSerie.text.toString()
@@ -233,7 +247,7 @@ class SeriesFragment(
 
                 series = respuesta.data?.results!!
 
-                if (series.size != 0) {
+                if (series.isNotEmpty()) {
                     binding.recyclerViewSeries.visibility = View.VISIBLE
                     binding.noInformationFound.visibility = View.GONE
 
@@ -245,6 +259,7 @@ class SeriesFragment(
                             val serie = series[position]
                             val intent = Intent(context, InfoCompleteSeries::class.java)
                             intent.putExtra("serie", serie)
+                            binding.ETBuscadorSerie.setText("")
                             startActivity(intent)
                         }
                     })

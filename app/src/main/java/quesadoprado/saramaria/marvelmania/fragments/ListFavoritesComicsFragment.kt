@@ -23,6 +23,7 @@ class ListFavoritesComicsFragment : Fragment() {
     private var database = FirebaseUtils.firebaseDatabase
     private val currentUser = FirebaseUtils.firebaseAuth.currentUser
     private lateinit var rutaColeccionComicsFavoritos: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,6 +48,7 @@ class ListFavoritesComicsFragment : Fragment() {
         }
     }
 
+    //Obtener comics favoritos del usuario
     private fun obtenerComicsFavoritos(ruta: String) {
         database.collection(ruta).get()
             .addOnSuccessListener { document ->
@@ -93,7 +95,7 @@ class ListFavoritesComicsFragment : Fragment() {
                 //mostramos los comics
                 if (resources.getBoolean(R.bool.isTablet)) {
                     binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 5)
-                }else{
+                } else {
                     binding.listaComicsFavoritos.layoutManager = GridLayoutManager(context, 3)
                 }
 

@@ -24,6 +24,7 @@ class ListFavoritesCharactersFragment : Fragment() {
     private val currentUser = FirebaseUtils.firebaseAuth.currentUser
 
     private lateinit var rutaColeccionCharactersFavoritos: String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +51,7 @@ class ListFavoritesCharactersFragment : Fragment() {
 
     }
 
+    //Obtener los personajes favoritos del usuario conectado
     private fun obtenerPersonajesFavoritos(ruta: String) {
         database.collection(ruta).get()
             .addOnSuccessListener { document ->
@@ -71,7 +73,7 @@ class ListFavoritesCharactersFragment : Fragment() {
                 //Mostramos los personajes favoritos del usuario
                 if (resources.getBoolean(R.bool.isTablet)) {
                     binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 5)
-                }else{
+                } else {
                     binding.listaPersonajesFavoritos.layoutManager = GridLayoutManager(context, 3)
                 }
 

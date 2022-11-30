@@ -4,7 +4,6 @@ import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import quesadoprado.saramaria.marvelmania.R
 import quesadoprado.saramaria.marvelmania.utils.FirebaseUtils.firebaseStorage
 
 object UtilsApp {
@@ -16,7 +15,7 @@ object UtilsApp {
         context: Context
     ) {
         storage.child("file/$urlFile").downloadUrl.addOnSuccessListener {
-            if (imageView!=null){
+            if (imageView != null) {
                 Glide.with(context)
                     .load(it)
                     .apply(RequestOptions().override(512, 512))
@@ -27,14 +26,13 @@ object UtilsApp {
                     .apply(RequestOptions().override(512, 512))
                     .circleCrop()
                     .into(imageND)
-            }else{
+            } else {
                 Glide.with(context)
                     .load(it)
                     .apply(RequestOptions().override(512, 512))
                     .circleCrop()
                     .into(imageND)
             }
-            //si el usuario está conectado y no tiene imagen personalizada muestra una imagen default
         }
     }
 }

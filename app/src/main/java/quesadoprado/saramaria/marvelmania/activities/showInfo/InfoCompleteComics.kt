@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -89,13 +88,18 @@ class InfoCompleteComics : AppCompatActivity() {
         } else {
             binding.iconFav.visibility = View.GONE
         }
+        //en caso de que ambas descripciones estén vacías mostramos que no se ha encontrado ninguna descripción
         if (comic?.description.equals("") && comic?.variantDescription.equals("")) {
             binding.descripcionText.text = getString(R.string.noHayDescripcion)
+
+            //si solo descripción esta vacía mostramos la descripción alternativa
         } else if (comic?.description.equals("")) {
             binding.descripcionText.text = comic?.variantDescription
+
         } else {
             binding.descripcionText.text = comic?.description
         }
+        //mostramos el numero y páginas y formato que tiene el comic
         binding.numpagText.text = comic?.pageCount.toString()
         binding.formatText.text = comic?.format
 
@@ -110,6 +114,7 @@ class InfoCompleteComics : AppCompatActivity() {
             LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         obtenerPersonajesPorComicId(comic?.id!!)
 
+        //comprobamos si el usuario esta logueado, en caso correcto muestra la sección de comentarios
         if (auth.currentUser != null) {
             binding.contentComentarios.visibility = View.VISIBLE
 
@@ -125,6 +130,7 @@ class InfoCompleteComics : AppCompatActivity() {
             binding.contentComentarios.visibility = View.GONE
         }
     }
+
     //OCULTAR TECLADO
     fun AppCompatActivity.hideKeyboard() {
         val view = this.currentFocus
@@ -134,7 +140,9 @@ class InfoCompleteComics : AppCompatActivity() {
         }
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
-
+    /*cada minuto actualizamos la lista de comentarios para que el usuario la tenga actualizada si
+    *permanece mucho tiempo en la misma vista
+    * */
     private fun updateComentsUI(id: Int) {
         runnable = Runnable {
             obtenerComentarios(id)
@@ -143,6 +151,7 @@ class InfoCompleteComics : AppCompatActivity() {
         handler.post(runnable)
     }
 
+    //obtenemos el nombre de usuario y uid del que escribe el mensaje y guardamos el comentario
     private fun obtenerNombreUsuario(id: Int) {
         val comentario_user = binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get()
@@ -162,13 +171,14 @@ class InfoCompleteComics : AppCompatActivity() {
                     )
                     if (comentario_user.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
-                        idComentResp=null
+                        idComentResp = null
                         obtenerComentarios(id)
                     }
                 }
             }
     }
 
+    //despues de 0,2 segundos se oculta el ProgressBar
     private fun ocultarProgressBar() {
         val handler = Handler()
         val runnable = Runnable {
@@ -358,51 +368,64 @@ class InfoCompleteComics : AppCompatActivity() {
                 }
 
                 override fun onDeleteClick(position: Int) {
-                    val comentario=lista_coments[position]
+                    val comentario = lista_coments[position]
                     //verificamos que el usuario está seguro de borrar su comentario
                     val builder = AlertDialog.Builder(context)
 
                     builder.setMessage(getString(R.string.asegurarBorradoComent))
                         .setPositiveButton(getString(R.string.si)) { _, _ ->
-                            DataBaseUtils.camiarComentario(comentario,getString(R.string.comentarioBorradomsg))
-                            Snackbar.make(binding.drawerLayout,getString(R.string.comentarioBorrado),Snackbar.LENGTH_SHORT).show()
-                            comentario.comentario=getString(R.string.comentarioBorradomsg)
+                            DataBaseUtils.camiarComentario(
+                                comentario,
+                                getString(R.string.comentarioBorradomsg)
+                            )
+
+                            Snackbar.make(
+                                binding.drawerLayout,
+                                getString(R.string.comentarioBorrado),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            comentario.comentario = getString(R.string.comentarioBorradomsg)
+
                             lista_coments[position] = comentario
                             adapter.notifyDataSetChanged()
                         }
                         //en caso negativo no hacemos nada
-                        .setNegativeButton(getString(R.string.no)) { _, _ ->}
+                        .setNegativeButton(getString(R.string.no)) { _, _ -> }
                         .show()
                 }
 
                 override fun onEditClick(position: Int) {
-                    val coment=lista_coments[position]
+                    val coment = lista_coments[position]
+                    //mostramos un dialog para que el usuario pueda editar el mensaje
+                    val dialogEditComent: AlertDialog.Builder = AlertDialog.Builder(context)
+                    val inflater = layoutInflater
+                    val dialogLayout = inflater.inflate(R.layout.dialog_edit_coment, null)
+                    val edit = dialogLayout.findViewById<EditText>(R.id.edited_coment)
 
-                    val dialogEditComent:AlertDialog.Builder= AlertDialog.Builder(context)
-                    val inflater= layoutInflater
-                    val dialogLayout=inflater.inflate(R.layout.dialog_edit_coment,null)
-                    val edit=dialogLayout.findViewById<EditText>(R.id.edited_coment)
-
-                    with(dialogEditComent){
+                    with(dialogEditComent) {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
                         edit.setText(coment.comentario)
-                        setPositiveButton(getString(R.string.editBtn)){_,_->
-                            if (edit.text.toString().isNotEmpty()){
-                                DataBaseUtils.camiarComentario(coment,edit.text.toString())
+                        setPositiveButton(getString(R.string.editBtn)) { _, _ ->
+                            if (edit.text.toString().isNotEmpty()) {
+                                DataBaseUtils.camiarComentario(coment, edit.text.toString())
 
-                                coment.comentario=edit.text.toString()
-                                coment.edited=true
+                                coment.comentario = edit.text.toString()
+                                coment.edited = true
 
                                 lista_coments[position] = coment
                                 adapter.notifyDataSetChanged()
 
-                            }else{
-                                Snackbar.make(binding.drawerLayout,getString(R.string.campoNoVacio),Snackbar.LENGTH_SHORT).show()
+                            } else {
+                                Snackbar.make(
+                                    binding.drawerLayout,
+                                    getString(R.string.campoNoVacio),
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                        setNegativeButton(getString(R.string.cancel)){_,_->
 
+                        setNegativeButton(getString(R.string.cancel)) { _, _ ->
                         }
                         show()
                     }
@@ -422,6 +445,7 @@ class InfoCompleteComics : AppCompatActivity() {
         }
     }
 
+    //obtenemos la lista de personajes del comics que estemos visualizando
     private fun obtenerPersonajesPorComicId(id: Int) {
         RetrofitBroker.getRequestCharactersForComicId(
             id,
@@ -455,11 +479,16 @@ class InfoCompleteComics : AppCompatActivity() {
                 }
 
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
     }
 
+    //comprobamos si está en favoritos para mostrarlo visualmente al usuario
     private fun comprobarSiFavorito(uid: String, comic: Comic?) {
         database.collection("users/$uid/comics").document(comic!!.id.toString()).get()
             .addOnSuccessListener { document ->

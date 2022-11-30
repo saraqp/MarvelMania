@@ -7,8 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -61,7 +59,7 @@ class InfoCompleteSeries : AppCompatActivity() {
 
         val serie = intent.getParcelableExtra<Serie>("serie")
 
-
+        //MOSTRAMOS LOS DATOS
         val imageUrl = "${serie?.thumbnail?.path}/portrait_uncanny.${serie?.thumbnail?.extension}"
 
         Glide.with(this).load(imageUrl).apply(RequestOptions().override(500, 650))
@@ -69,6 +67,8 @@ class InfoCompleteSeries : AppCompatActivity() {
 
         binding.tituloTV.text = serie?.title
         val endYear: String
+        //comprobamos si el dato de endYear está vacio
+
         if (serie?.endYear == null) {
             endYear = "?"
         } else {
@@ -123,6 +123,7 @@ class InfoCompleteSeries : AppCompatActivity() {
             binding.prevNotDataFound.visibility = View.VISIBLE
             binding.prevNotDataFound.text = getString(R.string.informacionNoEncontrada)
         }
+
         //si la serie tiene next obtenemos su información y mostramos la imagen al usuario
         if (serie.next != null) {
             binding.nextNotDataFound.visibility = View.GONE
@@ -130,6 +131,7 @@ class InfoCompleteSeries : AppCompatActivity() {
             val url = serie.next.resourceURI?.split("/")
             val id: Int = url?.last()!!.toInt()
             obtenerSeriePorId(id, "n")
+
         } else {
             binding.siguienteImagen.visibility = View.GONE
             binding.nextNotDataFound.visibility = View.VISIBLE
@@ -153,6 +155,7 @@ class InfoCompleteSeries : AppCompatActivity() {
             binding.contentComentarios.visibility = View.GONE
         }
     }
+
     //OCULTAR TECLADO
     fun AppCompatActivity.hideKeyboard() {
         val view = this.currentFocus
@@ -163,6 +166,7 @@ class InfoCompleteSeries : AppCompatActivity() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
+    //Ocultamos el ProtessBar despues de 0,2 segundos
     private fun ocultarProgressBar() {
         val handler = Handler()
         val runnable = Runnable {
@@ -172,6 +176,7 @@ class InfoCompleteSeries : AppCompatActivity() {
         handler.postDelayed(runnable, 200)
     }
 
+    //Actualizamos la lista de comentarios cada minuto
     private fun updateComentsUI(id: Int) {
         runnable = Runnable {
             obtenerComentarios(id)
@@ -180,6 +185,7 @@ class InfoCompleteSeries : AppCompatActivity() {
         handler.post(runnable)
     }
 
+    //Obtenemos el username y uid del usuario que escribe el comentario y guardamos el comentario escrito
     private fun obtenerNombreUsuario(id: Int) {
         val comentario_user = binding.escribirComentario.text.toString()
         database.collection("users").document(auth.currentUser!!.uid).get()
@@ -199,15 +205,14 @@ class InfoCompleteSeries : AppCompatActivity() {
                     )
                     if (comentario_user.trim().isNotEmpty()) {
                         DataBaseUtils.guardarComentario(coment!!)
-                        idComentResp=null
+                        idComentResp = null
                         obtenerComentarios(id)
                     }
                 }
             }
-
-
     }
 
+    //obtenemos la lista de comentarios
     private fun obtenerComentarios(id_serie: Int) {
         database.collection("coments").get().addOnSuccessListener { documents ->
             val comentarios = documents.documents
@@ -403,51 +408,62 @@ class InfoCompleteSeries : AppCompatActivity() {
                 }
 
                 override fun onDeleteClick(position: Int) {
-                    val comentario=lista_coments[position]
+                    val comentario = lista_coments[position]
                     //verificamos que el usuario está seguro de borrar su comentario
                     val builder = AlertDialog.Builder(contexto)
 
                     builder.setMessage(getString(R.string.asegurarBorradoComent))
                         .setPositiveButton(getString(R.string.si)) { _, _ ->
-                            DataBaseUtils.camiarComentario(comentario,getString(R.string.comentarioBorradomsg))
-                            Snackbar.make(binding.drawerLayout,getString(R.string.comentarioBorrado),Snackbar.LENGTH_SHORT).show()
-                            comentario.comentario=getString(R.string.comentarioBorradomsg)
+                            DataBaseUtils.camiarComentario(
+                                comentario,
+                                getString(R.string.comentarioBorradomsg)
+                            )
+                            Snackbar.make(
+                                binding.drawerLayout,
+                                getString(R.string.comentarioBorrado),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                            comentario.comentario = getString(R.string.comentarioBorradomsg)
                             lista_coments[position] = comentario
                             adapter.notifyDataSetChanged()
 
                         }
                         //en caso negativo no hacemos nada
-                        .setNegativeButton(getString(R.string.no)) { _, _ ->}
+                        .setNegativeButton(getString(R.string.no)) { _, _ -> }
                         .show()
                 }
 
                 override fun onEditClick(position: Int) {
-                    val coment=lista_coments[position]
+                    val coment = lista_coments[position]
 
-                    val dialogEditComent:AlertDialog.Builder= AlertDialog.Builder(contexto)
-                    val inflater= layoutInflater
-                    val dialogLayout=inflater.inflate(R.layout.dialog_edit_coment,null)
-                    val edit=dialogLayout.findViewById<EditText>(R.id.edited_coment)
+                    val dialogEditComent: AlertDialog.Builder = AlertDialog.Builder(contexto)
+                    val inflater = layoutInflater
+                    val dialogLayout = inflater.inflate(R.layout.dialog_edit_coment, null)
+                    val edit = dialogLayout.findViewById<EditText>(R.id.edited_coment)
 
-                    with(dialogEditComent){
+                    with(dialogEditComent) {
                         setTitle(getString(R.string.editComent))
                         setView(dialogLayout)
                         edit.setText(coment.comentario)
-                        setPositiveButton(getString(R.string.editBtn)){_,_->
-                            if (edit.text.toString().isNotEmpty()){
-                                DataBaseUtils.camiarComentario(coment,edit.text.toString())
+                        setPositiveButton(getString(R.string.editBtn)) { _, _ ->
+                            if (edit.text.toString().isNotEmpty()) {
+                                DataBaseUtils.camiarComentario(coment, edit.text.toString())
 
-                                coment.comentario=edit.text.toString()
-                                coment.edited=true
+                                coment.comentario = edit.text.toString()
+                                coment.edited = true
 
                                 lista_coments[position] = coment
                                 adapter.notifyDataSetChanged()
 
-                            }else{
-                                Snackbar.make(binding.drawerLayout,getString(R.string.campoNoVacio),Snackbar.LENGTH_SHORT).show()
+                            } else {
+                                Snackbar.make(
+                                    binding.drawerLayout,
+                                    getString(R.string.campoNoVacio),
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                        setNegativeButton(getString(R.string.cancel)){_,_->
+                        setNegativeButton(getString(R.string.cancel)) { _, _ ->
 
                         }
                         show()
@@ -468,6 +484,7 @@ class InfoCompleteSeries : AppCompatActivity() {
         }
     }
 
+    //Obtenemos la información de una serie por su ID
     private fun obtenerSeriePorId(id: Int, prevOrNext: String?) {
         RetrofitBroker.getRequestSerieId(
             id,
@@ -517,11 +534,16 @@ class InfoCompleteSeries : AppCompatActivity() {
 
                 }
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
     }
 
+    //Obtenemos los comics que la serie que se está visualuzando
     private fun obtenerComicsPorSerieId(id: Int) {
         RetrofitBroker.getRequestComicsForSerieId(
             id,
@@ -552,12 +574,17 @@ class InfoCompleteSeries : AppCompatActivity() {
                     binding.comicsNoEncontrados.text = getString(R.string.informacionNoEncontrada)
                 }
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
 
     }
 
+    //Obtenemos los personajes de la serie que se está visualizando
     private fun obtenerPersonajesPorIdSerie(id: Int) {
         RetrofitBroker.getRequestCharactersForSerieId(
             id,
@@ -591,12 +618,17 @@ class InfoCompleteSeries : AppCompatActivity() {
                 }
 
             }, onFailure = {
-                Log.e("ERROR_API", it)
+                Snackbar.make(
+                    binding.drawerLayout,
+                    getString(R.string.error),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         )
 
     }
 
+    //comprobamos si el usuario tiene la serie en favoritos para mostrarselo visualmente
     private fun comprobarSiFavorito(uid: String, serie: Serie?) {
         database.collection("users/$uid/series").document(serie!!.id.toString()).get()
             .addOnSuccessListener { document ->

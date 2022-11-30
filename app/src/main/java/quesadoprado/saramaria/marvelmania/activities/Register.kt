@@ -26,6 +26,7 @@ class Register : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindind = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(bindind.root)
+        //guardamos en una lista los editText para mostrar los posibles errores correctamente
         createAccountInputsArray =
             arrayOf(bindind.user, bindind.email, bindind.password, bindind.repeatpassword)
 
@@ -40,6 +41,7 @@ class Register : AppCompatActivity() {
             userEmail = bindind.email.text.toString().trim()
             userPassword = bindind.password.text.toString().trim()
 
+            //Se crea el usuario con Firebase Authenticator
             auth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnSuccessListener { task ->
                     val firebaseUserID = auth.currentUser!!.uid
@@ -51,8 +53,11 @@ class Register : AppCompatActivity() {
                         userPassword,
                         userEmail
                     )
-                    val imageUri=Uri.parse("android.resource://${this.packageName}/${R.mipmap.icon}")
-                    DataBaseUtils.guardarUsuarioEnBbdd(user,imageUri)
+                    //Ponemos de imagen por default el logo de la aplicación
+                    val imageUri =
+                        Uri.parse("android.resource://${this.packageName}/${R.mipmap.icon}")
+                    //guardamos el usuario en la base de datos con la contraseña para poder cambiarla correctamente en un futuro
+                    DataBaseUtils.guardarUsuarioEnBbdd(user, imageUri)
                     //Enviamos el mensaje de verificacion de email
                     enviarMensajeVerificacionEmail()
                 }.addOnFailureListener { task ->
@@ -65,6 +70,7 @@ class Register : AppCompatActivity() {
         }
     }
 
+    //Enviamos un mensaje al correo electrónico dado por el usuario para verificar su cuenta
     private fun enviarMensajeVerificacionEmail() {
         auth.currentUser!!.sendEmailVerification()
             .addOnSuccessListener { _ ->

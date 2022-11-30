@@ -17,7 +17,7 @@ class DataBaseUtils {
         @SuppressLint("StaticFieldLeak")
         private val database = firebaseDatabase
         private val auth = firebaseAuth
-        private val storage= firebaseStorage
+        private val storage = firebaseStorage
 
         //FUNCIONES
         //ELIMINACIÓN COMPLETA DE USUARIO CON SUS FAVORITOS
@@ -82,13 +82,15 @@ class DataBaseUtils {
             storage.child("file/${user.uid}").putFile(imageUri)
         }
 
-        fun cambiarPassUser(uid:String, password: String) {
+        //CAMBIAR CONTRASEÑA DEL USUARIO EN LA BASE DE DATOS
+        fun cambiarPassUser(uid: String, password: String) {
             val sfDocRef = database.collection("users").document(uid)
             database.runTransaction { transaction ->
                 transaction.update(sfDocRef, "password", password)
             }
         }
 
+        //CAMBIAR A UN USUARIO DE ONLINE A OFFLINE O VICEVERSA
         fun cambiarStatusUser(user: String, status: String) {
             val sfDocRef = database.collection("users").document(user)
             database.runTransaction { transaction ->
@@ -183,6 +185,7 @@ class DataBaseUtils {
                 )
             )
         }
+
         fun camiarComentario(coment: Coment, newMsg: String) {
             val sfDocRef = database.collection("coments").document(coment.idComent!!)
             database.runTransaction { transaction ->
@@ -190,6 +193,7 @@ class DataBaseUtils {
                 transaction.update(sfDocRef, "edited", true)
             }
         }
+
         fun addVotoUser(upVoteOrDownVote: String, idComent: String?) {
             when (upVoteOrDownVote) {
                 "upvote" -> {

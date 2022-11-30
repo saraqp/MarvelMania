@@ -22,6 +22,7 @@ class SeriesFavouritesAdapter(private val list_series: Array<Serie>?) :
     fun setOnItemClickListener(listener: OnItemClickListener) {
         mListener = listener
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_list_fav, parent, false)
@@ -31,6 +32,7 @@ class SeriesFavouritesAdapter(private val list_series: Array<Serie>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val seriesHolder: Serie = list_series?.get(position)!!
+        //Url imagen a mostrar
         val imageUrl =
             "${seriesHolder.thumbnail?.path}/portrait_uncanny.${seriesHolder.thumbnail?.extension}"
         Glide.with(context!!).load(imageUrl).apply(RequestOptions().override(300, 450))

@@ -5,7 +5,7 @@ import java.security.MessageDigest
 import java.sql.Timestamp
 
 class Constants {
-
+    //INFORMACION NECESARIA PARA LA LLAMADA A LA API
     companion object {
         //informacion para la llamada a la api
         const val BASE_URL = "https://gateway.marvel.com:443/v1/public/"

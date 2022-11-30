@@ -30,10 +30,16 @@ class LibraryFragment(private val auth: FirebaseAuth, private val imageUser: Ima
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (auth.currentUser!=null){
-            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid,null,imageUser,requireContext())
-        }else{
-            UtilsApp.mostrarImagenUser(getString(R.string.defaultImage),null,imageUser,requireContext())
+        //Mostramos la imagen del usuario en el Navigation Drawer
+        if (auth.currentUser != null) {
+            UtilsApp.mostrarImagenUser(auth.currentUser!!.uid, null, imageUser, requireContext())
+        } else {
+            UtilsApp.mostrarImagenUser(
+                getString(R.string.defaultImage),
+                null,
+                imageUser,
+                requireContext()
+            )
         }
         //si el usuario esta conectado se le muestran sus favoritos
         if (currentUser != null) {
