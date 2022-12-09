@@ -1,7 +1,10 @@
 package quesadoprado.saramaria.marvelmania.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -109,16 +112,31 @@ class ShowUserData(
                                         ).show()
                                     } else {
                                         //avisamos al usuario que ha ocurrido un error al cambiar la contraseña
+
                                         Snackbar.make(
                                             view,
-                                            getString(R.string.cambioPassError),
+                                            task.exception!!.message.toString(),
                                             Snackbar.LENGTH_SHORT
                                         ).show()
+
+
                                     }
                                 }
                         } else {
-                            Snackbar.make(view, getString(R.string.error), Snackbar.LENGTH_SHORT)
-                                .show()
+                            if (isConnected()) {
+                                Snackbar.make(
+                                    view,
+                                    getString(R.string.error),
+                                    Snackbar.LENGTH_SHORT
+                                )
+                                    .show()
+                            } else {
+                                Snackbar.make(
+                                    view,
+                                    getString(R.string.noInternetConexion),
+                                    Snackbar.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 } else {
@@ -127,6 +145,7 @@ class ShowUserData(
                         getString(R.string.oldpassNocoincide),
                         Snackbar.LENGTH_SHORT
                     ).show()
+
                 }
             } else {
                 Snackbar.make(view, getString(R.string.camposRellenos), Snackbar.LENGTH_SHORT)
@@ -171,6 +190,14 @@ class ShowUserData(
 
 
         }
+    }
+
+    private fun isConnected(): Boolean {
+        val cm =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        return activeNetwork?.isConnectedOrConnecting == true
+
     }
 
     private fun fileManager() {

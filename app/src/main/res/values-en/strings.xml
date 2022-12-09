@@ -72,4 +72,5 @@
     <string name="comentEdited">" (edited)"</string>
     <string name="editBtn">Edit</string>
     <string name="emailExample">example@gmail.com</string>
+    <string name="noInternetConexion">No internet connection</string>
 </resources>

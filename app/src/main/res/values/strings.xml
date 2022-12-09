@@ -78,4 +78,5 @@
     <string name="editComent">Editar comentario</string>
     <string name="comentEdited">" (editado)"</string>
     <string name="editBtn">Editar</string>
+    <string name="noInternetConexion">No hay conexion a internet</string>
 </resources>
